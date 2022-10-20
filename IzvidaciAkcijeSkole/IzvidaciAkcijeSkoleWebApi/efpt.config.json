@@ -1,0 +1,121 @@
+﻿{
+   "CodeGenerationMode": 2,
+   "ContextClassName": "AkcijeSkoleContext",
+   "ContextNamespace": null,
+   "DefaultDacpacSchema": null,
+   "FilterSchemas": false,
+   "IncludeConnectionString": false,
+   "ModelNamespace": null,
+   "OutputContextPath": "Data",
+   "OutputPath": "Data\/Models",
+   "PreserveCasingWithRegex": true,
+   "ProjectRootNamespace": "IzvidaciAkcijeSkoleWebApi",
+   "Schemas": null,
+   "SelectedHandlebarsLanguage": 0,
+   "SelectedToBeGenerated": 0,
+   "Tables": [
+      {
+         "Name": "[dbo].[Akcije]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Aktivnosti]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[CvrstiNamjenskiObjekti]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[CvrstiObjektiZaObitavanje]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Edukacije]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Logorista]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[MaterijalnePotrebe]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[MaterijalnePotrebeAkcije]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[MaterijalnePotrebeSkole]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[MaterijalnePotrebeTerenskeLokacije]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Mjesta]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[PolazniciAkcije]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[PolazniciSkole]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Predavaci]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[PrijavljeniPolazniciAkcije]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[PrijavljeniPolazniciSkole]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[PrivremeniObjekti]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Skole]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[TerenskeLokacije]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[TerenskeLokacijeAkcije]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[TerenskeLokacijeSkole]",
+         "ObjectType": 0
+      }
+   ],
+   "UiHint": "aurelius.AkcijeSkole",
+   "UseBoolPropertiesWithoutDefaultSql": false,
+   "UseDatabaseNames": false,
+   "UseDbContextSplitting": false,
+   "UseFluentApiOnly": false,
+   "UseHandleBars": false,
+   "UseHierarchyId": false,
+   "UseInflector": false,
+   "UseLegacyPluralizer": false,
+   "UseManyToManyEntity": false,
+   "UseNoConstructor": false,
+   "UseNoDefaultConstructor": false,
+   "UseNoNavigations": false,
+   "UseNoObjectFilter": false,
+   "UseNodaTime": false,
+   "UseNullableReferences": false,
+   "UseSchemaFolders": false,
+   "UseSpatial": false,
+   "UseT4": false
+}
