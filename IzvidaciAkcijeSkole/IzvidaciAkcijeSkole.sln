@@ -5,15 +5,15 @@ VisualStudioVersion = 17.3.32929.385
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AkcijeSkoleWebApi", "AkcijeSkoleWebApi\AkcijeSkoleWebApi.csproj", "{2522C35D-CB14-40F1-96A8-D952710118E4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AkcijeSkole.Commons", "AkcijeSkole.Commons\AkcijeSkole.Commons.csproj", "{5DC18492-2431-4B12-9172-33F6A98CADFA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AkcijeSkole.Commons", "AkcijeSkole.Commons\AkcijeSkole.Commons.csproj", "{5DC18492-2431-4B12-9172-33F6A98CADFA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AkcijeSkole.DataAccess.SqlServer", "AkcijeSkole.DataAccess.SqlServer\AkcijeSkole.DataAccess.SqlServer.csproj", "{9D7CFE93-D8B6-4D5B-9F60-0F2F3B6799B3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AkcijeSkole.DataAccess.SqlServer", "AkcijeSkole.DataAccess.SqlServer\AkcijeSkole.DataAccess.SqlServer.csproj", "{9D7CFE93-D8B6-4D5B-9F60-0F2F3B6799B3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AkcijeSkole.Domain", "AkcijeSkole.Domain\AkcijeSkole.Domain.csproj", "{67E8303F-F924-44EE-AFDF-4D7D931B5FDB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AkcijeSkole.Domain", "AkcijeSkole.Domain\AkcijeSkole.Domain.csproj", "{67E8303F-F924-44EE-AFDF-4D7D931B5FDB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AkcijeSkoleRepositories", "AkcijeSkoleRepositories\AkcijeSkoleRepositories.csproj", "{952FB5C3-D81B-4599-8CCE-9AF3A9F8E8F4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AkcijeSkole.Repositories", "AkcijeSkoleRepositories\AkcijeSkole.Repositories.csproj", "{952FB5C3-D81B-4599-8CCE-9AF3A9F8E8F4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AkcijeSkole.Repositories.SqlServer", "AkcijeSkole.Repositories.SqlServer\AkcijeSkole.Repositories.SqlServer.csproj", "{AFBCE1FD-1C9F-4406-957A-5FBD198C9CB7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AkcijeSkole.Repositories.SqlServer", "AkcijeSkole.Repositories.SqlServer\AkcijeSkole.Repositories.SqlServer.csproj", "{AFBCE1FD-1C9F-4406-957A-5FBD198C9CB7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

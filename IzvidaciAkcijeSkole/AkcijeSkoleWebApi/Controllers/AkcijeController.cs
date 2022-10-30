@@ -5,8 +5,8 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using AkcijeSkoleWebApi.Data;
-using AkcijeSkoleWebApi.Data.DbModels;
+using AkcijeSkole.DataAccess.SqlServer.Data;
+using AkcijeSkole.DataAccess.SqlServer.Data.DbModels;
 
 namespace AkcijeSkoleWebApi.Controllers
 {

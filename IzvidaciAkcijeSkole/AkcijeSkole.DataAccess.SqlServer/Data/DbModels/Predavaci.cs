@@ -6,22 +6,18 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
 
-namespace AkcijeSkoleWebApi.Data.DbModels
+namespace AkcijeSkole.DataAccess.SqlServer.Data.DbModels
 {
-    public partial class PolazniciSkole
+    public partial class Predavaci
     {
         [Key]
-        public int Polaznik { get; set; }
-        [Key]
-        public int SkolaId { get; set; }
+        public int IdPredavac { get; set; }
+        public int ClanId { get; set; }
         [Key]
         public int EdukacijaId { get; set; }
 
         [ForeignKey("EdukacijaId")]
-        [InverseProperty("PolazniciSkole")]
+        [InverseProperty("Predavaci")]
         public virtual Edukacije Edukacija { get; set; }
-        [ForeignKey("SkolaId")]
-        [InverseProperty("PolazniciSkole")]
-        public virtual Skole Skola { get; set; }
     }
 }

@@ -6,7 +6,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
 
-namespace AkcijeSkoleWebApi.Data.DbModels
+namespace AkcijeSkole.DataAccess.SqlServer.Data.DbModels
 {
     public partial class Logorista
     {

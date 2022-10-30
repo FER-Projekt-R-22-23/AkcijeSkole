@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
-using AkcijeSkoleWebApi.Data;
+using AkcijeSkole.DataAccess.SqlServer.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 

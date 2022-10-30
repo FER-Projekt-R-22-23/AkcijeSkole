@@ -1,8 +1,8 @@
-﻿using AkcijeSkoleWebApi.Data;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using AkcijeSkoleWebApi.Data.DbModels;
 using Microsoft.EntityFrameworkCore;
+using AkcijeSkole.DataAccess.SqlServer.Data;
+using AkcijeSkole.DataAccess.SqlServer.Data.DbModels;
 
 namespace AkcijeSkoleWebApi.Controllers
 {

@@ -4,9 +4,9 @@ using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
-using AkcijeSkoleWebApi.Data.DbModels;
+using AkcijeSkole.DataAccess.SqlServer.Data.DbModels;
 
-namespace AkcijeSkoleWebApi.Data
+namespace AkcijeSkole.DataAccess.SqlServer.Data
 {
     public partial class AkcijeSkoleDbContext : DbContext
     {
