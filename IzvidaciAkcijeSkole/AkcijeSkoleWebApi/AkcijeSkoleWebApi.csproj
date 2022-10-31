@@ -7,13 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="DTOs\**" />
-    <Content Remove="DTOs\**" />
-    <EmbeddedResource Remove="DTOs\**" />
-    <None Remove="DTOs\**" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="BaseLibrary" Version="1.0.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="6.0.10" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="6.0.10">
@@ -28,6 +21,9 @@
 
   <ItemGroup>
     <ProjectReference Include="..\AkcijeSkole.DataAccess.SqlServer\AkcijeSkole.DataAccess.SqlServer.csproj" />
+    <ProjectReference Include="..\AkcijeSkole.Domain\AkcijeSkole.Domain.csproj" />
+    <ProjectReference Include="..\AkcijeSkole.Repositories.SqlServer\AkcijeSkole.Repositories.SqlServer.csproj" />
+    <ProjectReference Include="..\AkcijeSkoleRepositories\AkcijeSkole.Repositories.csproj" />
   </ItemGroup>
 
 </Project>

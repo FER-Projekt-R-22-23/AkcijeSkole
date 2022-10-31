@@ -9,6 +9,13 @@
 
   <ItemGroup>
     <PackageReference Include="BaseLibrary" Version="1.0.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.10" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="6.0.10" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\AkcijeSkole.DataAccess.SqlServer\AkcijeSkole.DataAccess.SqlServer.csproj" />
+    <ProjectReference Include="..\AkcijeSkoleRepositories\AkcijeSkole.Repositories.csproj" />
   </ItemGroup>
 
 </Project>
