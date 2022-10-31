@@ -3,6 +3,7 @@ using AkcijeSkole.DataAccess.SqlServer.Data;
 using AkcijeSkole.DataAccess.SqlServer.Data.DbModels;
 using Microsoft.EntityFrameworkCore;
 using AkcijeSkole.Repositories;
+using System.Data;
 
 namespace AkcijeSkole.Repositories.SqlServer;
 public class SkoleRepository : ISkoleRepository<int, Skole>
@@ -26,7 +27,13 @@ public class SkoleRepository : ISkoleRepository<int, Skole>
 
     public Option<Skole> Get(int id)
     {
-        throw new NotImplementedException();
+        var skola = _dbContext.Skole
+                             .AsNoTracking()
+                             .FirstOrDefault(skola => skola.IdSkole.Equals(id));
+
+        return skola is null
+            ? Options.None<Skole>()
+            : Options.Some(skola);
     }
 
     public IEnumerable<Skole> GetAll()
