@@ -36,7 +36,7 @@ namespace AkcijeSkoleWebApi.Controllers
 
             if (akcije == null)
             {
-                return NotFound();
+                return NotFound("Ne postoji akcija pod ovim id-em");
             }
 
             return akcije;
@@ -45,14 +45,14 @@ namespace AkcijeSkoleWebApi.Controllers
         // PUT: api/Akcije/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutAkcije(int id, Akcije akcije)
+        public async Task<IActionResult> PutAkcije(int id, Akcije akcija)
         {
-            if (id != akcije.IdAkcija)
+            if (id != akcija.IdAkcija)
             {
                 return BadRequest();
             }
 
-            _context.Entry(akcije).State = EntityState.Modified;
+            _context.Entry(akcija).State = EntityState.Modified;
 
             try
             {
@@ -76,25 +76,25 @@ namespace AkcijeSkoleWebApi.Controllers
         // POST: api/Akcije
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Akcije>> PostAkcije(Akcije akcije)
+        public async Task<ActionResult<Akcije>> PostAkcije(Akcije akcija)
         {
-            _context.Akcije.Add(akcije);
+            _context.Akcije.Add(akcija);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetAkcije", new { id = akcije.IdAkcija }, akcije);
+            return CreatedAtAction("GetAkcije", new { id = akcija.IdAkcija }, akcija);
         }
 
         // DELETE: api/Akcije/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteAkcije(int id)
         {
-            var akcije = await _context.Akcije.FindAsync(id);
-            if (akcije == null)
+            var akcija = await _context.Akcije.FindAsync(id);
+            if (akcija == null)
             {
                 return NotFound();
             }
 
-            _context.Akcije.Remove(akcije);
+            _context.Akcije.Remove(akcija);
             await _context.SaveChangesAsync();
 
             return NoContent();
