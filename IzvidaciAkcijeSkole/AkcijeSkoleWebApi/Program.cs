@@ -1,6 +1,8 @@
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using AkcijeSkole.DataAccess.SqlServer.Data;
+using AkcijeSkole.Repositories;
+using AkcijeSkole.DataAccess.SqlServer.Data.DbModels;
+using AkcijeSkole.Repositories.SqlServer;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,6 +15,7 @@ IConfiguration configuration = builder.Environment.IsDevelopment()
 builder.Services.AddDbContext<AkcijeSkoleDbContext>(
     options => options.UseSqlServer(configuration.GetConnectionString("AkcijeSkoleDB"))
 );
+builder.Services.AddTransient<IMjestoRepository<int, Mjesta>, MjestoRepository>();
 
 // Add services to the container.
 

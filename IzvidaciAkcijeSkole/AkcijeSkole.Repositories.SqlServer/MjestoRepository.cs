@@ -2,8 +2,6 @@
 using AkcijeSkole.DataAccess.SqlServer.Data;
 using AkcijeSkole.DataAccess.SqlServer.Data.DbModels;
 using Microsoft.EntityFrameworkCore;
-using AkcijeSkole.Repositories;
-using System;
 
 namespace AkcijeSkole.Repositories.SqlServer;
 
@@ -53,7 +51,7 @@ public class MjestoRepository : IMjestoRepository<int, Mjesta>
     }
 
 
-    public bool Insert(Mjesta model)
+    public bool Insert(DataAccess.SqlServer.Data.DbModels.Mjesta model)
     {
         if (_dbContext.Mjesta.Add(model).State == Microsoft.EntityFrameworkCore.EntityState.Added)
         {
@@ -84,7 +82,7 @@ public class MjestoRepository : IMjestoRepository<int, Mjesta>
         return false;
     }
 
-    public bool Update(Mjesta model)
+    public bool Update(DataAccess.SqlServer.Data.DbModels.Mjesta model)
     {
         // detach
         if (_dbContext.Mjesta.Update(model).State == Microsoft.EntityFrameworkCore.EntityState.Modified)

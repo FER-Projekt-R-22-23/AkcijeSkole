@@ -14,9 +14,7 @@
   <ItemGroup>
     <ProjectReference Include="..\AkcijeSkole.Commons\AkcijeSkole.Commons.csproj" />
     <ProjectReference Include="..\AkcijeSkole.DataAccess.SqlServer\AkcijeSkole.DataAccess.SqlServer.csproj" />
-	 <ProjectReference Include="..\AkcijeSkole.Repositories\AkcijeSkole.Repositories.csproj" />
 	 <ProjectReference Include="..\AkcijeSkoleRepositories\AkcijeSkole.Repositories.csproj" />
-	 <ProjectReference Include="..\AkcijeSkoleWebApi\AkcijeSkoleWebApi.csproj" />
   </ItemGroup>
 
 </Project>

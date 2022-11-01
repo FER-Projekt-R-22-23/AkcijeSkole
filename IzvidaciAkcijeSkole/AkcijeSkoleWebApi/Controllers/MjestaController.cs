@@ -24,14 +24,14 @@ namespace AkcijeSkoleWebApi.Controllers
         }
 
         [HttpGet]
-        public ActionResult<IEnumerable<Mjesto>> GetAllMjesta()
+        public ActionResult<IEnumerable<DTO_s.Mjesto>> GetAllMjesta()
         {
             return Ok(_mjestoRepository.GetAll().Select(DtoMapping.ToDto));
         }
 
 
         [HttpGet("pbrMjesta")]
-        public ActionResult<Mjesto> GetMjesto(int pbr)
+        public ActionResult<DTO_s.Mjesto> GetMjesto(int pbr)
         {
             var mjestoOption = _mjestoRepository.Get(pbr).Map(DtoMapping.ToDto);
 
@@ -64,7 +64,7 @@ namespace AkcijeSkoleWebApi.Controllers
         }
 
         [HttpPost]
-        public ActionResult<Mjesto> CreateMjesto(DTO_s.Mjesto mjesto)
+        public ActionResult<DTO_s.Mjesto> CreateMjesto(DTO_s.Mjesto mjesto)
         {
             if (!ModelState.IsValid)
             {
