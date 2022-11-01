@@ -28,6 +28,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\AkcijeSkole.DataAccess.SqlServer\AkcijeSkole.DataAccess.SqlServer.csproj" />
+    <ProjectReference Include="..\AkcijeSkoleRepositories\AkcijeSkole.Repositories.csproj" />
   </ItemGroup>
 
 </Project>
