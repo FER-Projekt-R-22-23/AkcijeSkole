@@ -1,11 +1,9 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 using AkcijeSkole.DataAccess.SqlServer.Data.DbModels;
+using Microsoft.EntityFrameworkCore;
 
-/// <summary>
-/// Summary description for Class1
-/// </summary>
-/// 
-namespace AkcijeSkoleWebApi.DTO_s;
+namespace AkcijeSkoleWebApi.DTOs;
 public class MaterijalnaPotreba
 {
 	
@@ -26,7 +24,7 @@ public static partial class DtoMapping
     public static MaterijalnaPotreba ToDto(this AkcijeSkole.DataAccess.SqlServer.Data.DbModels.MaterijalnePotrebe materijalnaPotreba)
         => new MaterijalnaPotreba()
         {
-            IdMaterijalnaPotreba = materijalnaPotreba.IdMaterijalnaPotreba,
+            IdMaterijalnaPotreba = materijalnaPotreba.IdMaterijalnePotrebe,
             Naziv = materijalnaPotreba.Naziv,
             Organizator = materijalnaPotreba.Organizator,
             Davatelj = materijalnaPotreba.Davatelj,
@@ -40,6 +38,6 @@ public static partial class DtoMapping
             Naziv = materijalnaPotreba.Naziv,
             Organizator = materijalnaPotreba.Organizator,
             Davatelj = materijalnaPotreba.Davatelj,
-            Zadovoljeno = materijalnaPotreba.Zadovoljenoh
+            Zadovoljeno = materijalnaPotreba.Zadovoljeno
         };
 }

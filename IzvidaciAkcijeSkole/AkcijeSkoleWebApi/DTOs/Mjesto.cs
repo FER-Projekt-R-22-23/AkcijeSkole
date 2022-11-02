@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
 using System;
 
-namespace AkcijeSkoleWebApi.DTO_s;
+namespace AkcijeSkoleWebApi.DTOs;
 public class Mjesto
 {
     public int PbrMjesta { get; set; }

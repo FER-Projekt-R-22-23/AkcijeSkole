@@ -2,11 +2,9 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using AkcijeSkole.DataAccess.SqlServer.Data;
-using AkcijeSkole.DataAccess.SqlServer.Data.DbModels;
 using AkcijeSkole.Repositories;
 using DbModels = AkcijeSkole.DataAccess.SqlServer.Data.DbModels;
 using AkcijeSkoleWebApi.DTOs;
-using System;
 using AkcijeSkole.Commons;
 
 namespace AkcijeSkoleWebApi.Controllers
@@ -24,14 +22,14 @@ namespace AkcijeSkoleWebApi.Controllers
         }
 
         [HttpGet]
-        public ActionResult<IEnumerable<DTOs.Mjesto>> GetAllMjesta()
+        public ActionResult<IEnumerable<Mjesto>> GetAllMjesta()
         {
             return Ok(_mjestoRepository.GetAll().Select(DtoMapping.ToDto));
         }
 
 
         [HttpGet("pbrMjesta")]
-        public ActionResult<DTO_s.Mjesto> GetMjesto(int pbr)
+        public ActionResult<DTOs.Mjesto> GetMjesto(int pbr)
         {
             var mjestoOption = _mjestoRepository.Get(pbr).Map(DtoMapping.ToDto);
 
@@ -41,7 +39,7 @@ namespace AkcijeSkoleWebApi.Controllers
         }
 
         [HttpPut]
-        public IActionResult EditMjesto(int pbr, DTO_s.Mjesto mjesto)
+        public IActionResult EditMjesto(int pbr, DTOs.Mjesto mjesto)
         {
             if (!ModelState.IsValid)
             {
@@ -64,7 +62,7 @@ namespace AkcijeSkoleWebApi.Controllers
         }
 
         [HttpPost]
-        public ActionResult<DTO_s.Mjesto> CreateMjesto(DTO_s.Mjesto mjesto)
+        public ActionResult<DTOs.Mjesto> CreateMjesto(DTOs.Mjesto mjesto)
         {
             if (!ModelState.IsValid)
             {
@@ -77,7 +75,7 @@ namespace AkcijeSkoleWebApi.Controllers
         }
 
         [HttpDelete("pbrMjesta")]
-        public IActionResult DeleteMjeston(int pbr)
+        public IActionResult DeleteMjesto(int pbr)
         {
             if (!_mjestoRepository.Exists(pbr))
                 return NotFound();
