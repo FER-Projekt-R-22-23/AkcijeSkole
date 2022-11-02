@@ -18,6 +18,7 @@ builder.Services.AddDbContext<AkcijeSkoleDbContext>(
     options => options.UseSqlServer(configuration.GetConnectionString("AkcijeSkoleDB"))
 );
 builder.Services.AddTransient<ISkoleRepository<int, Skole>, SkoleRepository>();
+builder.Services.AddTransient<IEdukacijeRepository<int, Edukacije>, EdukacijeRepository>();
 
 // Add services to the container.
 

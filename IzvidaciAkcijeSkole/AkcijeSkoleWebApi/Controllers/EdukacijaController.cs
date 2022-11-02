@@ -11,85 +11,83 @@ namespace AkcijeSkoleWebApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class SkoleController : ControllerBase
+    public class EdukacijeController : ControllerBase
     {
-        private readonly ISkoleRepository<int, DbModels.Skole> _skolaRepository;
+        private readonly IEdukacijeRepository<int, DbModels.Edukacije> _edukacijaRepository;
 
-        public SkoleController(ISkoleRepository<int, DbModels.Skole> context)
+        public EdukacijeController(IEdukacijeRepository<int, DbModels.Edukacije> context)
         {
-            _skolaRepository = context;
+            _edukacijaRepository = context;
         }
          
-        // GET: api/skole
+        // GET: api/edukacije
         [HttpGet]
-        public ActionResult<IEnumerable<Skola>> GetAllSkole()
+        public ActionResult<IEnumerable<Edukacija>> GetAllEdukacije()
         {
-            return Ok(_skolaRepository.GetAll().Select(DtoMapping.ToDto));
+            return Ok(_edukacijaRepository.GetAll().Select(DtoMapping.ToDto));
         }
 
-        // GET: api/skole/5
+        // GET: api/edukacije/5
         [HttpGet("{id}")]
-        public ActionResult<Skola> GetSkola(int id)
+        public ActionResult<Edukacija> GetEdukacija(int id)
         {
-            var skolaOption = _skolaRepository.Get(id).Map(DtoMapping.ToDto);
+            var edukacijaOption = _edukacijaRepository.Get(id).Map(DtoMapping.ToDto);
 
-            return skolaOption
-                ? Ok(skolaOption.Data)
+            return edukacijaOption
+                ? Ok(edukacijaOption.Data)
                 : NotFound();
         }
 
-        // PUT: api/Skole/5
+        // PUT: api/edukacije/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public IActionResult EditSkole(int id, Skola skola)
+        public IActionResult EditEdukacije(int id, Edukacija edukacija)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            if (id != skola.IdSkole)
+            if (id != edukacija.IdEdukacija)
             {
                 return BadRequest();
             }
 
-            if (!_skolaRepository.Exists(id))
+            if (!_edukacijaRepository.Exists(id))
             {
                 return NotFound();
             }
 
-            return _skolaRepository.Update(skola.toDbModel())
-                ? AcceptedAtAction("EditSkole", skola)
+            return _edukacijaRepository.Update(edukacija.toDbModel())
+                ? AcceptedAtAction("EditEdukacije", edukacija)
                 : StatusCode(500);
         }
 
-        // POST: api/Skole
+        // POST: api/edukacije
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public ActionResult<Skola> CreateRole(Skola skola)
+        public ActionResult<Edukacija> CreateRole(Edukacija edukacija)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            return _skolaRepository.Insert(skola.toDbModel())
-                ? CreatedAtAction("GetSkole", new { id = skola.IdSkole }, skola)
+            return _edukacijaRepository.Insert(edukacija.toDbModel())
+                ? CreatedAtAction("GetEdukacije", new { id = edukacija.IdEdukacija }, edukacija)
                 : StatusCode(500);
         }
 
-        // DELETE: api/Skole/5
+        // DELETE: api/edukacije/5
         [HttpDelete("{id}")]
         public IActionResult DeleteRole(int id)
         {
-            if (!_skolaRepository.Exists(id))
+            if (!_edukacijaRepository.Exists(id))
                 return NotFound();
 
-            return _skolaRepository.Remove(id)
+            return _edukacijaRepository.Remove(id)
                 ? NoContent()
                 : StatusCode(500);
         }
-
-
     }
 }
