@@ -5,7 +5,7 @@ using AkcijeSkole.DataAccess.SqlServer.Data;
 using AkcijeSkole.DataAccess.SqlServer.Data.DbModels;
 using AkcijeSkole.Repositories;
 using DbModels = AkcijeSkole.DataAccess.SqlServer.Data.DbModels;
-using AkcijeSkoleWebApi.DTO_s;
+using AkcijeSkoleWebApi.DTOs;
 using System;
 using AkcijeSkole.Commons;
 
@@ -24,7 +24,7 @@ namespace AkcijeSkoleWebApi.Controllers
         }
 
         [HttpGet]
-        public ActionResult<IEnumerable<DTO_s.Mjesto>> GetAllMjesta()
+        public ActionResult<IEnumerable<DTOs.Mjesto>> GetAllMjesta()
         {
             return Ok(_mjestoRepository.GetAll().Select(DtoMapping.ToDto));
         }
