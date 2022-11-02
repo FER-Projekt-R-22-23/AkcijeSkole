@@ -11,4 +11,10 @@
     <PackageReference Include="BaseLibrary" Version="1.0.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\AkcijeSkole.Commons\AkcijeSkole.Commons.csproj" />
+    <ProjectReference Include="..\AkcijeSkole.DataAccess.SqlServer\AkcijeSkole.DataAccess.SqlServer.csproj" />
+	 <ProjectReference Include="..\AkcijeSkoleRepositories\AkcijeSkole.Repositories.csproj" />
+  </ItemGroup>
+
 </Project>

@@ -3,6 +3,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using AkcijeSkole.DataAccess.SqlServer.Data;
 using AkcijeSkole.DataAccess.SqlServer.Data.DbModels;
+using AkcijeSkole.Repositories;
+using DbModels = AkcijeSkole.DataAccess.SqlServer.Data.DbModels;
+using AkcijeSkoleWebApi.DTO_s;
+using System;
+using AkcijeSkole.Commons;
 
 namespace AkcijeSkoleWebApi.Controllers
 {
@@ -11,68 +16,79 @@ namespace AkcijeSkoleWebApi.Controllers
     public class MjestaController : ControllerBase
     {
         private readonly AkcijeSkoleDbContext _context;
+        private readonly IMjestoRepository<int, DbModels.Mjesta> _mjestoRepository;
 
-        public MjestaController(AkcijeSkoleDbContext context)
+        public MjestaController(IMjestoRepository<int, DbModels.Mjesta> mjestoRepository)
         {
-            _context = context;
+            _mjestoRepository = mjestoRepository;
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Mjesta>>> PrikaziSvaMjesta()
+        public ActionResult<IEnumerable<DTO_s.Mjesto>> GetAllMjesta()
         {
-            return Ok(await _context.Mjesta.ToListAsync());
+            return Ok(_mjestoRepository.GetAll().Select(DtoMapping.ToDto));
         }
+
 
         [HttpGet("pbrMjesta")]
-        public async Task<ActionResult<IEnumerable<Mjesta>>> PrikaziMjesto(int pbrMjesta) 
+        public ActionResult<DTO_s.Mjesto> GetMjesto(int pbr)
         {
-            var mjesto = await _context.Mjesta.FindAsync(pbrMjesta);
+            var mjestoOption = _mjestoRepository.Get(pbr).Map(DtoMapping.ToDto);
 
-            if (mjesto == null)
-            {
-                return NotFound("Za navedeni poštanski broj ne postoji mjesto.");
-            }
-            return Ok(mjesto);
-
-        }
-
-        [HttpPost]
-        public async Task<ActionResult<IEnumerable<Mjesta>>> dodajMjesto(Mjesta mjesto) 
-        {
-            _context.Mjesta.Add(mjesto);
-            await _context.SaveChangesAsync();
-            return Ok(await _context.Mjesta.ToListAsync());
+            return mjestoOption
+                ? Ok(mjestoOption.Data)
+                : NotFound();
         }
 
         [HttpPut]
-        public async Task<ActionResult<IEnumerable<Mjesta>>> urediMjesta(Mjesta zahtjev)
+        public IActionResult EditMjesto(int pbr, DTO_s.Mjesto mjesto)
         {
-            var dbMjesto = await _context.Mjesta.FindAsync(zahtjev.PbrMjesta);
-            if (dbMjesto == null)
-                return NotFound("Za navedeni poštanski broj ne postoji mjesto.");
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
 
-            dbMjesto.NazivMjesta = zahtjev.NazivMjesta;
+            if (pbr != mjesto.PbrMjesta)
+            {
+                return BadRequest();
+            }
 
-            await _context.SaveChangesAsync();
+            if (!_mjestoRepository.Exists(pbr))
+            {
+                return NotFound();
+            }
 
-            return Ok(await _context.Mjesta.ToListAsync());
+            return _mjestoRepository.Update(mjesto.ToDbModel())
+                ? AcceptedAtAction("EditMjesto", mjesto)
+                : StatusCode(500);
+        }
+
+        [HttpPost]
+        public ActionResult<DTO_s.Mjesto> CreateMjesto(DTO_s.Mjesto mjesto)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            return _mjestoRepository.Insert(mjesto.ToDbModel())
+                ? CreatedAtAction("GetMjesto", new { pbr = mjesto.PbrMjesta }, mjesto)
+                : StatusCode(500);
         }
 
         [HttpDelete("pbrMjesta")]
-        public async Task<ActionResult<IEnumerable<Mjesta>>> izbrisiMjesto(int pbrMjesta)
+        public IActionResult DeleteMjeston(int pbr)
         {
-            var dbMjesto = await _context.Mjesta.FindAsync(pbrMjesta);
-            if(dbMjesto == null) 
-                return NotFound("Za navedeni poštanski broj ne postoji mjesto.");
+            if (!_mjestoRepository.Exists(pbr))
+                return NotFound();
 
-            _context.Mjesta.Remove(dbMjesto);
-            await _context.SaveChangesAsync();
-
-            return Ok(await _context.Mjesta.ToListAsync());
+            return _mjestoRepository.Remove(pbr)
+                ? NoContent()
+                : StatusCode(500);
         }
 
-          
-        
+
+
 
     }
 }
