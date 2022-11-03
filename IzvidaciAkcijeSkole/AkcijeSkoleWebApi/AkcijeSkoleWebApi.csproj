@@ -21,6 +21,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\AkcijeSkole.DataAccess.SqlServer\AkcijeSkole.DataAccess.SqlServer.csproj" />
+    <ProjectReference Include="..\AkcijeSkole.Domain\AkcijeSkole.Domain.csproj" />
     <ProjectReference Include="..\AkcijeSkole.Repositories.SqlServer\AkcijeSkole.Repositories.SqlServer.csproj" />
     <ProjectReference Include="..\AkcijeSkoleRepositories\AkcijeSkole.Repositories.csproj" />
   </ItemGroup>

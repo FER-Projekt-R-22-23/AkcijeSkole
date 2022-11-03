@@ -13,6 +13,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\AkcijeSkole.Commons\AkcijeSkole.Commons.csproj" />
+    <ProjectReference Include="..\AkcijeSkole.Domain\AkcijeSkole.Domain.csproj" />
   </ItemGroup>
 
 </Project>
