@@ -12,7 +12,7 @@ public class MjestoAkcijeAggregate
     [StringLength(50)]
     [Unicode(false)]
     public string Naziv { get; set; }
-    public IEnumerable<Akcija> Akcije { get; set; } = Enumerable.Empty<Akcija>();
+    public IEnumerable<AkcijeSkole.Domain.Models.AkcijaAssignment> AkcijaAssignments { get; set; } = Enumerable.Empty<AkcijeSkole.Domain.Models.AkcijaAssignment>();
 }
 public class MjestoAktivnostiAggregate
 {
@@ -21,7 +21,7 @@ public class MjestoAktivnostiAggregate
     [StringLength(50)]
     [Unicode(false)]
     public string Naziv { get; set; }
-    public IEnumerable<Aktivnost> Aktivnosti { get; set; } = Enumerable.Empty<Aktivnosti>();
+    public IEnumerable<AkcijeSkole.Domain.Models.AktivnostAssignment> AktivnostAssignments { get; set; } = Enumerable.Empty<AkcijeSkole.Domain.Models.AktivnostAssignment>();
 }
 public class MjestoEdukacijeAggregate
 {
@@ -30,7 +30,7 @@ public class MjestoEdukacijeAggregate
     [StringLength(50)]
     [Unicode(false)]
     public string Naziv { get; set; }
-    public IEnumerable<Edukacija> Edukacije { get; set; } = Enumerable.Empty<Edukacija>();
+    public IEnumerable<AkcijeSkole.Domain.Models.EdukacijaAssignment> EdukacijaAssignments { get; set; } = Enumerable.Empty<AkcijeSkole.Domain.Models.EdukacijaAssignment>();
 }
 public class MjestoSkoleAggregate
 {
@@ -40,7 +40,7 @@ public class MjestoSkoleAggregate
     [StringLength(50)]
     [Unicode(false)]
     public string Naziv { get; set; }
-    public IEnumerable<Skola> Skole { get; set; } = Enumerable.Empty<Skola>();
+    public IEnumerable<AkcijeSkole.Domain.Models.SkolaAssignment> SkolaAssignments { get; set; } = Enumerable.Empty<AkcijeSkole.Domain.Models.SkolaAssignment>();
 }
 public class MjestoTerLokacijeAggregate
 {
@@ -49,7 +49,7 @@ public class MjestoTerLokacijeAggregate
     [StringLength(50)]
     [Unicode(false)]
     public string Naziv { get; set; }
-    public IEnumerable<TerenskaLokacija> TerenskeLokacije { get; set; } = Enumerable.Empty<TerenskaLokacija>();
+    public IEnumerable<AkcijeSkole.Domain.Models.TerenskaLokacijaAssignment> TerenskaLokacijaAssignments { get; set; } = Enumerable.Empty<AkcijeSkole.Domain.Models.TerenskaLokacijaAssignment>();
 }
 
 public static partial class DtoMapping
@@ -59,32 +59,32 @@ public static partial class DtoMapping
         {
             pbrMjesto = mjesto.Id,
             Naziv = mjesto.NazivMjesta,
-            Akcije = mjesto.AkcijaAssignments == null
-                            ? new List<AkcijaAssignment>()
+            AkcijaAssignments = mjesto.AkcijaAssignments == null
+                            ? new List<AkcijeSkole.Domain.Models.AkcijaAssignment>()
                             : mjesto.AkcijaAssignments.Select(ra => ra.ToDto()).ToList()
         };
 
-    public static AkcijeSkole.Domain.Models.Mjesto ToDbModelWithAkcije(MjestoAkcijeAggregate mjesto)
+    public static AkcijeSkole.Domain.Models.Mjesto ToDomainWithAkcije(MjestoAkcijeAggregate mjesto)
         => new AkcijeSkole.Domain.Models.Mjesto(
                 mjesto.pbrMjesto,
                 mjesto.Naziv,
-                mjesto.Akcije.Select(ToDomain);
+                mjesto.AkcijaAssignments.Select(ToDomain);
 
     public static MjestoAktivnostiAggregate ToAktivostiAggregateDto(this AkcijeSkole.Domain.Models.Mjesto mjesto)
         => new MjestoAktivnostiAggregate()
         {
             pbrMjesto = mjesto.Id,
             Naziv = mjesto.NazivMjesta,
-            Aktivnosti = mjesto.AktivnostAssignments == null
-            ? new List<Aktivnost>()
+            AktivnostAssignments = mjesto.AktivnostAssignments == null
+            ? new List<AkcijeSkole.Domain.Models.AktivnostAssignment>()
                             : mjesto.AktivnostAssignments.Select(ra => ra.ToDto()).ToList()
         };
 
-    public static AkcijeSkole.Domain.Models.Mjesto ToDbModelWithAktivnosti(MjestoAktivnostiAggregate mjesto)
+    public static AkcijeSkole.Domain.Models.Mjesto ToDomainWithAktivnosti(MjestoAktivnostiAggregate mjesto)
         => new AkcijeSkole.Domain.Models.Mjesto(
             mjesto.pbrMjesto,
             mjesto.Naziv,
-            mjesto.Aktivnosti.Select(ToDomain);
+            mjesto.AktivnostAssignments.Select(ToDomain);
 
 
     public static MjestoEdukacijeAggregate ToEdukacijaAggregateDto(this AkcijeSkole.Domain.Models.Mjesto mjesto)
@@ -92,47 +92,47 @@ public static partial class DtoMapping
         {
             pbrMjesto = mjesto.Id,
             Naziv = mjesto.NazivMjesta,
-            Edukacije = mjesto.EdukacijaAssignments == null
-            ? new List<Edukacija>()
+            EdukacijaAssignments = mjesto.EdukacijaAssignments == null
+            ? new List<AkcijeSkole.Domain.Models.EdukacijaAssignment>()
                             : mjesto.EdukacijaAssignments.Select(pr => pr.ToDto()).ToList()
         };
 
-    public static AkcijeSkole.Domain.Models.Mjesto ToDbModelWithEdukacije(MjestoEdukacijeAggregate mjesto)
+    public static AkcijeSkole.Domain.Models.Mjesto ToDomainlWithEdukacije(MjestoEdukacijeAggregate mjesto)
         => new AkcijeSkole.Domain.Models.Mjesto(
             mjesto.pbrMjesto,
             mjesto.Naziv,
-            mjesto.Edukacije.Select(ToDomain);
+            mjesto.EdukacijaAssignments.Select(ToDomain);
 
     public static MjestoSkoleAggregate ToSkolaAggregateDto(this AkcijeSkole.Domain.Models.Mjesto mjesto)
         => new MjestoSkoleAggregate()
         {
             pbrMjesto = mjesto.Id,
             Naziv = mjesto.NazivMjesta,
-            Skole = mjesto.SkolaAssignments == null
-            ? new List<Skola>()
+            SkolaAssignments = mjesto.SkolaAssignments == null
+            ? new List<AkcijeSkole.Domain.Models.SkolaAssignment>()
                             : mjesto.SkolaAssignments.Select(pr => pr.ToDto()).ToList()
         };
 
-    public static AkcijeSkole.Domain.Models.Mjesto ToDbModelWithSkole(MjestoSkoleAggregate mjesto)
+    public static AkcijeSkole.Domain.Models.Mjesto ToDomainWithSkole(MjestoSkoleAggregate mjesto)
         => new AkcijeSkole.Domain.Models.Mjesto(
             mjesto.pbrMjesto,
             mjesto.Naziv,
-            mjesto.Skole.Select(ToDomain);
+            mjesto.SkolaAssignments.Select(ToDomain);
 
     public static MjestoTerLokacijeAggregate ToTerLokacijaAggregateDto(this AkcijeSkole.Domain.Models.Mjesto mjesto)
         => new MjestoTerLokacijeAggregate()
         {
             pbrMjesto = mjesto.Id,
             Naziv = mjesto.NazivMjesta,
-            TerenskeLokacije = mjesto.TerenskaLokacijaAssignments == null
-            ? new List<TerenskaLokacija>()
+            TerenskaLokacijaAssignments = mjesto.TerenskaLokacijaAssignments == null
+            ? new List<AkcijeSkole.Domain.Models.TerenskaLokacijaAssignment>()
                             : mjesto.TerenskaLokacijaAssignments.Select(pr => pr.ToDto()).ToList()
         };
 
-    public static AkcijeSkole.Domain.Models.Mjesto ToDbModelWithTerLokacije(MjestoTerLokacijeAggregate mjesto)
+    public static AkcijeSkole.Domain.Models.Mjesto ToDomainWithTerLokacije(MjestoTerLokacijeAggregate mjesto)
         => new AkcijeSkole.Domain.Models.Mjesto(
             mjesto.pbrMjesto,
             mjesto.Naziv,
-            mjesto.TerenskeLokacije.Select(ToDomain);
+            mjesto.TerenskaLokacijaAssignments.Select(ToDomain);
 }
 

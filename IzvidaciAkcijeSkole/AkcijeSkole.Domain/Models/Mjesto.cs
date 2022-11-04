@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using AkcijeSkole.Commons;
+using BaseLibrary;
 
 namespace AkcijeSkole.Domain.Models;
 public class Mjesto : AggregateRoot<int>
@@ -27,7 +23,7 @@ public class Mjesto : AggregateRoot<int>
     {
         if (string.IsNullOrEmpty(naziv))
         {
-            throw new ArgumentException($"'{nameof(naziv)}' cannot be null or empty.", nameof(naziv));
+            throw new ArgumentException($"{nameof(naziv)} cannot be null or empty.", nameof(naziv));
         }
 
         _nazivMjesta = naziv;
@@ -40,7 +36,7 @@ public class Mjesto : AggregateRoot<int>
 
     public bool AssignAkcija(Akcija akcija) { 
 
-        var akcijaAssignment = new AkcijaAssignment();
+        var akcijaAssignment = new AkcijaAssignment(akcija);
 
         _akcijaAssignments.Add(akcijaAssignment);
 
@@ -69,7 +65,7 @@ public class Mjesto : AggregateRoot<int>
     public bool AssignAktivnost(Aktivnost aktivnost)
     {
 
-        var aktivnostAssignment = new AktivnostAssignment();
+        var aktivnostAssignment = new AktivnostAssignment(aktivnost);
 
         _aktivnostAssignments.Add(aktivnostAssignment);
 
@@ -97,7 +93,7 @@ public class Mjesto : AggregateRoot<int>
     public bool AssignEdukacija(Edukacija edukacija)
     {
 
-        var edukacijaAssignment = new EdukacijaAssignment();
+        var edukacijaAssignment = new EdukacijaAssignment(edukacija);
 
         _edukacijaAssignments.Add(edukacijaAssignment);
 
@@ -125,7 +121,7 @@ public class Mjesto : AggregateRoot<int>
     public bool AssignSkola(Skola skola)
     {
 
-        var skolaAssignment = new SkolaAssignment();
+        var skolaAssignment = new SkolaAssignment(skola);
 
         _skolaAssignments.Add(skolaAssignment);
 
@@ -153,7 +149,7 @@ public class Mjesto : AggregateRoot<int>
     public bool AssignTerenskaLokacija(TerenskaLokacija terenskaLokacija)
     {
 
-        var terenskaLokacijaAssignment = new TerenskaLokacijaAssignment();
+        var terenskaLokacijaAssignment = new TerenskaLokacijaAssignment(terenskaLokacija);
 
         _terenskaLokacijaAssignments.Add(terenskaLokacijaAssignment);
 

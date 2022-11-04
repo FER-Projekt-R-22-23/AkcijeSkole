@@ -3,12 +3,14 @@ using AkcijeSkole.Commons;
 using AkcijeSkole.DataAccess.SqlServer.Data;
 using AkcijeSkole.DataAccess.SqlServer.Data.DbModels;
 using AkcijeSkole.Domain.Models;
+using BaseLibrary;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Linq;
 
 namespace AkcijeSkole.Repositories.SqlServer;
 
-public class MaterijalnaPotrebaRepository : IMaterijalnaPotrebaRepository<int, MaterijalnePotrebe>
+public class MaterijalnaPotrebaRepository : IMaterijalnaPotrebaRepository
 {
     private readonly AkcijeSkoleDbContext _dbContext;
 
@@ -18,19 +20,35 @@ public class MaterijalnaPotrebaRepository : IMaterijalnaPotrebaRepository<int, M
     }
 
 
-    public bool Exists(MaterijalnePotrebe model)
-	{
-        return _dbContext.MaterijalnePotrebe
-                         .AsNoTracking()
-                         .Contains(model);
-    }
+
 
 	public bool Exists(int idMaterijalnaPotreba)
 	{
-        var model = _dbContext.MaterijalnePotrebe
-                              .AsNoTracking()
-                              .FirstOrDefault(potreba => potreba.IdMaterijalnePotrebe.Equals(idMaterijalnaPotreba));
-        return model is not null;
+        try
+        {
+            var model = _dbContext.MaterijalnePotrebe
+                          .AsNoTracking()
+                          .FirstOrDefault(potreba => potreba.IdMaterijalnePotrebe.Equals(idMaterijalnaPotreba));
+            return model is not null;
+        }
+        catch (Exception)
+        {
+            return false;
+        }
+    }
+
+    public bool Exists(MaterijalnaPotreba model)
+    {
+        try
+        {
+            return _dbContext.MaterijalnePotrebe
+                     .AsNoTracking()
+                     .Contains(model.ToDbModel());
+        }
+        catch (Exception)
+        {
+            return false;
+        }
     }
 
     public Result<MaterijalnaPotreba> Get(int id)
@@ -44,7 +62,7 @@ public class MaterijalnaPotrebaRepository : IMaterijalnaPotrebaRepository<int, M
 
             return model is not null
                 ? Results.OnSuccess(model)
-                : Results.OnFailure<MaterijalnaPotreba>($"No person with id {id} found");
+                : Results.OnFailure<MaterijalnaPotreba>($"Materijalna potreba {id} nije pronadena.");
         }
         catch (Exception e)
         {
@@ -52,13 +70,53 @@ public class MaterijalnaPotrebaRepository : IMaterijalnaPotrebaRepository<int, M
         }
     }
 
-    public Result<MaterijalnaPotreba> GetAggregate(int id)
+    public Result<MaterijalnaPotreba> GetAkcijaAggregate(int id)
     {
         try
         {
             var model = _dbContext.MaterijalnePotrebe
                           .Include(potreba => potreba.Akcije)
+                          .AsNoTracking()
+                          .FirstOrDefault(potreba => potreba.IdMaterijalnePotrebe.Equals(id)) // give me the first or null; substitute for .Where() // single or default throws an exception if more than one element meets the criteria
+                          ?.ToDomain();
+
+
+            return model is not null
+                ? Results.OnSuccess(model)
+                : Results.OnFailure<MaterijalnaPotreba>();
+        }
+        catch (Exception e)
+        {
+            return Results.OnException<MaterijalnaPotreba>(e);
+        }
+    }
+
+    public Result<MaterijalnaPotreba> GetSkolaAggregate(int id)
+    {
+        try
+        {
+            var model = _dbContext.MaterijalnePotrebe
                           .Include(potreba => potreba.Skole)
+                          .AsNoTracking()
+                          .FirstOrDefault(potreba => potreba.IdMaterijalnePotrebe.Equals(id)) // give me the first or null; substitute for .Where() // single or default throws an exception if more than one element meets the criteria
+                          ?.ToDomain();
+
+
+            return model is not null
+                ? Results.OnSuccess(model)
+                : Results.OnFailure<MaterijalnaPotreba>();
+        }
+        catch (Exception e)
+        {
+            return Results.OnException<MaterijalnaPotreba>(e);
+        }
+    }
+
+    public Result<MaterijalnaPotreba> GetTerenskaLokacijaAggregate(int id)
+    {
+        try
+        {
+            var model = _dbContext.MaterijalnePotrebe
                           .Include(potreba => potreba.TerenskeLokacije)
                           .AsNoTracking()
                           .FirstOrDefault(potreba => potreba.IdMaterijalnePotrebe.Equals(id)) // give me the first or null; substitute for .Where() // single or default throws an exception if more than one element meets the criteria
@@ -114,13 +172,13 @@ public class MaterijalnaPotrebaRepository : IMaterijalnaPotrebaRepository<int, M
         try
         {
             var dbModel = model.ToDbModel();
-            if (_dbContext.MaterijalnePotrebe.Add(dbModel).State == Microsoft.EntityFrameworkCore.EntityState.Added)
+            if (_dbContext.MaterijalnePotrebe.Add(dbModel).State == EntityState.Added)
             {
                 var isSuccess = _dbContext.SaveChanges() > 0;
 
                 // every Add attaches the entity object and EF begins tracking
                 // we detach the entity object from tracking, because this can cause problems when a repo is not set as a transient service
-                _dbContext.Entry(dbModel).State = Microsoft.EntityFrameworkCore.EntityState.Detached;
+                _dbContext.Entry(dbModel).State = EntityState.Detached;
 
                 return isSuccess
                     ? Results.OnSuccess()
@@ -165,13 +223,13 @@ public class MaterijalnaPotrebaRepository : IMaterijalnaPotrebaRepository<int, M
         {
             var dbModel = model.ToDbModel();
             // detach
-            if (_dbContext.MaterijalnePotrebe.Update(dbModel).State == Microsoft.EntityFrameworkCore.EntityState.Modified)
+            if (_dbContext.MaterijalnePotrebe.Update(dbModel).State == EntityState.Modified)
             {
                 var isSuccess = _dbContext.SaveChanges() > 0;
 
                 // every Update attaches the entity object and EF begins tracking
                 // we detach the entity object from tracking, because this can cause problems when a repo is not set as a transient service
-                _dbContext.Entry(dbModel).State = Microsoft.EntityFrameworkCore.EntityState.Detached;
+                _dbContext.Entry(dbModel).State = EntityState.Detached;
 
                 return isSuccess
                     ? Results.OnSuccess()
@@ -194,6 +252,8 @@ public class MaterijalnaPotrebaRepository : IMaterijalnaPotrebaRepository<int, M
 
             var dbModel = _dbContext.MaterijalnePotrebe
                               .Include(_ => _.Akcije)
+                              .Include(_ => _.Skole)
+                              .Include(_ => _.TerenskeLokacije)
                               //.AsNoTracking()
                               .FirstOrDefault(_ => _.IdMaterijalnePotrebe == model.Id);
             if (dbModel == null)
@@ -202,7 +262,7 @@ public class MaterijalnaPotrebaRepository : IMaterijalnaPotrebaRepository<int, M
             dbModel.IdMaterijalnePotrebe = model.Id;
             dbModel.Naziv = model.Naziv;
             dbModel.Organizator = model.Organizator;
-            dbModel.Davatelj = model.Davateljj;
+            dbModel.Davatelj = model.Davatelj;
 
             // check if persons in roles have been modified or added
             foreach (var akcijaAssignment in model.AkcijaAssignments)
@@ -248,7 +308,7 @@ public class MaterijalnaPotrebaRepository : IMaterijalnaPotrebaRepository<int, M
             dbModel.Skole
                    .Where(sk => !model.SkolaAssignments.Any(_ => _.Skola.IdSkole == sk.IdSkole))
                    .ToList()
-                   .ForEach(ak =>
+                   .ForEach(sk =>
                    {
                        dbModel.Skole.Remove(sk);
                    });

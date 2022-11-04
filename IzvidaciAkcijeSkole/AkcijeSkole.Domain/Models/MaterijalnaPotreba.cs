@@ -1,4 +1,6 @@
-﻿using System;
+﻿using AkcijeSkole.Commons;
+using BaseLibrary;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -18,7 +20,7 @@ public class MaterijalnaPotreba : AggregateRoot<int>
 
     public string Naziv { get => _naziv; set => _naziv = value; }
     public int Organizator { get => _organizator; set => _organizator = value; }
-    public int Davateljj { get => _davatelj; set => _davatelj = value; }
+    public int Davatelj { get => _davatelj; set => _davatelj = value; }
     public bool Zadovoljeno { get => _zadovoljeno; set => _zadovoljeno = value; }
     public IReadOnlyList<AkcijaAssignment> AkcijaAssignments => _akcijaAssignments.ToList();
     public IReadOnlyList<SkolaAssignment> SkolaAssignments => _skolaAssignments.ToList();
@@ -43,7 +45,7 @@ public class MaterijalnaPotreba : AggregateRoot<int>
     public bool AssignAkcija(Akcija akcija)
     {
 
-        var akcijaAssignment = new AkcijaAssignment();
+        var akcijaAssignment = new AkcijaAssignment(akcija);
 
         _akcijaAssignments.Add(akcijaAssignment);
 
@@ -62,7 +64,7 @@ public class MaterijalnaPotreba : AggregateRoot<int>
 
     public bool DismissFromAkcija(Akcija akcija)
     {
-        var targetAssignment = _akcijaAssignments.FirstOrDefault(ra => ra.Akcija.Equals(akcija));
+        var targetAssignment = _akcijaAssignments.FirstOrDefault(aa => aa.Akcija.Equals(akcija));
 
         return targetAssignment != null &&
                _akcijaAssignments.Remove(targetAssignment);
@@ -72,7 +74,7 @@ public class MaterijalnaPotreba : AggregateRoot<int>
     public bool AssignSkola(Skola skola)
     {
 
-        var skolaAssignment = new SkolaAssignment();
+        var skolaAssignment = new SkolaAssignment(skola);
 
         _skolaAssignments.Add(skolaAssignment);
 
@@ -91,7 +93,7 @@ public class MaterijalnaPotreba : AggregateRoot<int>
 
     public bool DismissFromSkola(Skola skola)
     {
-        var targetAssignment = _skolaAssignments.FirstOrDefault(ra => ra.Skola.Equals(skola));
+        var targetAssignment = _skolaAssignments.FirstOrDefault(sa => sa.Skola.Equals(skola));
 
         return targetAssignment != null &&
                _skolaAssignments.Remove(targetAssignment);
@@ -100,7 +102,7 @@ public class MaterijalnaPotreba : AggregateRoot<int>
     public bool AssignTerenskaLokacija(TerenskaLokacija terenskaLokacija)
     {
 
-        var terenskaLokacijaAssignment = new TerenskaLokacijaAssignment();
+        var terenskaLokacijaAssignment = new TerenskaLokacijaAssignment(terenskaLokacija);
 
         _terenskaLokacijaAssignments.Add(terenskaLokacijaAssignment);
 
@@ -119,7 +121,7 @@ public class MaterijalnaPotreba : AggregateRoot<int>
 
     public bool DismissFromTerenskaLokacija(TerenskaLokacija terenskaLokacija)
     {
-        var targetAssignment = _terenskaLokacijaAssignments.FirstOrDefault(ra => ra.TerenskaLokacija.Equals(terenskaLokacija));
+        var targetAssignment = _terenskaLokacijaAssignments.FirstOrDefault(tl => tl.TerenskaLokacija.Equals(terenskaLokacija));
 
         return targetAssignment != null &&
                _terenskaLokacijaAssignments.Remove(targetAssignment);
@@ -127,8 +129,8 @@ public class MaterijalnaPotreba : AggregateRoot<int>
 
     public override Result IsValid()
     => Validation.Validate(
-            (() => _naziv.Length <= 50, "Naziv materijalne potrebe mora imate manje od 50 znakova."),
-            (() => !string.IsNullOrEmpty(_firstName.Trim()), "Naziv materijalne potrebe ne smije biti null, prazan ili whitespace.")
+            (() => _naziv.Length <= 50, "Naziv ne smije biti duži od 50 znakova."),
+            (() => !string.IsNullOrEmpty(_naziv.Trim()), "Naziv ne smije biti null, prazan ili whitespace.")
             );
 
     public override bool Equals(object? other)

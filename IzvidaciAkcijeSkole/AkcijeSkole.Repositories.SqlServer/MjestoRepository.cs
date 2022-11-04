@@ -2,11 +2,12 @@
 using AkcijeSkole.DataAccess.SqlServer.Data;
 using AkcijeSkole.DataAccess.SqlServer.Data.DbModels;
 using AkcijeSkole.Domain.Models;
+using BaseLibrary;
 using Microsoft.EntityFrameworkCore;
 using System;
 namespace AkcijeSkole.Repositories.SqlServer;
 
-public class MjestoRepository : IMjestoRepository<int, Mjesta>
+public class MjestoRepository : IMjestoRepository
 {
 
     private readonly AkcijeSkoleDbContext _dbContext;
@@ -16,11 +17,18 @@ public class MjestoRepository : IMjestoRepository<int, Mjesta>
         _dbContext = dbContext;
     }
 
-    public bool Exists(Mjesta model)
+    public bool Exists(Mjesto model)
     {
-        return _dbContext.Mjesta
-                         .AsNoTracking()
-                         .Contains(model);
+        try
+        {
+            return _dbContext.Mjesta
+                     .AsNoTracking()
+                     .Contains(model.ToDbModel());
+        }
+        catch (Exception)
+        {
+            return false;
+        }
     }
 
     public bool Exists(int pbr)
@@ -50,15 +58,95 @@ public class MjestoRepository : IMjestoRepository<int, Mjesta>
         }
     }
 
-    public Result<Mjesto> GetAggregate(int id)
+    public Result<Mjesto> GetAkcijaAggregate(int id)
     {
         try
         {
             var model = _dbContext.Mjesta
                           .Include(mjesto => mjesto.Akcije)
+                          .AsNoTracking()
+                          .FirstOrDefault(mjesto => mjesto.PbrMjesta.Equals(id)) // give me the first or null; substitute for .Where() // single or default throws an exception if more than one element meets the criteria
+                          ?.ToDomain();
+
+
+            return model is not null
+                ? Results.OnSuccess(model)
+                : Results.OnFailure<Mjesto>();
+        }
+        catch (Exception e)
+        {
+            return Results.OnException<Mjesto>(e);
+        }
+    }
+
+    public Result<Mjesto> GetAktivnostAggregate(int id)
+    {
+        try
+        {
+            var model = _dbContext.Mjesta
                           .Include(mjesto => mjesto.Aktivnosti)
+                          .AsNoTracking()
+                          .FirstOrDefault(mjesto => mjesto.PbrMjesta.Equals(id)) // give me the first or null; substitute for .Where() // single or default throws an exception if more than one element meets the criteria
+                          ?.ToDomain();
+
+
+            return model is not null
+                ? Results.OnSuccess(model)
+                : Results.OnFailure<Mjesto>();
+        }
+        catch (Exception e)
+        {
+            return Results.OnException<Mjesto>(e);
+        }
+    }
+
+    public Result<Mjesto> GetEdukacijaAggregate(int id)
+    {
+        try
+        {
+            var model = _dbContext.Mjesta
                           .Include(mjesto => mjesto.Edukacije)
+                          .AsNoTracking()
+                          .FirstOrDefault(mjesto => mjesto.PbrMjesta.Equals(id)) // give me the first or null; substitute for .Where() // single or default throws an exception if more than one element meets the criteria
+                          ?.ToDomain();
+
+
+            return model is not null
+                ? Results.OnSuccess(model)
+                : Results.OnFailure<Mjesto>();
+        }
+        catch (Exception e)
+        {
+            return Results.OnException<Mjesto>(e);
+        }
+    }
+
+    public Result<Mjesto> GetSkoleAggregate(int id)
+    {
+        try
+        {
+            var model = _dbContext.Mjesta
                           .Include(mjesto => mjesto.Skole)
+                          .AsNoTracking()
+                          .FirstOrDefault(mjesto => mjesto.PbrMjesta.Equals(id)) // give me the first or null; substitute for .Where() // single or default throws an exception if more than one element meets the criteria
+                          ?.ToDomain();
+
+
+            return model is not null
+                ? Results.OnSuccess(model)
+                : Results.OnFailure<Mjesto>();
+        }
+        catch (Exception e)
+        {
+            return Results.OnException<Mjesto>(e);
+        }
+    }
+
+    public Result<Mjesto> GetTerenskeLokacijeAggregate(int id)
+    {
+        try
+        {
+            var model = _dbContext.Mjesta
                           .Include(Mjesto => Mjesto.TerenskeLokacije)
                           .AsNoTracking()
                           .FirstOrDefault(mjesto => mjesto.PbrMjesta.Equals(id)) // give me the first or null; substitute for .Where() // single or default throws an exception if more than one element meets the criteria
@@ -93,11 +181,11 @@ public class MjestoRepository : IMjestoRepository<int, Mjesta>
     }
 
 
-    public Result<IEnumerable<Person>> GetAllAggregates()
+    public Result<IEnumerable<Mjesto>> GetAllAggregates()
     {
         try
         {
-            var models = _dbContext.People
+            var models = _dbContext.Mjesta
                            .Include(mjesto => mjesto.Akcije)
                            .Include(mjesto => mjesto.Aktivnosti)
                            .Include(mjesto => mjesto.Edukacije)
@@ -200,9 +288,9 @@ public class MjestoRepository : IMjestoRepository<int, Mjesta>
             var dbModel = _dbContext.Mjesta
                               .Include(_ => _.Akcije)
                               .Include(mjesto => mjesto.Aktivnosti)
-                           .Include(mjesto => mjesto.Edukacije)
-                           .Include(mjesto => mjesto.Skole)
-                           .Include(Mjesto => Mjesto.TerenskeLokacije)
+                              .Include(mjesto => mjesto.Edukacije)
+                              .Include(mjesto => mjesto.Skole)
+                              .Include(Mjesto => Mjesto.TerenskeLokacije)
                               //.AsNoTracking()
                               .FirstOrDefault(_ => _.PbrMjesta == model.Id);
             if (dbModel == null)
@@ -347,6 +435,26 @@ public class MjestoRepository : IMjestoRepository<int, Mjesta>
         catch (Exception e)
         {
             return Results.OnException(e);
+        }
+    }
+
+    Result<IEnumerable<Mjesto>> IAggregateRepository<int, Mjesto>.GetAllAggregates()
+    {
+        try
+        {
+            var models = _dbContext.Mjesta
+                           .Include(_ => _.Akcije)
+                           .Include(mjesto => mjesto.Aktivnosti)
+                           .Include(mjesto => mjesto.Edukacije)
+                           .Include(mjesto => mjesto.Skole)
+                           .Include(Mjesto => Mjesto.TerenskeLokacije)
+                           .Select(Mapping.ToDomain);
+
+            return Results.OnSuccess(models);
+        }
+        catch (Exception e)
+        {
+            return Results.OnException<IEnumerable<Mjesto>>(e);
         }
     }
 }

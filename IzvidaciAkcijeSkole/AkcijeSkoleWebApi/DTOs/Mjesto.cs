@@ -19,14 +19,14 @@ public class Mjesto
 
 public static partial class DtoMapping
 {
-    public static Mjesto ToDomain(this AkcijeSkole.Domain.Models.Mjesto mjesto)
+    public static Mjesto ToDto(this AkcijeSkole.Domain.Models.Mjesto mjesto)
         => new Mjesto()
         {
             PbrMjesta = mjesto.Id,
             NazivMjesta = mjesto.NazivMjesta
         };
 
-    public static AkcijeSkole.Domain.Models.Mjesto ToDbModel(this Mjesto mjesto)
+    public static AkcijeSkole.Domain.Models.Mjesto ToDomain(this Mjesto mjesto)
         => new AkcijeSkole.Domain.Models.Mjesto(
             mjesto.PbrMjesta,
              mjesto.NazivMjesta

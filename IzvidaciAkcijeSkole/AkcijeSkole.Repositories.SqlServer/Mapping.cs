@@ -26,11 +26,11 @@ public static class Mapping
         {
             PbrMjesta = mjesto.Id,
             NazivMjesta = mjesto.NazivMjesta,
-            Akcije = mjesto.AkcijaAssignments.Select(pr => pr.ToDbModel(mjesto.Id)).ToList(),
-            Aktivnosti = mjesto.AktivnostAssignments.Select(pr => pr.ToDbModel(mjesto.Id)).ToList(),
-            Edukacije = mjesto.EdukacijaAssignments.Select(pr => pr.ToDbModel(mjesto.Id)).ToList(),
-            Skole = mjesto.SkolaAssignments.Select(pr => pr.ToDbModel(mjesto.Id)).ToList(),
-            TerenskeLokacije = mjesto.TerenskaLokacijaAssignments.Select(pr => pr.ToDbModel(mjesto.Id)).ToList()
+            Akcije = mjesto.AkcijaAssignments.Select(a => a.ToDbModel(mjesto.Id)).ToList(),
+            Aktivnosti = mjesto.AktivnostAssignments.Select(a => a.ToDbModel(mjesto.Id)).ToList(),
+            Edukacije = mjesto.EdukacijaAssignments.Select(e => e.ToDbModel(mjesto.Id)).ToList(),
+            Skole = mjesto.SkolaAssignments.Select(s => s.ToDbModel(mjesto.Id)).ToList(),
+            TerenskeLokacije = mjesto.TerenskaLokacijaAssignments.Select(tl => tl.ToDbModel(mjesto.Id)).ToList()
 
         };
 
@@ -52,7 +52,7 @@ public static class Mapping
             IdMaterijalnePotrebe = potreba.Id,
             Naziv = potreba.Naziv,
             Organizator = potreba.Organizator,
-            Davatelj = potreba.Davateljj,
+            Davatelj = potreba.Davatelj,
             Zadovoljeno = potreba.Zadovoljeno,
             Akcije = potreba.AkcijaAssignments.Select(pr => pr.ToDbModel(potreba.Id)).ToList(),
             Skole = potreba.SkolaAssignments.Select(pr => pr.ToDbModel(potreba.Id)).ToList(),
