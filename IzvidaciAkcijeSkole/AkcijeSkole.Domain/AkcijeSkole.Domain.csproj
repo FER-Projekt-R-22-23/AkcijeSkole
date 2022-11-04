@@ -12,7 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Models\" />
+    <ProjectReference Include="..\AkcijeSkole.Commons\AkcijeSkole.Commons.csproj" />
   </ItemGroup>
 
 </Project>

@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 using DbModels = AkcijeSkole.DataAccess.SqlServer.Data.DbModels;
+using DomainModels = AkcijeSkole.Domain.Models;
 
 namespace AkcijeSkoleWebApi.DTOs
 {
@@ -18,28 +19,20 @@ namespace AkcijeSkoleWebApi.DTOs
 
     public static partial class DtoMapping
     {
-        public static Skola ToDto(this DbModels.Skole skola)
+        public static Skola ToDto(this DomainModels.Skola skola)
         {
             return new Skola()
             {
-                IdSkole = skola.IdSkole,
+                IdSkole = skola.Id,
                 NazivSkole = skola.NazivSkole,
                 MjestoPbr = skola.MjestoPbr,
                 Organizator = skola.Organizator,
                 KontaktOsoba = skola.KontaktOsoba,
             };
         }
-        public static DbModels.Skole toDbModel(this Skola skola)
+        public static DomainModels.Skola toDomain(this Skola skola)
         {
-            return new DbModels.Skole()
-            {
-                IdSkole = skola.IdSkole,
-                NazivSkole = skola.NazivSkole,
-                MjestoPbr = skola.MjestoPbr,
-                Organizator = skola.Organizator,
-                KontaktOsoba = skola.KontaktOsoba,
-
-            };
+            return new DomainModels.Skola(skola.IdSkole, skola.NazivSkole, skola.MjestoPbr, skola.Organizator, skola.KontaktOsoba);
         }
 
     }

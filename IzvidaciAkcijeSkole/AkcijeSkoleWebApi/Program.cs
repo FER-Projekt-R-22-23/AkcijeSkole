@@ -1,9 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using AkcijeSkole.DataAccess.SqlServer.Data;
 using AkcijeSkole.Repositories;
-
-using AkcijeSkole.DataAccess.SqlServer.Data.DbModels;
-using AkcijeSkole.Repositories.SqlServer;
+using AkcijeSkola.Repositories.SqlServer;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,11 +15,7 @@ builder.Services.AddDbContext<AkcijeSkoleDbContext>(
     options => options.UseSqlServer(configuration.GetConnectionString("AkcijeSkoleDB"))
 );
 
-builder.Services.AddTransient<ISkoleRepository<int, Skole>, SkoleRepository>();
-builder.Services.AddTransient<IEdukacijeRepository<int, Edukacije>, EdukacijeRepository>();
-builder.Services.AddTransient<IMjestoRepository<int, Mjesta>, MjestoRepository>();
-builder.Services.AddTransient<IMaterijalnaPotrebaRepository<int, MaterijalnePotrebe>, MaterijalnaPotrebaRepository>();
-
+builder.Services.AddTransient<ISkoleRepository, SkolaRepository>();
 // Add services to the container.
 
 builder.Services.AddControllers();
