@@ -109,7 +109,5 @@ namespace AkcijeSkoleWebApi.Controllers
                 ? NoContent()
                 : Problem(deleteResult.Message, statusCode: 500);
         }
-
-
     }
 }

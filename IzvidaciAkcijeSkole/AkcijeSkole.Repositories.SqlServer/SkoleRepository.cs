@@ -7,7 +7,7 @@ using System.Data;
 using AkcijeSkole.Repositories.SqlServer;
 using BaseLibrary;
 
-namespace AkcijeSkola.Repositories.SqlServer;
+namespace AkcijeSkole.Repositories.SqlServer;
 public class SkolaRepository : ISkoleRepository
 {
     private readonly AkcijeSkoleDbContext _dbContext;
@@ -36,18 +36,13 @@ public class SkolaRepository : ISkoleRepository
     {
         try
         {
-            var skola = _dbContext.Skole
-                                 .AsNoTracking()
-                                 .FirstOrDefault(skola => skola.IdSkole.Equals(id))?
-                                 .ToDomain();
-
-            return skola is not null
-                ? Results.OnSuccess(skola)
-                : Results.OnFailure<Skola>($"No skola with such id {id}");
+            return _dbContext.Skole
+                             .AsNoTracking()
+                             .FirstOrDefault(skola => skola.IdSkole.Equals(id)) != null;
         }
-        catch (Exception e)
+        catch (Exception)
         {
-            return Results.OnException<Skola>(e);
+            return false;
         }
 
     }
