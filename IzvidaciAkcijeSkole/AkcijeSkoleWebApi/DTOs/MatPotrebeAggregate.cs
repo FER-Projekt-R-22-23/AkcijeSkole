@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
+using AkcijeSkole.Repositories.SqlServer;
 
 namespace AkcijeSkoleWebApi.DTOs;
 
@@ -46,83 +47,80 @@ public class MatPotrebeTerLokacijeAggregate
 
 public static partial class DtoMapping
 {
-    public static MatPotrebeAkcijeAggregate ToAkcijeAggregateDto(this MaterijalnePotrebe potreba)
+    public static MatPotrebeAkcijeAggregate ToAkcijeAggregateDto(this AkcijeSkole.Domain.Models.MaterijalnaPotreba potreba)
         => new MatPotrebeAkcijeAggregate()
         {
-            IdMaterijalnePotrebe = potreba.IdMaterijalnePotrebe,
+            IdMaterijalnePotrebe = potreba.Id,
             Naziv = potreba.Naziv,
             Organizator = potreba.Organizator,
-            Davatelj = potreba.Davatelj,
+            Davatelj = potreba.Davateljj,
             Zadovoljeno = potreba.Zadovoljeno,
-            Akcije = potreba.Akcije == null
+            Akcije = potreba.AkcijaAssignments == null
                             ? new List<Akcija>()
                             : potreba.Akcije.Select(pr => pr.ToDto()).ToList()
         };
 
-    public static MaterijalnePotrebe ToDbModelWithAkcije(MatPotrebeAkcijeAggregate potreba)
-        => new MaterijalnePotrebe()
-        {
-            IdMaterijalnePotrebe = potreba.IdMaterijalnePotrebe,
-            Naziv = potreba.Naziv,
-            Organizator = potreba.Organizator,
-            Davatelj = potreba.Davatelj,
-            Zadovoljeno = potreba.Zadovoljeno,
-            Akcije = potreba.Akcije == null
-                            ? new List<Akcije>()
-                            : potreba.Akcije.Select(pr => pr.ToDbModel()).ToList()
-        };
+    public static AkcijeSkole.Domain.Models.MaterijalnaPotreba ToDbModelWithAkcije(MatPotrebeAkcijeAggregate potreba)
+        => new AkcijeSkole.Domain.Models.MaterijalnaPotreba(
+            potreba.IdMaterijalnePotrebe,
+            potreba.Naziv,
+            potreba.Organizator,
+            potreba.Davatelj,
+            potreba.Zadovoljeno,
+            potreba.Akcije == null
+            ? new List<Akcije>() 
+            : potreba.Akcije.Select(pr => pr.toDbModel).ToList()
+            );
 
-    public static MatPotrebeSkoleAggregate ToSkoleAggregateDto(this MaterijalnePotrebe potreba)
+    public static MatPotrebeSkoleAggregate ToSkoleAggregateDto(this AkcijeSkole.Domain.Models.MaterijalnaPotreba potreba)
         => new MatPotrebeSkoleAggregate()
         {
-            IdMaterijalnePotrebe = potreba.IdMaterijalnePotrebe,
+            IdMaterijalnePotrebe = potreba.Id,
             Naziv = potreba.Naziv,
             Organizator = potreba.Organizator,
-            Davatelj = potreba.Davatelj,
+            Davatelj = potreba.Davateljj,
             Zadovoljeno = potreba.Zadovoljeno,
-            Skole = potreba.Skole == null
+            Skole = potreba.SkolaAssignments == null
                             ? new List<Skola>()
-                            : potreba.Skole.Select(pr => pr.ToDto()).ToList()
+                            : potreba.SkolaAssignments.Select(pr => pr.ToDto()).ToList()
         };
 
-    public static MaterijalnePotrebe ToDbModelWithSkole(MatPotrebeSkoleAggregate potreba)
-        => new MaterijalnePotrebe()
-        {
-            IdMaterijalnePotrebe = potreba.IdMaterijalnePotrebe,
-            Naziv = potreba.Naziv,
-            Organizator = potreba.Organizator,
-            Davatelj = potreba.Davatelj,
-            Zadovoljeno = potreba.Zadovoljeno,
-            Skole = potreba.Skole == null
+    public static MaterijalnePotrebe ToDbModelWithSkole(AkcijeSkole.Domain.Models.MaterijalnaPotreba potreba)
+        => new AkcijeSkole.Domain.Models.MaterijalnaPotreba(
+
+            potreba.Id,
+            potreba.Naziv,
+            potreba.Organizator,
+            potreba.Davateljj,
+            potreba.Zadovoljeno,
+            potreba.SkolaAssignments == null
                             ? new List<Skole>()
-                            : potreba.Skole.Select(pr => pr.toDbModel()).ToList()
-        };
+                            : potreba.SkolaAssignments.Select(pr => pr.ToDbModel).ToList()
+        );
 
 
-    public static MatPotrebeTerLokacijeAggregate ToTerLokacijeAggregateDto(this MaterijalnePotrebe potreba)
+    public static MatPotrebeTerLokacijeAggregate ToTerLokacijeAggregateDto(this AkcijeSkole.Domain.Models.MaterijalnaPotreba potreba)
         => new MatPotrebeTerLokacijeAggregate()
         {
-            IdMaterijalnePotrebe = potreba.IdMaterijalnePotrebe,
+            IdMaterijalnePotrebe = potreba.Id,
             Naziv = potreba.Naziv,
             Organizator = potreba.Organizator,
-            Davatelj = potreba.Davatelj,
+            Davatelj = potreba.Davateljj,
             Zadovoljeno = potreba.Zadovoljeno,
-            TerenskeLokacije = potreba.TerenskeLokacije == null
+            TerenskeLokacije = potreba.TerenskaLokacijaAssignments == null
                             ? new List<TerenskaLokacija>()
                             : potreba.TerenskeLokacije.Select(pr => pr.ToDto()).ToList()
         };
 
-    public static MaterijalnePotrebe ToDbModelWithTerLokacije(MatPotrebeTerLokacijeAggregate potreba)
-        => new MaterijalnePotrebe()
-        {
-            IdMaterijalnePotrebe = potreba.IdMaterijalnePotrebe,
-            Naziv = potreba.Naziv,
-            Organizator = potreba.Organizator,
-            Davatelj = potreba.Davatelj,
-            Zadovoljeno = potreba.Zadovoljeno,
-            TerenskeLokacije = potreba.TerenskeLokacije == null
-                            ? new List<TerenskeLokacije>()
-                            : potreba.TerenskeLokacije.Select(pr => pr.toDbModel()).ToList()
-        };
+    public static AkcijeSkole.Domain.Models.MaterijalnaPotreba ToDbModelWithTerLokacije(MatPotrebeTerLokacijeAggregate potreba)
+        => new AkcijeSkole.Domain.Models.MaterijalnaPotreba(
+            potreba.IdMaterijalnePotrebe,
+            potreba.Naziv,
+            potreba.Organizator,
+            potreba.Davatelj,
+            potreba.Zadovoljeno,
+            potreba.TerenskeLokacije == null
+                            ? new List<Skole>()
+                            : potreba.TerenskeLokacije.Select(pr => pr.ToDbModel).ToList());
 }
 

@@ -1,9 +1,9 @@
-﻿using AkcijeSkole.Repositories;
+﻿using AkcijeSkole.Domain.Models;
+using AkcijeSkole.Repositories;
+using System;
 
-/// <summary>
-/// Summary description for Class1
-/// </summary>
-public interface IMaterijalnaPotrebaRepository<TKey, TModel> : IRepository<TKey, TModel>, IAggregateRepository<TKey, TModel>
+public interface IMaterijalnaPotrebaRepository
+    : IRepository<int, MaterijalnaPotreba>,
+      IAggregateRepository<int, MaterijalnaPotreba>
 {
-	
 }

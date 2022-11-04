@@ -3,6 +3,7 @@ using AkcijeSkole.DataAccess.SqlServer.Data;
 using AkcijeSkole.DataAccess.SqlServer.Data.DbModels;
 using AkcijeSkoleWebApi.DTOs;
 using Microsoft.AspNetCore.Mvc;
+using System;
 
 namespace AkcijeSkoleWebApi.Controllers;
 
@@ -11,9 +12,9 @@ namespace AkcijeSkoleWebApi.Controllers;
 public class MaterijalnePotrebeController : ControllerBase
     {
             private readonly AkcijeSkoleDbContext _context;
-            private readonly IMaterijalnaPotrebaRepository<int, MaterijalnePotrebe> _materijalnaPotrebaRepository;
+            private readonly IMaterijalnaPotrebaRepository _materijalnaPotrebaRepository;
 
-            public MaterijalnePotrebeController(IMaterijalnaPotrebaRepository<int, MaterijalnePotrebe> materijalnaPotrebaRepository)
+            public MaterijalnePotrebeController(IMaterijalnaPotrebaRepository materijalnaPotrebaRepository)
             {
                 _materijalnaPotrebaRepository = materijalnaPotrebaRepository;
             }
@@ -21,42 +22,95 @@ public class MaterijalnePotrebeController : ControllerBase
             [HttpGet]
             public ActionResult<IEnumerable<DTOs.MaterijalnaPotreba>> GetAllMaterijalnePotrebe()
             {
-                return Ok(_materijalnaPotrebaRepository.GetAll().Select(DtoMapping.ToDto));
-            }
+        var matPotrebeResults = _materijalnaPotrebaRepository.GetAll()
+    .Map(people => people.Select(DtoMapping.ToDto));
+
+        return matPotrebeResults
+            ? Ok(matPotrebeResults.Data)
+            : Problem(matPotrebeResults.Message, statusCode: 500);
+    }
 
 
             [HttpGet("idMaterijalnaPotreba")]
             public ActionResult<DTOs.MaterijalnaPotreba> GetMaterijalnaPotreba(int idPotreba)
             {
-                var potrebaOption = _materijalnaPotrebaRepository.Get(idPotreba).Map(DtoMapping.ToDto);
+        var matPotrebaResult = _materijalnaPotrebaRepository.Get(idPotreba).Map(DtoMapping.ToDto);
 
-                return potrebaOption
-                    ? Ok(potrebaOption.Data)
-                    : NotFound();
-            }
+        return matPotrebaResult switch
+        {
+            { IsSuccess: true } => Ok(matPotrebaResult.Data),
+            { IsFailure: true } => NotFound(),
+            { IsException: true } or _ => Problem(matPotrebaResult.Message, statusCode: 500)
+        };
+    }
 
-            [HttpPut]
+    [HttpGet("/AggregateAkcija/{id}")]
+    public ActionResult<MatPotrebeAkcijeAggregate> GetMatPotrebaAkcijaAggregate(int id)
+    {
+        var matPotrebaResult = _materijalnaPotrebaRepository.GetAggregate(id).Map(DtoMapping.ToAkcijeAggregateDto);
+
+        return matPotrebaResult switch
+        {
+            { IsSuccess: true } => Ok(matPotrebaResult.Data),
+            { IsFailure: true } => NotFound(),
+            { IsException: true } or _ => Problem(matPotrebaResult.Message, statusCode: 500)
+        };
+    }
+
+    [HttpGet("/AggregateSkola/{id}")]
+    public ActionResult<MatPotrebeAkcijeAggregate> GetMatPotrebaSkolaAggregate(int id)
+    {
+        var matPotrebaResult = _materijalnaPotrebaRepository.GetAggregate(id).Map(DtoMapping.ToSkolaAggregateDto);
+
+        return matPotrebaResult switch
+        {
+            { IsSuccess: true } => Ok(matPotrebaResult.Data),
+            { IsFailure: true } => NotFound(),
+            { IsException: true } or _ => Problem(matPotrebaResult.Message, statusCode: 500)
+        };
+    }
+
+    [HttpGet("/AggregateTerenskaLokacijat/{id}")]
+    public ActionResult<MatPotrebeAkcijeAggregate> GeMatPotrebaTerLokacijaAggregate(int id)
+    {
+        var matPotrebaResult = _materijalnaPotrebaRepository.GetAggregate(id).Map(DtoMapping.ToTerLokacijeAggregateDto);
+
+        return matPotrebaResult switch
+        {
+            { IsSuccess: true } => Ok(matPotrebaResult.Data),
+            { IsFailure: true } => NotFound(),
+            { IsException: true } or _ => Problem(matPotrebaResult.Message, statusCode: 500)
+        };
+    }
+
+    [HttpPut]
             public IActionResult EditMaterijalnaPotreba(int idPotreba, DTOs.MaterijalnaPotreba potreba)
             {
-                if (!ModelState.IsValid)
-                {
-                    return BadRequest(ModelState);
-                }
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
 
-                if (idPotreba != potreba.IdMaterijalnaPotreba)
-                {
-                    return BadRequest();
-                }
+        if (idPotreba != potreba.IdMaterijalnaPotreba)
+        {
+            return BadRequest();
+        }
 
-                if (!_materijalnaPotrebaRepository.Exists(idPotreba))
-                {
-                    return NotFound();
-                }
+        if (!_materijalnaPotrebaRepository.Exists(idPotreba))
+        {
+            return NotFound();
+        }
 
-                return _materijalnaPotrebaRepository.Update(potreba.ToDbModel())
-                    ? AcceptedAtAction("EditMaterijalnaPotreba", potreba)
-                    : StatusCode(500);
-            }
+        var domainPerson = potreba.ToDomain();
+
+        var result =
+            domainPerson.IsValid()
+            .Bind(() => _materijalnaPotrebaRepository.Update(domainPerson));
+
+        return result
+            ? AcceptedAtAction("EditMaterijalnaPotreba", potreba)
+            : Problem(result.Message, statusCode: 500);
+    }
 
             [HttpPost]
             public ActionResult<DTOs.MaterijalnaPotreba> CreateMaterijalnaPotreba(DTOs.MaterijalnaPotreba potreba)
