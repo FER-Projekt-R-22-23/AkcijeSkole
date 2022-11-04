@@ -18,4 +18,19 @@ public static class Mapping
 
         };
     }
+
+    public static Edukacija ToDomain(this DbModels.Edukacije edukacija)
+        => new Edukacija(edukacija.IdEdukacija, edukacija.NazivEdukacija, edukacija.MjestoPbr, edukacija.OpisEdukacije, edukacija.SkolaId);
+
+    public static DbModels.Edukacije ToDbModel(this Edukacija edukacija)
+    {
+        return new DbModels.Edukacije()
+        {
+            IdEdukacija = edukacija.Id,
+            NazivEdukacija = edukacija.NazivEdukacije,
+            MjestoPbr = edukacija.MjestoPbr,
+            OpisEdukacije = edukacija.OpisEdukacije,
+            SkolaId = edukacija.SkolaId
+        };
+    }
 }

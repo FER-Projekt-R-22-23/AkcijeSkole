@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using AkcijeSkole.DataAccess.SqlServer.Data;
 using AkcijeSkole.Repositories;
-using AkcijeSkola.Repositories.SqlServer;
+using AkcijeSkole.Repositories.SqlServer;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,6 +16,7 @@ builder.Services.AddDbContext<AkcijeSkoleDbContext>(
 );
 
 builder.Services.AddTransient<ISkoleRepository, SkolaRepository>();
+builder.Services.AddTransient<IEdukacijeRepository, EdukacijeRepository>();
 // Add services to the container.
 
 builder.Services.AddControllers();
