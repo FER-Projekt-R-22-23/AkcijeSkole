@@ -16,7 +16,7 @@ builder.Services.AddDbContext<AkcijeSkoleDbContext>(
 );
 
 builder.Services.AddTransient<ISkoleRepository, SkolaRepository>();
-builder.Services.AddTransient<IEdukacijeRepository, EdukacijeRepository>();
+builder.Services.AddTransient<IEdukacijeRepository, EdukacijePredavaciRepository>();
 // Add services to the container.
 
 builder.Services.AddControllers();
