@@ -6,6 +6,7 @@ using DbModels = AkcijeSkole.DataAccess.SqlServer.Data.DbModels;
 using AkcijeSkole.Commons;
 using AkcijeSkole.Repositories.SqlServer;
 using System.Data;
+using BaseLibrary;
 
 namespace AkcijeSkoleWebApi.Controllers
 {
@@ -13,9 +14,9 @@ namespace AkcijeSkoleWebApi.Controllers
     [ApiController]
     public class SkoleController : ControllerBase
     {
-        private readonly ISkoleRepository<int, DbModels.Skole> _skolaRepository;
+        private readonly ISkoleRepository _skolaRepository;
 
-        public SkoleController(ISkoleRepository<int, DbModels.Skole> context)
+        public SkoleController(ISkoleRepository context)
         {
             _skolaRepository = context;
         }
@@ -24,18 +25,25 @@ namespace AkcijeSkoleWebApi.Controllers
         [HttpGet]
         public ActionResult<IEnumerable<Skola>> GetAllSkole()
         {
-            return Ok(_skolaRepository.GetAll().Select(DtoMapping.ToDto));
+            var skoleResults = _skolaRepository.GetAll().Map(skole => skole.Select(DtoMapping.ToDto));
+
+            return skoleResults
+                ? Ok(skoleResults.Data)
+                : Problem(skoleResults.Message, statusCode: 500);
         }
 
         // GET: api/skole/5
         [HttpGet("{id}")]
         public ActionResult<Skola> GetSkola(int id)
         {
-            var skolaOption = _skolaRepository.Get(id).Map(DtoMapping.ToDto);
+            var skolaResult = _skolaRepository.Get(id).Map(DtoMapping.ToDto);
 
-            return skolaOption
-                ? Ok(skolaOption.Data)
-                : NotFound();
+            return skolaResult switch
+            {
+                { IsSuccess: true } => Ok(skolaResult.Data),
+                { IsFailure: true } => NotFound(),
+                { IsException: true } or _ => Problem(skolaResult.Message, statusCode: 500)
+            };
         }
 
         // PUT: api/Skole/5
@@ -47,7 +55,6 @@ namespace AkcijeSkoleWebApi.Controllers
             {
                 return BadRequest(ModelState);
             }
-
             if (id != skola.IdSkole)
             {
                 return BadRequest();
@@ -58,38 +65,49 @@ namespace AkcijeSkoleWebApi.Controllers
                 return NotFound();
             }
 
-            return _skolaRepository.Update(skola.toDbModel())
+            var domainSkola = skola.toDomain();
+
+            var result =
+                domainSkola.IsValid()
+                .Bind(() => _skolaRepository.Update(domainSkola));
+
+            return result
                 ? AcceptedAtAction("EditSkole", skola)
-                : StatusCode(500);
+                : Problem(result.Message, statusCode: 500);
         }
 
         // POST: api/Skole
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public ActionResult<Skola> CreateRole(Skola skola)
+        public ActionResult<Skola> CreateSkola(Skola skola)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            return _skolaRepository.Insert(skola.toDbModel())
-                ? CreatedAtAction("GetSkole", new { id = skola.IdSkole }, skola)
-                : StatusCode(500);
+            var domainRole = skola.toDomain();
+
+            var result =
+                domainRole.IsValid()
+                .Bind(() => _skolaRepository.Insert(domainRole));
+
+            return result
+                ? CreatedAtAction("GetSkola", new { id = skola.IdSkole }, skola)
+                : Problem(result.Message, statusCode: 500);
         }
 
         // DELETE: api/Skole/5
         [HttpDelete("{id}")]
-        public IActionResult DeleteRole(int id)
+        public IActionResult DeleteSkola(int id)
         {
             if (!_skolaRepository.Exists(id))
                 return NotFound();
 
-            return _skolaRepository.Remove(id)
+            var deleteResult = _skolaRepository.Remove(id);
+            return deleteResult
                 ? NoContent()
-                : StatusCode(500);
+                : Problem(deleteResult.Message, statusCode: 500);
         }
-
-
     }
 }

@@ -1,12 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using AkcijeSkole.Domain.Models;
 
-namespace AkcijeSkole.Repositories
+
+namespace AkcijeSkole.Repositories;
+/// <summary>
+/// Facade interface for a Role repository
+/// </summary>
+/// <typeparam name="TKey"></typeparam>
+/// <typeparam name="TDomainModel"></typeparam>
+public interface ISkoleRepository
+    : IRepository<int, Skola>
 {
-    public interface ISkoleRepository<TKey, TModel> : IRepository<TKey, TModel>
-    {
-    }
 }

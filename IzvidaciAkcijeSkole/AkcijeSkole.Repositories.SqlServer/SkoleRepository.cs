@@ -1,88 +1,160 @@
 ﻿using AkcijeSkole.Commons;
 using AkcijeSkole.DataAccess.SqlServer.Data;
-using AkcijeSkole.DataAccess.SqlServer.Data.DbModels;
+using AkcijeSkole.Domain.Models;
 using Microsoft.EntityFrameworkCore;
 using AkcijeSkole.Repositories;
 using System.Data;
+using AkcijeSkole.Repositories.SqlServer;
+using BaseLibrary;
 
 namespace AkcijeSkole.Repositories.SqlServer;
-public class SkoleRepository : ISkoleRepository<int, Skole>
+public class SkolaRepository : ISkoleRepository
 {
     private readonly AkcijeSkoleDbContext _dbContext;
 
-    public SkoleRepository(AkcijeSkoleDbContext dbContext)
+    public SkolaRepository(AkcijeSkoleDbContext dbContext)
     {
         _dbContext = dbContext;
     }
 
-    public bool Exists(Skole model)
+    public bool Exists(Skola model)
     {
-        return _dbContext.Skole.AsNoTracking().Contains(model);
+        try
+        {
+            return _dbContext.Skole
+                             .AsNoTracking()
+                             .Contains(model.ToDbModel());
+        }
+        catch (Exception)
+        {
+            return false;
+        }
+
     }
 
     public bool Exists(int id)
     {
-        return _dbContext.Skole
-                         .AsNoTracking()
-                         .FirstOrDefault(skola => skola.IdSkole.Equals(id)) != null;
-    }
-
-    public Option<Skole> Get(int id)
-    {
-        var skola = _dbContext.Skole
+        try
+        {
+            return _dbContext.Skole
                              .AsNoTracking()
-                             .FirstOrDefault(skola => skola.IdSkole.Equals(id));
-
-        return skola is null
-            ? Options.None<Skole>()
-            : Options.Some(skola);
-    }
-
-    public IEnumerable<Skole> GetAll()
-    {
-        return _dbContext.Skole.ToList();
-    }
-
-    public bool Insert(Skole model)
-    {
-        if (_dbContext.Skole.Add(model).State == Microsoft.EntityFrameworkCore.EntityState.Added)
+                             .FirstOrDefault(skola => skola.IdSkole.Equals(id)) != null;
+        }
+        catch (Exception)
         {
-            var isSuccess = _dbContext.SaveChanges() > 0;
-            _dbContext.Entry(model).State = Microsoft.EntityFrameworkCore.EntityState.Detached;
-
-            return isSuccess;
+            return false;
         }
 
-        return false;
     }
 
-    public bool Remove(int id)
+    public Result<Skola> Get(int id)
     {
-        var model = _dbContext.Skole
-                              .AsNoTracking()
-                              .FirstOrDefault(skola => skola.IdSkole.Equals(id));
-        if (model is not null)
+        try
         {
-            _dbContext.Skole.Remove(model);
+            var role = _dbContext.Skole
+                                 .AsNoTracking()
+                                 .FirstOrDefault(skola => skola.IdSkole.Equals(id))?
+                                 .ToDomain();
 
-            return _dbContext.SaveChanges() > 0;
+            return role is not null
+                ? Results.OnSuccess(role)
+                : Results.OnFailure<Skola>($"No skola with such id {id}");
         }
-        return false;
+        catch (Exception e)
+        {
+            return Results.OnException<Skola>(e);
+        }
+
     }
 
-    public bool Update(Skole model)
+    public Result<IEnumerable<Skola>> GetAll()
     {
-        if (_dbContext.Skole.Update(model).State == Microsoft.EntityFrameworkCore.EntityState.Modified)
+        try
         {
-            var isSuccess = _dbContext.SaveChanges() > 0;
-
-            // every Update attaches the entity object and EF begins tracking
-            // we detach the entity object from tracking, because this can cause problems when a repo is not set as a transient service
-            _dbContext.Entry(model).State = Microsoft.EntityFrameworkCore.EntityState.Detached;
-
-            return isSuccess;
+            var skole =
+                _dbContext.Skole
+                          .AsNoTracking()
+                          .Select(Mapping.ToDomain);
+            return Results.OnSuccess(skole);
         }
+        catch (Exception e)
+        {
+            return Results.OnException<IEnumerable<Skola>>(e);
+        }
+    }
 
-        return false;
+    public Result Insert(Skola model)
+    {
+        try
+        {
+            var dbModel = model.ToDbModel();
+            if (_dbContext.Skole.Add(dbModel).State == Microsoft.EntityFrameworkCore.EntityState.Added)
+            {
+                var isSuccess = _dbContext.SaveChanges() > 0;
+
+                // every Add attaches the entity object and EF begins tracking
+                // we detach the entity object from tracking, because this can cause problems when a repo is not set as a transient service
+                _dbContext.Entry(dbModel).State = Microsoft.EntityFrameworkCore.EntityState.Detached;
+
+                return isSuccess
+                    ? Results.OnSuccess()
+                    : Results.OnFailure();
+            }
+
+            return Results.OnFailure();
+        }
+        catch (Exception e)
+        {
+            return Results.OnException(e);
+        }
+    }
+
+    public Result Remove(int id)
+    {
+        try
+        {
+            var model = _dbContext.Skole
+                          .AsNoTracking()
+                          .FirstOrDefault(skola => skola.IdSkole.Equals(id));
+            if (model is not null)
+            {
+                _dbContext.Skole.Remove(model);
+
+                return _dbContext.SaveChanges() > 0
+                    ? Results.OnSuccess()
+                    : Results.OnFailure();
+            }
+            return Results.OnFailure();
+        }
+        catch (Exception e)
+        {
+            return Results.OnException(e);
+        }
+    }
+
+    public Result Update(Skola model)
+    {
+        try
+        {
+            var dbModel = model.ToDbModel();
+            if (_dbContext.Skole.Update(dbModel).State == Microsoft.EntityFrameworkCore.EntityState.Modified)
+            {
+                var isSuccess = _dbContext.SaveChanges() > 0;
+
+                // every Update attaches the entity object and EF begins tracking
+                // we detach the entity object from tracking, because this can cause problems when a repo is not set as a transient service
+                _dbContext.Entry(dbModel).State = Microsoft.EntityFrameworkCore.EntityState.Detached;
+
+                return isSuccess
+                    ? Results.OnSuccess()
+                    : Results.OnFailure();
+            }
+
+            return Results.OnFailure();
+        }
+        catch (Exception e)
+        {
+            return Results.OnException(e);
+        }
     }
 }
