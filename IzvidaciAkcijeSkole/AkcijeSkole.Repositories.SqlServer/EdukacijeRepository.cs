@@ -9,11 +9,11 @@ using BaseLibrary;
 using System;
 
 namespace AkcijeSkole.Repositories.SqlServer;
-public class EdukacijePredavaciRepository : IEdukacijeRepository
+public class EdukacijeRepository : IEdukacijeRepository
 {
     private readonly AkcijeSkoleDbContext _dbContext;
 
-    public EdukacijePredavaciRepository(AkcijeSkoleDbContext dbContext)
+    public EdukacijeRepository(AkcijeSkoleDbContext dbContext)
     {
         _dbContext = dbContext;
     }

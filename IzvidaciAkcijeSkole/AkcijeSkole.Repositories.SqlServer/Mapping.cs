@@ -10,7 +10,7 @@ using DbModels = AkcijeSkole.DataAccess.SqlServer.Data.DbModels;
 
 namespace AkcijeSkole.Repositories.SqlServer;
 public static class Mapping
-{
+{/*
     public static Mjesto ToDomain(this Mjesta mjesto)
         => new Mjesto(
             mjesto.PbrMjesta,
@@ -170,7 +170,7 @@ public static class Mapping
             Skola = terenskaLokacijaAssignment.TerenskaLokacija.Skola 
 
         };
-
+    */
     public static Skola ToDomainSkola(this DbModels.Skole skola)
         => new Skola(skola.IdSkole, skola.NazivSkole, skola.MjestoPbr, skola.Organizator, skola.KontaktOsoba);
 

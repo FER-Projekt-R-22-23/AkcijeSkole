@@ -54,7 +54,7 @@ public class SkolaRepository : ISkoleRepository
             var role = _dbContext.Skole
                                  .AsNoTracking()
                                  .FirstOrDefault(skola => skola.IdSkole.Equals(id))?
-                                 .ToDomain();
+                                 .ToDomainSkola();
 
             return role is not null
                 ? Results.OnSuccess(role)
@@ -74,7 +74,7 @@ public class SkolaRepository : ISkoleRepository
             var skole =
                 _dbContext.Skole
                           .AsNoTracking()
-                          .Select(Mapping.ToDomain);
+                          .Select(Mapping.ToDomainSkola);
             return Results.OnSuccess(skole);
         }
         catch (Exception e)
