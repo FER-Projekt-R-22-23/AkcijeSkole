@@ -5,16 +5,16 @@ using Microsoft.EntityFrameworkCore;
 
 namespace AkcijeSkole.Repositories.SqlServer;
 
-public class TerenskeLokacijeRepository : ITerenskeLokacijeRepository
+public class TerenskaLokacijaRepository : ITerenskaLokacijaRepository
 {
     private readonly AkcijeSkoleDbContext _dbContext;
 
-    public TerenskeLokacijeRepository(AkcijeSkoleDbContext dbContext)
+    public TerenskaLokacijaRepository(AkcijeSkoleDbContext dbContext)
     {
         _dbContext = dbContext;
     }
 
-    public bool Exists(TerenskeLokacije model)
+    public bool Exists(TerenskaLokacija model)
     {
         throw new NotImplementedException();
     }
@@ -24,17 +24,17 @@ public class TerenskeLokacijeRepository : ITerenskeLokacijeRepository
         throw new NotImplementedException();
     }
 
-    public Result<TerenskeLokacije> Get(int id)
+    public Result<TerenskaLokacija> Get(int id)
     {
         throw new NotImplementedException();
     }
 
-    public Result<IEnumerable<TerenskeLokacije>> GetAll()
+    public Result<IEnumerable<TerenskaLokacija>> GetAll()
     {
         throw new NotImplementedException();
     }
 
-    public Result Insert(TerenskeLokacije model)
+    public Result Insert(TerenskaLokacija model)
     {
         throw new NotImplementedException();
     }
@@ -44,7 +44,7 @@ public class TerenskeLokacijeRepository : ITerenskeLokacijeRepository
         throw new NotImplementedException();
     }
 
-    public Result Update(TerenskeLokacije model)
+    public Result Update(TerenskaLokacija model)
     {
         throw new NotImplementedException();
     }

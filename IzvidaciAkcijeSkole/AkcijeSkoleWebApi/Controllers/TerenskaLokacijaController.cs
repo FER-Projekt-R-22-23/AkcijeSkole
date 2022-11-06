@@ -4,7 +4,7 @@ namespace AkcijeSkoleWebApi.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class TerenskeLokacijeController : ControllerBase
+public class TerenskaLokacijaController : ControllerBase
 {
 
 }
