@@ -212,4 +212,35 @@ public static class Mapping
             Predavaci = edukacija.PredavaciNaEdukaciji.Select(obj => obj.ToDbModel(edukacija.Id)).ToList()
         };
     }
+
+    public static Akcija ToDomainAkcija(this DbModels.Akcije akcija)
+       => new Akcija(akcija.IdAkcija, akcija.Naziv, akcija.MjestoPbr, akcija.Organizator, akcija.KontaktOsoba);
+
+    public static DbModels.Akcije ToDbModel(this Akcija akcija)
+    {
+        return new DbModels.Akcije()
+        {
+            IdAkcija = akcija.Id,
+            Naziv = akcija.Naziv,
+            MjestoPbr = akcija.MjestoPbr,
+            Organizator = akcija.Organizator,
+            KontaktOsoba = akcija.KontaktOsoba
+
+        };
+    }
+
+    public static Aktivnost ToDomainAktivnost(this DbModels.Aktivnosti aktivnost)
+        => new Aktivnost(aktivnost.IdAktivnost, aktivnost.MjestoPbr, aktivnost.KontaktOsoba, aktivnost.Opis, aktivnost.AkcijaId);
+
+    public static DbModels.Aktivnosti ToDbModel(this Aktivnost aktivnost)
+    {
+        return new DbModels.Aktivnosti()
+        {
+            IdAktivnost = aktivnost.Id,
+            MjestoPbr = aktivnost.MjestoPbr,
+            KontaktOsoba = aktivnost.KontaktOsoba,
+            Opis = aktivnost.Opis,
+            AkcijaId = aktivnost.AkcijaId
+        };
+    }
 }
