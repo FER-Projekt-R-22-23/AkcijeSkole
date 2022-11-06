@@ -1,4 +1,4 @@
-﻿using AkcijeSkole.Domain;
+using AkcijeSkole.Domain;
 using BaseLibrary;
 
 namespace AkcijeSkole.Repositories

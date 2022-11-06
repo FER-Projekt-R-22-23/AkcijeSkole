@@ -21,10 +21,10 @@ public class MaterijalnaPotreba
 
 public static partial class DtoMapping
 {
-    public static MaterijalnaPotreba ToDto(this AkcijeSkole.DataAccess.SqlServer.Data.DbModels.MaterijalnePotrebe materijalnaPotreba)
+    public static MaterijalnaPotreba ToDto(this AkcijeSkole.Domain.Models.MaterijalnaPotreba materijalnaPotreba)
         => new MaterijalnaPotreba()
         {
-            IdMaterijalnaPotreba = materijalnaPotreba.IdMaterijalnePotrebe,
+            IdMaterijalnaPotreba = materijalnaPotreba.Id,
             Naziv = materijalnaPotreba.Naziv,
             Organizator = materijalnaPotreba.Organizator,
             Davatelj = materijalnaPotreba.Davatelj,
@@ -32,12 +32,12 @@ public static partial class DtoMapping
 
         };
 
-    public static AkcijeSkole.DataAccess.SqlServer.Data.DbModels.MaterijalnePotrebe ToDbModel(this MaterijalnaPotreba materijalnaPotreba)
-        => new AkcijeSkole.DataAccess.SqlServer.Data.DbModels.MaterijalnePotrebe()
-        {
-            Naziv = materijalnaPotreba.Naziv,
-            Organizator = materijalnaPotreba.Organizator,
-            Davatelj = materijalnaPotreba.Davatelj,
-            Zadovoljeno = materijalnaPotreba.Zadovoljeno
-        };
+    public static AkcijeSkole.Domain.Models.MaterijalnaPotreba ToDomain(this MaterijalnaPotreba materijalnaPotreba)
+        => new AkcijeSkole.Domain.Models.MaterijalnaPotreba(
+            materijalnaPotreba.IdMaterijalnaPotreba,
+            materijalnaPotreba.Naziv,
+            materijalnaPotreba.Organizator,
+            materijalnaPotreba.Davatelj,
+            materijalnaPotreba.Zadovoljeno);
+        
 }

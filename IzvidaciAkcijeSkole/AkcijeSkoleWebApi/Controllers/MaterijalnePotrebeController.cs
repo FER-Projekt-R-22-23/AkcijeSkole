@@ -1,8 +1,11 @@
 ﻿using AkcijeSkole.Commons;
 using AkcijeSkole.DataAccess.SqlServer.Data;
-using AkcijeSkole.DataAccess.SqlServer.Data.DbModels;
+using AkcijeSkole.Repositories.SqlServer;
 using AkcijeSkoleWebApi.DTOs;
+using BaseLibrary;
 using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Data;
 
 namespace AkcijeSkoleWebApi.Controllers;
 
@@ -11,9 +14,9 @@ namespace AkcijeSkoleWebApi.Controllers;
 public class MaterijalnePotrebeController : ControllerBase
     {
             private readonly AkcijeSkoleDbContext _context;
-            private readonly IMaterijalnaPotrebaRepository<int, MaterijalnePotrebe> _materijalnaPotrebaRepository;
+            private readonly MaterijalnaPotrebaRepository _materijalnaPotrebaRepository;
 
-            public MaterijalnePotrebeController(IMaterijalnaPotrebaRepository<int, MaterijalnePotrebe> materijalnaPotrebaRepository)
+            public MaterijalnePotrebeController(MaterijalnaPotrebaRepository materijalnaPotrebaRepository)
             {
                 _materijalnaPotrebaRepository = materijalnaPotrebaRepository;
             }
@@ -21,66 +24,361 @@ public class MaterijalnePotrebeController : ControllerBase
             [HttpGet]
             public ActionResult<IEnumerable<DTOs.MaterijalnaPotreba>> GetAllMaterijalnePotrebe()
             {
-                return Ok(_materijalnaPotrebaRepository.GetAll().Select(DtoMapping.ToDto));
-            }
+        var matPotrebeResults = _materijalnaPotrebaRepository.GetAll()
+            .Map(potreba => potreba.Select(DtoMapping.ToDto));
+
+        return matPotrebeResults
+            ? Ok(matPotrebeResults.Data)
+            : Problem(matPotrebeResults.Message, statusCode: 500);
+    }
 
 
-            [HttpGet("idMaterijalnaPotreba")]
+            [HttpGet("{idMaterijalnaPotreba}")]
             public ActionResult<DTOs.MaterijalnaPotreba> GetMaterijalnaPotreba(int idPotreba)
             {
-                var potrebaOption = _materijalnaPotrebaRepository.Get(idPotreba).Map(DtoMapping.ToDto);
+        var matPotrebaResult = _materijalnaPotrebaRepository.Get(idPotreba).Map(DtoMapping.ToDto);
 
-                return potrebaOption
-                    ? Ok(potrebaOption.Data)
-                    : NotFound();
-            }
+        return matPotrebaResult switch
+        {
+            { IsSuccess: true } => Ok(matPotrebaResult.Data),
+            { IsFailure: true } => NotFound(),
+            { IsException: true } or _ => Problem(matPotrebaResult.Message, statusCode: 500)
+        };
+    }
 
-            [HttpPut]
+    [HttpGet("/AggregateAkcija/{id}")]
+    public ActionResult<MatPotrebeAkcijeAggregate> GetMatPotrebaAkcijaAggregate(int id)
+    {
+        var matPotrebaResult = _materijalnaPotrebaRepository.GetAkcijaAggregate(id).Map(DtoMapping.ToAkcijeAggregateDto);
+
+        return matPotrebaResult switch
+        {
+            { IsSuccess: true } => Ok(matPotrebaResult.Data),
+            { IsFailure: true } => NotFound(),
+            { IsException: true } or _ => Problem(matPotrebaResult.Message, statusCode: 500)
+        };
+    }
+
+    [HttpGet("/AggregateSkola/{id}")]
+    public ActionResult<MatPotrebeAkcijeAggregate> GetMatPotrebaSkolaAggregate(int id)
+    {
+        var matPotrebaResult = _materijalnaPotrebaRepository.GetSkolaAggregate(id).Map(DtoMapping.ToSkolaAggregateDto);
+
+        return matPotrebaResult switch
+        {
+            { IsSuccess: true } => Ok(matPotrebaResult.Data),
+            { IsFailure: true } => NotFound(),
+            { IsException: true } or _ => Problem(matPotrebaResult.Message, statusCode: 500)
+        };
+    }
+
+    [HttpGet("/AggregateTerenskaLokacijat/{id}")]
+    public ActionResult<MatPotrebeAkcijeAggregate> GeMatPotrebaTerLokacijaAggregate(int id)
+    {
+        var matPotrebaResult = _materijalnaPotrebaRepository.GetTerenskaLokacijaAggregate(id).Map(DtoMapping.ToTerLokacijeAggregateDto);
+
+        return matPotrebaResult switch
+        {
+            { IsSuccess: true } => Ok(matPotrebaResult.Data),
+            { IsFailure: true } => NotFound(),
+            { IsException: true } or _ => Problem(matPotrebaResult.Message, statusCode: 500)
+        };
+    }
+
+
+    [HttpPost("AssignToAkcija/{IdAkcija}")]
+    public IActionResult AssignPotrebaToAkcija(int id, AkcijeSkole.Domain.Models.AkcijaAssignment akcijaAssignment)
+    {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
+        var potrebaResult = _materijalnaPotrebaRepository.GetAkcijaAggregate(id);
+        if (potrebaResult.IsFailure)
+        {
+            return NotFound();
+        }
+        if (potrebaResult.IsException)
+        {
+            return Problem(potrebaResult.Message, statusCode: 500);
+        }
+
+        var potreba = potrebaResult.Data;
+
+        var domainAkcijaAssignment = akcijaAssignment.ToDomain(id);
+        var validationResult = domainAkcijaAssignment.IsValid(id);
+
+        if (!validationResult)
+        {
+            return Problem(validationResult.Message, statusCode: 500);
+        }
+
+        potreba.AssignAkcija(domainAkcijaAssignment);
+
+        var updateResult =
+            potreba.IsValid()
+            .Bind(() => _materijalnaPotrebaRepository.UpdateAggregate(potreba));
+
+        return updateResult
+            ? Accepted()
+            : Problem(updateResult.Message, statusCode: 500);
+    }
+
+    [HttpPost("AssignToSkola/{IdSkola}")]
+    public IActionResult AssignPotrebaToSkola(int id, AkcijeSkole.Domain.Models.SkolaAssignment skolaAssignment)
+    {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
+        var potrebaResult = _materijalnaPotrebaRepository.GetSkolaAggregate(id);
+        if (potrebaResult.IsFailure)
+        {
+            return NotFound();
+        }
+        if (potrebaResult.IsException)
+        {
+            return Problem(potrebaResult.Message, statusCode: 500);
+        }
+
+        var potreba = potrebaResult.Data;
+
+        var domainSkolaAssignment = skolaAssignment.ToDomain(id);
+        var validationResult = domainSkolaAssignment.IsValid(id);
+
+        if (!validationResult)
+        {
+            return Problem(validationResult.Message, statusCode: 500);
+        }
+
+        potreba.AssignSkola(domainSkolaAssignment);
+
+        var updateResult =
+            potreba.IsValid()
+            .Bind(() => _materijalnaPotrebaRepository.UpdateAggregate(potreba));
+
+        return updateResult
+            ? Accepted()
+            : Problem(updateResult.Message, statusCode: 500);
+    }
+
+    [HttpPost("AssignToTerenskaLokacija/{IdTerenskaLokacija}")]
+    public IActionResult AssignPotrebaToLokacija(int id, AkcijeSkole.Domain.Models.TerenskaLokacijaAssignment terenskaLokacijaAssignment)
+    {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
+        var potrebaResult = _materijalnaPotrebaRepository.GetTerenskaLokacijaAggregate(id);
+        if (potrebaResult.IsFailure)
+        {
+            return NotFound();
+        }
+        if (potrebaResult.IsException)
+        {
+            return Problem(potrebaResult.Message, statusCode: 500);
+        }
+
+        var potreba = potrebaResult.Data;
+
+        var domaiLokacijaAssignment = terenskaLokacijaAssignment.ToDomain(id);
+        var validationResult = domaiLokacijaAssignment.IsValid(id);
+
+        if (!validationResult)
+        {
+            return Problem(validationResult.Message, statusCode: 500);
+        }
+
+        potreba.AssignTerenskaLokacija(domaiLokacijaAssignment);
+
+        var updateResult =
+            potreba.IsValid()
+            .Bind(() => _materijalnaPotrebaRepository.UpdateAggregate(potreba));
+
+        return updateResult
+            ? Accepted()
+            : Problem(updateResult.Message, statusCode: 500);
+    }
+
+    [HttpPost("DismissFromAkcija/{IdAkcija}")]
+    public IActionResult DismissPotrebaFromAkcija(int id, Akcija akcija)
+    {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
+        var potrebaResult = _materijalnaPotrebaRepository.GetAkcijaAggregate(id);
+        if (potrebaResult.IsFailure)
+        {
+            return NotFound();
+        }
+        if (potrebaResult.IsException)
+        {
+            return Problem(potrebaResult.Message, statusCode: 500);
+        }
+
+        var potreba = potrebaResult.Data;
+
+        var domainAkcija = akcija.ToDomain();
+
+        if (!potreba.DismissFromAkcija(domainAkcija))
+        {
+            return NotFound($"Akcija nije pronadena.");
+        }
+
+        var updateResult =
+            potreba.IsValid()
+            .Bind(() => _materijalnaPotrebaRepository.UpdateAggregate(potreba));
+
+        return updateResult
+            ? Accepted()
+            : Problem(updateResult.Message, statusCode: 500);
+    }
+
+    [HttpPost("DismissFromSkola/{IdSkola}")]
+    public IActionResult DismissPotrebaFromSkola(int id, Skola skola)
+    {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
+        var potrebaResult = _materijalnaPotrebaRepository.GetSkolaAggregate(id);
+        if (potrebaResult.IsFailure)
+        {
+            return NotFound();
+        }
+        if (potrebaResult.IsException)
+        {
+            return Problem(potrebaResult.Message, statusCode: 500);
+        }
+
+        var potreba = potrebaResult.Data;
+
+        var domainSkola = skola.ToDomain();
+
+        if (!potreba.DismissFromSkola(domainSkola))
+        {
+            return NotFound($"Skola nije pronadena.");
+        }
+
+        var updateResult =
+            potreba.IsValid()
+            .Bind(() => _materijalnaPotrebaRepository.UpdateAggregate(potreba));
+
+        return updateResult
+            ? Accepted()
+            : Problem(updateResult.Message, statusCode: 500);
+    }
+
+    [HttpPost("DismissFromLokacija/{IdTerenskaLokacija}")]
+    public IActionResult DismissPotrebaFromLokacija(int id, TerenskaLokacija terenskaLokacija)
+    {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
+        var potrebaResult = _materijalnaPotrebaRepository.GetTerenskaLokacijaAggregate(id);
+        if (potrebaResult.IsFailure)
+        {
+            return NotFound();
+        }
+        if (potrebaResult.IsException)
+        {
+            return Problem(potrebaResult.Message, statusCode: 500);
+        }
+
+        var potreba = potrebaResult.Data;
+
+        var domainLokacija = terenskaLokacija.ToDomain();
+
+        if (!potreba.DismissFromTerenskaLokacija(domainLokacija))
+        {
+            return NotFound($"Skola nije pronadena.");
+        }
+
+        var updateResult =
+            potreba.IsValid()
+            .Bind(() => _materijalnaPotrebaRepository.UpdateAggregate(potreba));
+
+        return updateResult
+            ? Accepted()
+            : Problem(updateResult.Message, statusCode: 500);
+    }
+
+
+
+
+    [HttpPut]
             public IActionResult EditMaterijalnaPotreba(int idPotreba, DTOs.MaterijalnaPotreba potreba)
             {
-                if (!ModelState.IsValid)
-                {
-                    return BadRequest(ModelState);
-                }
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
 
-                if (idPotreba != potreba.IdMaterijalnaPotreba)
-                {
-                    return BadRequest();
-                }
+        if (idPotreba != potreba.IdMaterijalnaPotreba)
+        {
+            return BadRequest();
+        }
 
-                if (!_materijalnaPotrebaRepository.Exists(idPotreba))
-                {
-                    return NotFound();
-                }
+        if (!_materijalnaPotrebaRepository.Exists(idPotreba))
+        {
+            return NotFound();
+        }
 
-                return _materijalnaPotrebaRepository.Update(potreba.ToDbModel())
-                    ? AcceptedAtAction("EditMaterijalnaPotreba", potreba)
-                    : StatusCode(500);
-            }
+        var domainPotreba = potreba.ToDomain();
+
+        var result =
+            domainPotreba.IsValid()
+            .Bind(() => _materijalnaPotrebaRepository.Update(domainPotreba));
+
+        return result
+            ? AcceptedAtAction("EditMaterijalnaPotreba", potreba)
+            : Problem(result.Message, statusCode: 500);
+    }
 
             [HttpPost]
             public ActionResult<DTOs.MaterijalnaPotreba> CreateMaterijalnaPotreba(DTOs.MaterijalnaPotreba potreba)
             {
-                if (!ModelState.IsValid)
-                {
-                    return BadRequest(ModelState);
-                }
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
 
-                return _materijalnaPotrebaRepository.Insert(potreba.ToDbModel())
-                    ? CreatedAtAction("GetMaterijalnaPotreba", new { idPotreba = potreba.IdMaterijalnaPotreba }, potreba)
-                    : StatusCode(500);
-            }
+        var domainPotreba = potreba.ToDomain();
+
+        var validationResult = domainPotreba.IsValid();
+        if (!validationResult)
+        {
+            return Problem(validationResult.Message, statusCode: 500);
+        }
+
+        var result =
+            domainPotreba.IsValid()
+            .Bind(() => _materijalnaPotrebaRepository.Insert(domainPotreba));
+
+        return result
+            ? CreatedAtAction("Get", new { id = potreba.IdMaterijalnaPotreba }, potreba)
+            : Problem(result.Message, statusCode: 500);
+    }
 
             [HttpDelete("idMaterijalnaPotreba")]
             public IActionResult DeleteMaterijalnaPotreba(int idPotreba)
             {
-                if (!_materijalnaPotrebaRepository.Exists(idPotreba))
-                    return NotFound();
+        if (!_materijalnaPotrebaRepository.Exists(idPotreba))
+            return NotFound();
 
-                return _materijalnaPotrebaRepository.Remove(idPotreba)
-                    ? NoContent()
-                    : StatusCode(500);
-            }
+        var deleteResult = _materijalnaPotrebaRepository.Remove(idPotreba);
+        return deleteResult
+            ? NoContent()
+            : Problem(deleteResult.Message, statusCode: 500);
+    }
 
 
 
