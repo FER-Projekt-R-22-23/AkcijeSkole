@@ -54,7 +54,7 @@ public class EdukacijePredavaciRepository : IEdukacijeRepository
             var model = _dbContext.Edukacije
                           .AsNoTracking()
                           .FirstOrDefault(edukacija => edukacija.IdEdukacija.Equals(id))?
-                          .ToDomain();
+                          .ToDomainEdukacija();
 
             return model is not null
                 ? Results.OnSuccess(model)
@@ -74,7 +74,7 @@ public class EdukacijePredavaciRepository : IEdukacijeRepository
                           .Include(edukacija => edukacija.Predavaci)
                           .AsNoTracking()
                           .FirstOrDefault(edukacija => edukacija.IdEdukacija.Equals(id)) // give me the first or null; substitute for .Where() // single or default throws an exception if more than one element meets the criteria
-                          ?.ToDomain();
+                          ?.ToDomainEdukacija();
 
 
             return model is not null
@@ -93,7 +93,7 @@ public class EdukacijePredavaciRepository : IEdukacijeRepository
         {
             var models = _dbContext.Edukacije
                            .AsNoTracking()
-                           .Select(Mapping.ToDomain);
+                           .Select(Mapping.ToDomainEdukacija);
 
             return Results.OnSuccess(models);
         }
@@ -109,7 +109,7 @@ public class EdukacijePredavaciRepository : IEdukacijeRepository
         {
             var models = _dbContext.Edukacije
                           .Include(edukacija => edukacija.Predavaci)
-                          .AsNoTracking().Select(Mapping.ToDomain);
+                          .AsNoTracking().Select(Mapping.ToDomainEdukacija);
 
             return Results.OnSuccess(models);
         }

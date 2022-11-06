@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using AkcijeSkole.DataAccess.SqlServer.Data.DbModels;
+using DbModels = AkcijeSkole.DataAccess.SqlServer.Data.DbModels;
 
 namespace AkcijeSkole.Repositories.SqlServer;
 public static class Mapping
@@ -170,14 +171,7 @@ public static class Mapping
 
         };
 
-
-}
-
-using DbModels = AkcijeSkole.DataAccess.SqlServer.Data.DbModels;
-namespace AkcijeSkole.Repositories.SqlServer;
-public static class Mapping
-{
-    public static Skola ToDomain(this DbModels.Skole skola)
+    public static Skola ToDomainSkola(this DbModels.Skole skola)
         => new Skola(skola.IdSkole, skola.NazivSkole, skola.MjestoPbr, skola.Organizator, skola.KontaktOsoba);
 
     public static DbModels.Skole ToDbModel(this Skola skola)
@@ -193,8 +187,6 @@ public static class Mapping
         };
     }
 
-
-
     public static PredavacNaEdukaciji ToDomain(this DbModels.Predavaci predavaci)
         => new PredavacNaEdukaciji(predavaci.IdPredavac, predavaci.ClanId);
 
@@ -205,7 +197,7 @@ public static class Mapping
             ClanId = predavacNaEdukaciji.idClan,
             EdukacijaId = edukacijaId
         };
-    public static Edukacija ToDomain(this DbModels.Edukacije edukacija)
+    public static Edukacija ToDomainEdukacija(this DbModels.Edukacije edukacija)
         => new Edukacija(edukacija.IdEdukacija, edukacija.NazivEdukacija, edukacija.MjestoPbr, edukacija.OpisEdukacije, edukacija.SkolaId, edukacija.Predavaci.Select(ToDomain));
 
     public static DbModels.Edukacije ToDbModel(this Edukacija edukacija)
@@ -220,6 +212,4 @@ public static class Mapping
             Predavaci = edukacija.PredavaciNaEdukaciji.Select(obj => obj.ToDbModel(edukacija.Id)).ToList()
         };
     }
-
-
 }
