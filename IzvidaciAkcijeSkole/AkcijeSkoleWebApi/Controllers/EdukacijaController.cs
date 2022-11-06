@@ -1,12 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using AkcijeSkole.Repositories;
+﻿using AkcijeSkole.Repositories;
 using AkcijeSkoleWebApi.DTOs;
-using DbModels = AkcijeSkole.DataAccess.SqlServer.Data.DbModels;
-using AkcijeSkole.Commons;
-using AkcijeSkole.Repositories.SqlServer;
-using System.Data;
+using Microsoft.AspNetCore.Mvc;
 using BaseLibrary;
+using System;
+using System.Data;
+using AkcijeSkole.Domain.Models;
+using DTOs = AkcijeSkoleWebApi.DTOs;
+using AkcijeSkole.DataAccess.SqlServer.Data.DbModels;
 
 namespace AkcijeSkoleWebApi.Controllers
 {
@@ -21,35 +21,123 @@ namespace AkcijeSkoleWebApi.Controllers
             _edukacijaRepository = context;
         }
 
-        // GET: api/edukacije
+        // GET: api/EdukacijaPredavaci
         [HttpGet]
-        public ActionResult<IEnumerable<Edukacija>> GetAllEdukacije()
+        public ActionResult<IEnumerable<DTOs.Edukacija>> GetAllEdukacija()
         {
-            var edukacijeResults = _edukacijaRepository.GetAll().Map(edukacija => edukacija.Select(DtoMapping.ToDto));
+            var edukacijaResults = _edukacijaRepository.GetAll()
+                .Map(edukacija => edukacija.Select(DtoMapping.ToDto));
 
-            return edukacijeResults
-                ? Ok(edukacijeResults.Data)
-                : Problem(edukacijeResults.Message, statusCode: 500);
+            return edukacijaResults
+                ? Ok(edukacijaResults.Data)
+                : Problem(edukacijaResults.Message, statusCode: 500);
         }
 
-        // GET: api/edukacije/5
+        // GET: api/EdukacijaPredavaci/5
         [HttpGet("{id}")]
-        public ActionResult<Skola> GetEdukacija(int id)
+        public ActionResult<DTOs.Edukacija> GetEdukacija(int id)
         {
-            var edukacijeResult = _edukacijaRepository.Get(id).Map(DtoMapping.ToDto);
+            var edukacijaResult = _edukacijaRepository.Get(id).Map(DtoMapping.ToDto);
 
-            return edukacijeResult switch
+            return edukacijaResult switch
             {
-                { IsSuccess: true } => Ok(edukacijeResult.Data),
+                { IsSuccess: true } => Ok(edukacijaResult.Data),
                 { IsFailure: true } => NotFound(),
-                { IsException: true } or _ => Problem(edukacijeResult.Message, statusCode: 500)
+                { IsException: true } or _ => Problem(edukacijaResult.Message, statusCode: 500)
             };
+        }
+
+        [HttpGet("/EdukacijaAggregate/{id}")]
+        public ActionResult<EdukacijaAggregate> GetPersonAggregate(int id)
+        {
+            var edukacijaResult = _edukacijaRepository.GetAggregate(id).Map(DtoMapping.ToAggregateDto);
+
+            return edukacijaResult switch
+            {
+                { IsSuccess: true } => Ok(edukacijaResult.Data),
+                { IsFailure: true } => NotFound(),
+                { IsException: true } or _ => Problem(edukacijaResult.Message, statusCode: 500)
+            };
+        }
+
+        [HttpPost("DodajPredavaca/{edukacijaId}")]
+        public IActionResult DodajaPredavaca(int edukacijaId, DTOs.PredavacNaEdukaciji predavacNaEdukaciji)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var edukacijaResult = _edukacijaRepository.GetAggregate(edukacijaId);
+            if (edukacijaResult.IsFailure)
+            {
+                return NotFound();
+            }
+            if (edukacijaResult.IsException)
+            {
+                return Problem(edukacijaResult.Message, statusCode: 500);
+            }
+
+            var edukacija = edukacijaResult.Data;
+
+            var domainPredavacNaEdukaciji = predavacNaEdukaciji.ToDomain();
+            var validationResult = domainPredavacNaEdukaciji.IsValid();
+
+            if (!validationResult)
+            {
+                return Problem(validationResult.Message, statusCode: 500);
+            }
+
+            edukacija.newPredavac(domainPredavacNaEdukaciji);
+
+            var updateResult =
+                edukacija.IsValid()
+                .Bind(() => _edukacijaRepository.UpdateAggregate(edukacija));
+
+            return updateResult
+                ? Accepted()
+                : Problem(updateResult.Message, statusCode: 500);
+        }
+
+        [HttpPost("UkloniPredavaca/{edukacijaId}")]
+        public IActionResult UkloniPredavaca(int edukacijaId, int predavacId)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var edukacijaResult = _edukacijaRepository.GetAggregate(edukacijaId);
+            if (edukacijaResult.IsFailure)
+            {
+                return NotFound();
+            }
+            if (edukacijaResult.IsException)
+            {
+                return Problem(edukacijaResult.Message, statusCode: 500);
+            }
+
+            var edukacija = edukacijaResult.Data;
+
+
+            if (!edukacija.removePredavac(predavacId))
+            {
+                return NotFound($"Couldn't find predavac {predavacId} on person");
+            }
+
+            var updateResult =
+                edukacija.IsValid()
+                .Bind(() => _edukacijaRepository.UpdateAggregate(edukacija));
+
+            return updateResult
+                ? Accepted()
+                : Problem(updateResult.Message, statusCode: 500);
         }
 
         // PUT: api/edukacije/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public IActionResult EditEdukacija(int id, Edukacija edukacija)
+        public IActionResult EditEdukacija(int id, DTOs.Edukacija edukacija)
         {
             if (!ModelState.IsValid)
             {
@@ -76,10 +164,10 @@ namespace AkcijeSkoleWebApi.Controllers
                 : Problem(result.Message, statusCode: 500);
         }
 
-        // POST: api/edukacije
+        // POST: api/Edukacije
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public ActionResult<Skola> CreateEdukacije(Edukacija edukacija)
+        public ActionResult<DTOs.Edukacija> CreateEdukacije(DTOs.Edukacija edukacija)
         {
             if (!ModelState.IsValid)
             {
@@ -103,6 +191,25 @@ namespace AkcijeSkoleWebApi.Controllers
         {
             if (!_edukacijaRepository.Exists(id))
                 return NotFound();
+
+
+
+            var edukacijaResult = _edukacijaRepository.GetAggregate(id);
+            if (edukacijaResult.IsFailure)
+            {
+                return NotFound();
+            }
+            if (edukacijaResult.IsException)
+            {
+                return Problem(edukacijaResult.Message, statusCode: 500);
+            }
+            var edukacija = edukacijaResult.Data;
+            foreach(var predavac in edukacija.PredavaciNaEdukaciji)
+            {
+                edukacija.removePredavac(predavac.idPredavac);
+                edukacija.IsValid()
+                .Bind(() => _edukacijaRepository.UpdateAggregate(edukacija));
+            }
 
             var deleteResult = _edukacijaRepository.Remove(id);
             return deleteResult
