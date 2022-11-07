@@ -28,7 +28,7 @@ public static partial class DtoMapping
     public static TerenskaLokacija ToDto(this DomainModels.TerenskaLokacija terenskaLokacija)
         => new TerenskaLokacija()
         {
-            IdTerenskaLokacija = terenskaLokacija.IdTerenskaLokacija,
+            IdTerenskaLokacija = terenskaLokacija.Id,
             NazivTerenskaLokacija = terenskaLokacija.NazivTerenskaLokacija,
             Slika = terenskaLokacija.Slika,
             ImaSanitarniCvor = terenskaLokacija.ImaSanitarniCvor,
