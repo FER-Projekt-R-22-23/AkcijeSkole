@@ -35,5 +35,5 @@ namespace AkcijeSkole.Domain.Models;
                 (() => _edukacija != null, "Aktivnost ne smije biti null")
             );
 }
-    }
+    
 

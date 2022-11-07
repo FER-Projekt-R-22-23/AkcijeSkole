@@ -1,11 +1,13 @@
 ﻿using AkcijeSkole.Commons;
 using AkcijeSkole.DataAccess.SqlServer.Data;
+using AkcijeSkole.DTOs;
 using AkcijeSkole.Repositories.SqlServer;
 using AkcijeSkoleWebApi.DTOs;
 using BaseLibrary;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Data;
+using DtoMapping = AkcijeSkoleWebApi.DTOs.DtoMapping;
 
 namespace AkcijeSkoleWebApi.Controllers;
 
@@ -87,7 +89,7 @@ public class MaterijalnePotrebeController : ControllerBase
 
 
     [HttpPost("AssignToAkcija/{IdAkcija}")]
-    public IActionResult AssignPotrebaToAkcija(int id, AkcijeSkole.Domain.Models.AkcijaAssignment akcijaAssignment)
+    public IActionResult AssignPotrebaToAkcija(int id, AkcijaAssignment akcijaAssignment)
     {
         if (!ModelState.IsValid)
         {
@@ -107,7 +109,7 @@ public class MaterijalnePotrebeController : ControllerBase
         var potreba = potrebaResult.Data;
 
         var domainAkcijaAssignment = akcijaAssignment.ToDomain(id);
-        var validationResult = domainAkcijaAssignment.IsValid(id);
+        var validationResult = domainAkcijaAssignment.IsValid();
 
         if (!validationResult)
         {
@@ -126,7 +128,7 @@ public class MaterijalnePotrebeController : ControllerBase
     }
 
     [HttpPost("AssignToSkola/{IdSkola}")]
-    public IActionResult AssignPotrebaToSkola(int id, AkcijeSkole.Domain.Models.SkolaAssignment skolaAssignment)
+    public IActionResult AssignPotrebaToSkola(int id, SkolaAssignment skolaAssignment)
     {
         if (!ModelState.IsValid)
         {
@@ -146,7 +148,7 @@ public class MaterijalnePotrebeController : ControllerBase
         var potreba = potrebaResult.Data;
 
         var domainSkolaAssignment = skolaAssignment.ToDomain(id);
-        var validationResult = domainSkolaAssignment.IsValid(id);
+        var validationResult = domainSkolaAssignment.IsValid();
 
         if (!validationResult)
         {
@@ -165,7 +167,7 @@ public class MaterijalnePotrebeController : ControllerBase
     }
 
     [HttpPost("AssignToTerenskaLokacija/{IdTerenskaLokacija}")]
-    public IActionResult AssignPotrebaToLokacija(int id, AkcijeSkole.Domain.Models.TerenskaLokacijaAssignment terenskaLokacijaAssignment)
+    public IActionResult AssignPotrebaToLokacija(int id, TerenskaLokacijaAssignment terenskaLokacijaAssignment)
     {
         if (!ModelState.IsValid)
         {
@@ -185,7 +187,7 @@ public class MaterijalnePotrebeController : ControllerBase
         var potreba = potrebaResult.Data;
 
         var domaiLokacijaAssignment = terenskaLokacijaAssignment.ToDomain(id);
-        var validationResult = domaiLokacijaAssignment.IsValid(id);
+        var validationResult = domaiLokacijaAssignment.IsValid();
 
         if (!validationResult)
         {

@@ -24,7 +24,7 @@ namespace AkcijeSkoleWebApi.Controllers
 
         // GET: api/Akcije
         [HttpGet]
-        public ActionResult<IEnumerable<Akcija>> GetAkcije()
+        public ActionResult<IEnumerable<DTOs.Akcija>> GetAkcije()
         {
             var akcijeResults = _context.GetAll().Map(akcije => akcije.Select(DtoMapping.ToDto));
 
@@ -35,7 +35,7 @@ namespace AkcijeSkoleWebApi.Controllers
 
         // GET: api/Akcije/5
         [HttpGet("{id}")]
-        public ActionResult<Akcija> GetAkcija(int id)
+        public ActionResult<DTOs.Akcija> GetAkcija(int id)
         {
             var akcijaResult = _context.Get(id).Map(DtoMapping.ToDto());
 
