@@ -55,7 +55,7 @@ public class TerenskaLokacijaRepository : ITerenskaLokacijaRepository
 
             return model is not null
                 ? Results.OnSuccess(model)
-                : Results.OnFailure<TerenskaLokacija>($"No Terenska lokacija with id {id} found);
+                : Results.OnFailure<TerenskaLokacija>($"No Terenska lokacija with id {id} found");
         }
         catch (Exception e)
         {

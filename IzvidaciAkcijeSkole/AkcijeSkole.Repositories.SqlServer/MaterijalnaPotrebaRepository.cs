@@ -1,4 +1,4 @@
-﻿
+﻿/*
 using AkcijeSkole.Commons;
 using AkcijeSkole.DataAccess.SqlServer.Data;
 using AkcijeSkole.DataAccess.SqlServer.Data.DbModels;
@@ -357,3 +357,4 @@ public class MaterijalnaPotrebaRepository : IMaterijalnaPotrebaRepository
         }
     }
 }
+*/

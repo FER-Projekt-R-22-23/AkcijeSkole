@@ -18,7 +18,7 @@ public class Logorista : ValueObject
 
     public int IdLogoriste { get => _idLogoriste; set => _idLogoriste = value; }
     public string KoordinateMreze { get => _koordinateMreze; set => _koordinateMreze = value; }
-    public int PredvideniBrojClanova { get => _predvideniBrojClanova; set => _predvideniBrojClanova = value }
+    public int PredvideniBrojClanova { get => _predvideniBrojClanova; set => _predvideniBrojClanova = value; }
 
     public override bool Equals(object? obj)
     {

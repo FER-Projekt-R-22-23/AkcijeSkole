@@ -1,4 +1,5 @@
-﻿using AkcijeSkole.Commons;
+﻿/*
+using AkcijeSkole.Commons;
 using AkcijeSkole.DataAccess.SqlServer.Data;
 using AkcijeSkole.DataAccess.SqlServer.Data.DbModels;
 using AkcijeSkole.Domain.Models;
@@ -458,3 +459,4 @@ public class MjestoRepository : IMjestoRepository
         }
     }
 }
+*/

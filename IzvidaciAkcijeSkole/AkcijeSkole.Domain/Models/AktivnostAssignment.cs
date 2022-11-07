@@ -1,4 +1,5 @@
-﻿using AkcijeSkole.Commons;
+﻿/*
+using AkcijeSkole.Commons;
 using BaseLibrary;
 
 namespace AkcijeSkole.Domain.Models;
@@ -30,5 +31,6 @@ public class AktivnostAssignment : ValueObject
                 (() => _aktivnost != null, "Aktivnost ne smije biti null")
             );
 }
+*/
 
 

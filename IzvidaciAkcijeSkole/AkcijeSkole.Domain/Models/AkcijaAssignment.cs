@@ -1,4 +1,5 @@
-﻿using AkcijeSkole.Commons;
+﻿/*
+using AkcijeSkole.Commons;
 using BaseLibrary;
 using System;
 using System.Collections.Generic;
@@ -36,4 +37,5 @@ public class AkcijaAssignment : ValueObject
                 (() => _akcija != null, "Akcija ne smije biti null")
             );
 }
+*/
 

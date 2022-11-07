@@ -1,4 +1,5 @@
-﻿using AkcijeSkole.Domain.Models;
+﻿/*
+using AkcijeSkole.Domain.Models;
 using AkcijeSkole.Repositories;
 
 public interface IMjestoRepository
@@ -6,4 +7,5 @@ public interface IMjestoRepository
       IAggregateRepository<int, Mjesto>
 {
 }
+*/
 

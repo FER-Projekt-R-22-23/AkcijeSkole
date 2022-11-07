@@ -171,6 +171,8 @@ public static class Mapping
 
         };
     */
+
+
     public static Skola ToDomainSkola(this DbModels.Skole skola)
         => new Skola(skola.IdSkole, skola.NazivSkole, skola.MjestoPbr, skola.Organizator, skola.KontaktOsoba);
 

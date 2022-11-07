@@ -1,27 +1,29 @@
-﻿using AkcijeSkole.DataAccess.SqlServer.Data.DbModels;
-using System.ComponentModel.DataAnnotations;
-using System.Data;
-using DomainModels = AkcijeSkole.Domain.Models;
-namespace AkcijeSkole.DTOs;
+﻿/*
+using akcijeskole.dataaccess.sqlserver.data.dbmodels;
+using system.componentmodel.dataannotations;
+using system.data;
+using domainmodels = akcijeskole.domain.models;
+namespace akcijeskole.dtos;
 
-public class TerenskaLokacijaAssignment
+public class terenskalokacijaassignment
 {
-    [Required(ErrorMessage = "Terenska lokacija to assign must be provided")]
-    public TerenskaLokacija TerenskaLokacija { get; set; }
+    [required(errormessage = "terenska lokacija to assign must be provided")]
+    public terenskalokacija terenskalokacija { get; set; }
 }
 
 
-public static partial class DtoMapping
+public static partial class dtomapping
 {
-    public static TerenskaLokacijaAssignment ToDto(this DomainModels.TerenskaLokacijaAssignment terenskaLokacijaAssignment)
-        => new TerenskaLokacijaAssignment
+    public static terenskalokacijaassignment todto(this domainmodels.terenskalokacijaassignment terenskalokacijaassignment)
+        => new terenskalokacijaassignment
         ()
         {
-            TerenskaLokacija = terenskaLokacijaAssignment.TerenskaLokacija.ToDto()
+            terenskalokacija = terenskalokacijaassignment.terenskalokacija.todto()
         };
 
-    public static DomainModels.TerenskaLokacijaAssignment ToDomain(this TerenskaLokacijaAssignment terenskaLokacijaAssignment, int id)
-        => new DomainModels.TerenskaLokacijaAssignment(
-            terenskaLokacijaAssignment.TerenskaLokacija.ToDomain()
+    public static domainmodels.terenskalokacijaassignment todomain(this terenskalokacijaassignment terenskalokacijaassignment, int id)
+        => new domainmodels.terenskalokacijaassignment(
+            terenskalokacijaassignment.terenskalokacija.todomain()
             );
 }
+*/

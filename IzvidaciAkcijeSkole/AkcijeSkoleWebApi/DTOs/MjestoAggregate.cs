@@ -1,4 +1,5 @@
-﻿using AkcijeSkole.DataAccess.SqlServer.Data.DbModels;
+﻿/*
+using AkcijeSkole.DataAccess.SqlServer.Data.DbModels;
 using AkcijeSkole.Domain.Models;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -135,4 +136,4 @@ public static partial class DtoMapping
             mjesto.Naziv,
             mjesto.TerenskaLokacijaAssignments.Select(ToDomain);
 }
-
+*/

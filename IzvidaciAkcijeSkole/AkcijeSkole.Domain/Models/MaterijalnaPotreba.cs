@@ -1,4 +1,5 @@
-﻿using AkcijeSkole.Commons;
+﻿/*
+using AkcijeSkole.Commons;
 using BaseLibrary;
 using System;
 using System.Collections.Generic;
@@ -152,4 +153,5 @@ public class MaterijalnaPotreba : AggregateRoot<int>
         return HashCode.Combine(_id, _naziv, _organizator, _davatelj, _zadovoljeno, _akcijaAssignments, _skolaAssignments, _terenskaLokacijaAssignments);
     }
 }
+*/
 

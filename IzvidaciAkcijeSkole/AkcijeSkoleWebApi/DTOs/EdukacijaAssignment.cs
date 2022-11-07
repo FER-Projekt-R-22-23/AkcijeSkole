@@ -1,4 +1,6 @@
-﻿using AkcijeSkole.DataAccess.SqlServer.Data.DbModels;
+﻿/*
+using AkcijeSkole.DataAccess.SqlServer.Data.DbModels;
+using AkcijeSkole.Domain.Models;
 using System.ComponentModel.DataAnnotations;
 using System.Data;
 using DomainModels = AkcijeSkole.Domain.Models;
@@ -24,3 +26,4 @@ public static partial class DtoMapping
             edukacijaAssignment.Edukacija.ToDomain()
             );
 }
+*/

@@ -1,4 +1,5 @@
-﻿using AkcijeSkole.Commons;
+﻿/*
+using AkcijeSkole.Commons;
 using BaseLibrary;
 
 namespace AkcijeSkole.Domain.Models;
@@ -198,4 +199,5 @@ public class Mjesto : AggregateRoot<int>
             (() => !string.IsNullOrEmpty(_nazivMjesta.Trim()), "Naziv mjesta ne smije biti null, prazan ili empty space.")
             );
 }
+*/
 

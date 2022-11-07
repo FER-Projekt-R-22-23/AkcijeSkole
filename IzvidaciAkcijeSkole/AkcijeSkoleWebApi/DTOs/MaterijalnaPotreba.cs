@@ -1,4 +1,5 @@
-﻿using System;
+﻿/*
+using System;
 using System.ComponentModel.DataAnnotations;
 using AkcijeSkole.DataAccess.SqlServer.Data.DbModels;
 using Microsoft.EntityFrameworkCore;
@@ -41,3 +42,4 @@ public static partial class DtoMapping
             materijalnaPotreba.Zadovoljeno);
         
 }
+*/
