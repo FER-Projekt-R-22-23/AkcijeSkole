@@ -3,7 +3,7 @@ using AkcijeSkole.Commons;
 
 namespace AkcijeSkole.Domain.Models;
 
-public class TerenskaLokacija : Entity<int>
+public class TerenskaLokacija : AggregateRoot<int>
 {
     private string _nazivTerenskaLokacija;
     private byte[] _slika;
