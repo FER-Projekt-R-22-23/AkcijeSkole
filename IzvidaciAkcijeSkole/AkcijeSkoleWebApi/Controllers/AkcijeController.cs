@@ -80,21 +80,21 @@ namespace AkcijeSkoleWebApi.Controllers
         // POST: api/Akcije
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public ActionResult<DTOs.Akcija> CreateSkola(Akcija akcija)
+        public ActionResult<DTOs.Akcija> CreateSkola(DTOs.Akcija akcija)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            var domainAkcija = akcija.toDomain();
+            var domainAkcija = akcija.ToDomain();
 
             var result =
                 domainAkcija.IsValid()
                 .Bind(() => _context.Insert(domainAkcija));
 
             return result
-                ? CreatedAtAction("GetAkcija", new { id = akcija.IdAkcija }, akcija)
+                ? CreatedAtAction("GetAkcija", new { id = akcija.IdAkcije }, akcija)
                 : Problem(result.Message, statusCode: 500);
         }
 

@@ -18,7 +18,7 @@ namespace AkcijeSkole.Domain.Models
         private int _AkcijaId;
 
 
-        public Aktivnost(int id, int mjestoPbr, int kontaktOsoba string opis, int akcijaId) : base(id)
+        public Aktivnost(int id, int mjestoPbr, int kontaktOsoba, string opis, int akcijaId) : base(id)
         {
             _MjestoPbr = mjestoPbr;
             _Opis = opis;
