@@ -34,7 +34,7 @@ public class TerenskaLokacijaRepository : ITerenskaLokacijaRepository
         {
             var model = _dbContext.TerenskeLokacije
                             .AsNoTracking()
-                            .FirstOrDefault(terenskaLokacija => terenskaLokacija.IdTerenskeLokacije.Equals(id))
+                            .FirstOrDefault(terenskaLokacija => terenskaLokacija.IdTerenskeLokacije.Equals(id));
             
             return model is not null;
         }

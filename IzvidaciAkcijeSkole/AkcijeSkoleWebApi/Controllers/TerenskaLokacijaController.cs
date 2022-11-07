@@ -1,4 +1,5 @@
 ﻿using AkcijeSkole.Repositories;
+using AkcijeSkole.Repositories.SqlServer;
 using AkcijeSkoleWebApi.DTOs;
 using BaseLibrary;
 using Microsoft.AspNetCore.Mvc;
