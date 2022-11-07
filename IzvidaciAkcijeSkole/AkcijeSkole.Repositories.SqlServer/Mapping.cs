@@ -145,32 +145,32 @@ public static class Mapping
             TerenskaLokacija = skolaAssignment.Skola.TerenskaLokacija
 
         };
+    */
 
-    public static TerenskaLokacijaAssignment ToDomain(this TerenskeLokacije lokacija)
-        => new TerenskaLokacijaAssignment(
-                lokacija.ToDomain()
+
+    public static TerenskaLokacija ToDomain(this DbModels.TerenskeLokacije terenskaLokacija)
+        => new TerenskaLokacija(
+            terenskaLokacija.IdTerenskeLokacije,
+            terenskaLokacija.NazivTerenskeLokacije,
+            terenskaLokacija.Slika,
+            terenskaLokacija.ImaSanitarniCvor,
+            terenskaLokacija.MjestoPbr,
+            terenskaLokacija.Opis
             );
 
-    public static TerenskeLokacije ToDbModel(this TerenskaLokacijaAssignment terenskaLokacijaAssignment, int id)
-        => new TerenskeLokacije
+    public static DbModels.TerenskeLokacije ToDbModel(this TerenskaLokacija terenskaLokacija)
+    {
+        return new DbModels.TerenskeLokacije()
         {
-            IdTerenskeLokacije = id,
-            NazivTerenskeLokacije = terenskaLokacijaAssignment.TerenskaLokacija.NazivTerenskeLokacije,
-            Slika = terenskaLokacijaAssignment.TerenskaLokacija.Slika,
-            ImaSanitarniCvor = terenskaLokacijaAssignment.TerenskaLokacija.ImaSanitarniCvor,
-            MjestoPbr = terenskaLokacijaAssignment.TerenskaLokacija.MjestoPbr,
-            Opis = terenskaLokacijaAssignment.TerenskaLokacija.Opis,
-            MjestoPbrNavigation = terenskaLokacijaAssignment.TerenskaLokacija.MjestoPbrNavigation,
-            CvrstiNamjenskiObjekti = terenskaLokacijaAssignment.TerenskaLokacija.CvrstiNamjenskiObjekti,
-            CvrstiObjektiZaObitavanje = terenskaLokacijaAssignment.TerenskaLokacija.CvrstiObjektiZaObitavanje,
-            Logorista = terenskaLokacijaAssignment.TerenskaLokacija.Logorista,
-            PrivremeniObjekti = terenskaLokacijaAssignment.TerenskaLokacija.PrivremeniObjekti,
-            Akcije = terenskaLokacijaAssignment.TerenskaLokacija.Akcije,
-            MaterijalnePotrebe = terenskaLokacijaAssignment.TerenskaLokacija.MaterijalnePotrebe,
-            Skola = terenskaLokacijaAssignment.TerenskaLokacija.Skola 
-
+            IdTerenskeLokacije = terenskaLokacija.Id,
+            NazivTerenskeLokacije = terenskaLokacija.NazivTerenskaLokacija,
+            Slika = terenskaLokacija.Slika,
+            ImaSanitarniCvor = terenskaLokacija.ImaSanitarniCvor,
+            MjestoPbr = terenskaLokacija.MjestoPbr,
+            Opis = terenskaLokacija.Opis
         };
-    */
+    }
+    
 
 
     public static Skola ToDomainSkola(this DbModels.Skole skola)
