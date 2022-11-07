@@ -1,12 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using AkcijeSkole.DataAccess.SqlServer.Data;
-using AkcijeSkole.DataAccess.SqlServer.Data.DbModels;
+using AkcijeSkole.Repositories;
+using AkcijeSkoleWebApi.DTOs;
+using DbModels = AkcijeSkole.DataAccess.SqlServer.Data.DbModels;
+using AkcijeSkole.Commons;
+using AkcijeSkole.Repositories.SqlServer;
+using System.Data;
+using BaseLibrary;
+using AkcijeSkole.Domain.Models;
 
 namespace AkcijeSkoleWebApi.Controllers
 {
@@ -14,95 +15,100 @@ namespace AkcijeSkoleWebApi.Controllers
     [ApiController]
     public class AkcijeController : ControllerBase
     {
-        private readonly AkcijeSkoleDbContext _context;
+        private readonly IAkcijeRepository _context;
 
-        public AkcijeController(AkcijeSkoleDbContext context)
+        public AkcijeController(IAkcijeRepository context)
         {
             _context = context;
         }
 
         // GET: api/Akcije
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Akcije>>> GetAkcije()
+        public ActionResult<IEnumerable<DTOs.Akcija>> GetAkcije()
         {
-            return await _context.Akcije.ToListAsync();
+            var akcijeResults = _context.GetAll()
+                .Map(akcije => akcije.Select(DtoMapping.ToDto));
+
+            return akcijeResults
+                ? Ok(akcijeResults.Data)
+                : Problem(akcijeResults.Message, statusCode: 500);
         }
 
         // GET: api/Akcije/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Akcije>> GetAkcije(int id)
+        public ActionResult<DTOs.Akcija> GetAkcija(int id)
         {
-            var akcije = await _context.Akcije.FindAsync(id);
+            var akcijaResult = _context.Get(id).Map(DtoMapping.ToDto);
 
-            if (akcije == null)
+            return akcijaResult switch
             {
-                return NotFound("Ne postoji akcija pod ovim id-em");
-            }
-
-            return akcije;
+                { IsSuccess: true } => Ok(akcijaResult.Data),
+                { IsFailure: true } => NotFound(),
+                { IsException: true } or _ => Problem(akcijaResult.Message, statusCode: 500)
+            };
         }
 
         // PUT: api/Akcije/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutAkcije(int id, Akcije akcija)
+        public IActionResult UpdateAkcija(int id, DTOs.Akcija akcija)
         {
-            if (id != akcija.IdAkcija)
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            if (id != akcija.IdAkcije)
             {
                 return BadRequest();
             }
 
-            _context.Entry(akcija).State = EntityState.Modified;
-
-            try
+            if (!_context.Exists(id))
             {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!AkcijeExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+                return NotFound();
             }
 
-            return NoContent();
+            var domainAkcija = akcija.ToDomain();
+
+            var result =
+                domainAkcija.IsValid()
+                .Bind(() => _context.Update(domainAkcija));
+            return result
+                ? AcceptedAtAction("UpdateAkcija", akcija)
+                : Problem(result.Message, statusCode: 500);
         }
 
         // POST: api/Akcije
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Akcije>> PostAkcije(Akcije akcija)
+        public ActionResult<DTOs.Akcija> CreateSkola(Akcija akcija)
         {
-            _context.Akcije.Add(akcija);
-            await _context.SaveChangesAsync();
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
 
-            return CreatedAtAction("GetAkcije", new { id = akcija.IdAkcija }, akcija);
+            var domainAkcija = akcija.toDomain();
+
+            var result =
+                domainAkcija.IsValid()
+                .Bind(() => _context.Insert(domainAkcija));
+
+            return result
+                ? CreatedAtAction("GetAkcija", new { id = akcija.IdAkcija }, akcija)
+                : Problem(result.Message, statusCode: 500);
         }
 
         // DELETE: api/Akcije/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteAkcije(int id)
+        public IActionResult DeleteAkcija(int id)
         {
-            var akcija = await _context.Akcije.FindAsync(id);
-            if (akcija == null)
-            {
+            if (!_context.Exists(id))
                 return NotFound();
-            }
 
-            _context.Akcije.Remove(akcija);
-            await _context.SaveChangesAsync();
-
-            return NoContent();
-        }
-
-        private bool AkcijeExists(int id)
-        {
-            return _context.Akcije.Any(e => e.IdAkcija == id);
+            var deleteResult = _context.Remove(id);
+            return deleteResult
+                ? NoContent()
+                : Problem(deleteResult.Message, statusCode: 500);
         }
     }
 }
