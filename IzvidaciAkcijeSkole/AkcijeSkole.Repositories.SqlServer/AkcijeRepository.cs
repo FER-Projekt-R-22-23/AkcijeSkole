@@ -84,7 +84,7 @@ namespace AkcijeSkole.Repositories.SqlServer;
         }
         catch (Exception e)
         {
-            return Results.OnException<IEnumerable<Akcije>>(e);
+            return Results.OnException<IEnumerable<Akcija>>(e);
         }
     }
 

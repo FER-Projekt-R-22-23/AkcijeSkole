@@ -8,8 +8,7 @@ using System.Threading.Tasks;
 namespace AkcijeSkole.Repositories
 {
     public interface IAktivnostiRepository
-    : IRepository<int, Aktivnost>,
-    IAggregateRepository<int, Aktivnost>
+    : IRepository<int, Aktivnost>
     {
     }
 }

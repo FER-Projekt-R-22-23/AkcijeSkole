@@ -24,9 +24,10 @@ namespace AkcijeSkoleWebApi.Controllers
 
         // GET: api/Akcije
         [HttpGet]
-        public ActionResult<IEnumerable<Akcija>> GetAkcije()
+        public ActionResult<IEnumerable<DTOs.Akcija>> GetAkcije()
         {
-            var akcijeResults = _context.GetAll().Map(akcije => akcije.Select(DtoMapping.ToDto));
+            var akcijeResults = _context.GetAll()
+                .Map(akcije => akcije.Select(DtoMapping.ToDto));
 
             return akcijeResults
                 ? Ok(akcijeResults.Data)
@@ -35,28 +36,28 @@ namespace AkcijeSkoleWebApi.Controllers
 
         // GET: api/Akcije/5
         [HttpGet("{id}")]
-        public ActionResult<Akcija> GetAkcija(int id)
+        public ActionResult<DTOs.Akcija> GetAkcija(int id)
         {
-            var akcijaResult = _context.Get(id).Map(DtoMapping.ToDto());
+            var akcijaResult = _context.Get(id).Map(DtoMapping.ToDto);
 
             return akcijaResult switch
             {
                 { IsSuccess: true } => Ok(akcijaResult.Data),
                 { IsFailure: true } => NotFound(),
-                { IsException: true } => Problem(akcijaResult.Message, statusCode: 500)
+                { IsException: true } or _ => Problem(akcijaResult.Message, statusCode: 500)
             };
         }
 
         // PUT: api/Akcije/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public IActionResult UpdateAkcija(int id, Akcija akcija)
+        public IActionResult UpdateAkcija(int id, DTOs.Akcija akcija)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-            if (id != akcija.IdAkcija)
+            if (id != akcija.IdAkcije)
             {
                 return BadRequest();
             }
@@ -66,7 +67,7 @@ namespace AkcijeSkoleWebApi.Controllers
                 return NotFound();
             }
 
-            var domainAkcija = akcija.toDomain();
+            var domainAkcija = akcija.ToDomain();
 
             var result =
                 domainAkcija.IsValid()
@@ -79,7 +80,7 @@ namespace AkcijeSkoleWebApi.Controllers
         // POST: api/Akcije
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public ActionResult<Akcija> CreateSkola(Akcja akcija)
+        public ActionResult<DTOs.Akcija> CreateSkola(Akcija akcija)
         {
             if (!ModelState.IsValid)
             {

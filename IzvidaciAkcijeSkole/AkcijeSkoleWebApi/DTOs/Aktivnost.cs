@@ -27,7 +27,7 @@ namespace AkcijeSkoleWebApi.DTOs
                 AkcijaId = aktivnost.AkcijaId
             };
         }
-        public static DomainModels.Aktivnost toDomain(this Aktivnost aktivnost)
+        public static DomainModels.Aktivnost ToDomain(this Aktivnost aktivnost)
         {
             return new DomainModels.Aktivnost(aktivnost.IdAktivnost, aktivnost.MjestoPbr, aktivnost.KontaktOsoba, aktivnost.Opis, aktivnost.AkcijaId);
         }

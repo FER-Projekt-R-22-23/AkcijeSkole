@@ -64,7 +64,7 @@ namespace AkcijeSkoleWebApi.Controllers
                 return NotFound();
             }
 
-            var domainAktivnost = aktivnost.toDomain();
+            var domainAktivnost = aktivnost.ToDomain();
 
             var result =
                 domainAktivnost.IsValid()
@@ -85,7 +85,7 @@ namespace AkcijeSkoleWebApi.Controllers
                 return BadRequest(ModelState);
             }
 
-            var domainAktivnost = aktivnost.toDomain();
+            var domainAktivnost = aktivnost.ToDomain();
 
             var result =
                 domainAktivnost.IsValid()
@@ -102,18 +102,6 @@ namespace AkcijeSkoleWebApi.Controllers
         {
             if (!_context.Exists(id))
                 return NotFound();
-
-
-
-            var aktivnostResult = _context.GetAggregate(id);
-            if (aktivnostResult.IsFailure)
-            {
-                return NotFound();
-            }
-            if (aktivnostResult.IsException)
-            {
-                return Problem(aktivnostResult.Message, statusCode: 500);
-            }
             
             var deleteResult = _context.Remove(id);
             return deleteResult

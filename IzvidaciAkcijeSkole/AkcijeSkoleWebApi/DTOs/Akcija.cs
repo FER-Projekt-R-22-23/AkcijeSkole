@@ -30,7 +30,7 @@ namespace AkcijeSkoleWebApi.DTOs
                 KontaktOsoba = akcija.KontaktOsoba,
             };
         }
-        public static DomainModels.Akcija toDomain(this Akcija akcija)
+        public static DomainModels.Akcija ToDomain(this Akcija akcija)
         {
             return new DomainModels.Akcija(akcija.IdAkcije, akcija.Naziv, akcija.MjestoPbr, akcija.Organizator, akcija.KontaktOsoba);
         }

@@ -23,7 +23,7 @@ public class AktivnostiRepository : IAktivnostiRepository
     {
         try
         {
-            return _dbContext.Aktivnost
+            return _dbContext.Aktivnosti
                      .AsNoTracking()
                      .Contains(model.ToDbModel());
         }
@@ -67,26 +67,6 @@ public class AktivnostiRepository : IAktivnostiRepository
         }
     }
 
-    public Result<Aktivnost> GetAggregate(int id)
-    {
-        try
-        {
-            var model = _dbContext.Aktivnosti
-                          .AsNoTracking()
-                          .FirstOrDefault(aktivnost => aktivnost.IdAktivnost.Equals(id)) // give me the first or null; substitute for .Where() // single or default throws an exception if more than one element meets the criteria
-                          ?.ToDomainEdukacija();
-
-
-            return model is not null
-                ? Results.OnSuccess(model)
-                : Results.OnFailure<Aktivnost>();
-        }
-        catch (Exception e)
-        {
-            return Results.OnException<Aktivnost>(e);
-        }
-    }
-
     public Result<IEnumerable<Aktivnost>> GetAll()
     {
         try
@@ -94,21 +74,6 @@ public class AktivnostiRepository : IAktivnostiRepository
             var models = _dbContext.Aktivnosti
                            .AsNoTracking()
                            .Select(Mapping.ToDomainAktivnost);
-
-            return Results.OnSuccess(models);
-        }
-        catch (Exception e)
-        {
-            return Results.OnException<IEnumerable<Aktivnost>>(e);
-        }
-    }
-
-    public Result<IEnumerable<Aktivnost>> GetAllAggregates()
-    {
-        try
-        {
-            var models = _dbContext.Aktivnosti
-                          .AsNoTracking().Select(Mapping.ToDomainAktivnost);
 
             return Results.OnSuccess(models);
         }
@@ -189,34 +154,6 @@ public class AktivnostiRepository : IAktivnostiRepository
             }
 
             return Results.OnFailure();
-        }
-        catch (Exception e)
-        {
-            return Results.OnException(e);
-        }
-    }
-
-    public Result UpdateAggregate(Aktivnost model)
-    {
-        try
-        {
-            _dbContext.ChangeTracker.Clear();
-
-            var dbModel = _dbContext.Aktivnosti
-                              .FirstOrDefault(_ => _.IdAktivnost == model.Id);
-            if (dbModel == null)
-                return Results.OnFailure($"Aktivnost with id {model.Id} not found.");
-
-            dbModel.MjestoPbr = model.MjestoPbr;
-            dbModel.KontaktOsoba = model.KontaktOsoba;
-            dbModel.Opis = model.Opis;
-            dbModel.AkcijaId = model.AkcijaId;
-
-            var isSuccess = _dbContext.SaveChanges() > 0;
-            _dbContext.ChangeTracker.Clear();
-            return isSuccess
-                ? Results.OnSuccess()
-                : Results.OnFailure();
         }
         catch (Exception e)
         {
