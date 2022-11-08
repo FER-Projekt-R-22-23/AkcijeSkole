@@ -10,15 +10,15 @@ using DbModels = AkcijeSkole.DataAccess.SqlServer.Data.DbModels;
 
 namespace AkcijeSkole.Repositories.SqlServer;
 public static class Mapping
-{/*
+{
     public static Mjesto ToDomain(this Mjesta mjesto)
         => new Mjesto(
             mjesto.PbrMjesta,
             mjesto.NazivMjesta,
-            mjesto.Akcije.Select(ToDomain),
-            mjesto.Aktivnosti.Select(ToDomain),
-            mjesto.Edukacije.Select(ToDomain),
-            mjesto.Skole.Select(ToDomain),
+            mjesto.Akcije.Select(ToDomainAkcija),
+            mjesto.Aktivnosti.Select(ToDomainAktivnost),
+            mjesto.Edukacije.Select(ToDomainEdukacija),
+            mjesto.Skole.Select(ToDomainSkola),
             mjesto.TerenskeLokacije.Select(ToDomain)
     );
 
@@ -27,11 +27,11 @@ public static class Mapping
         {
             PbrMjesta = mjesto.Id,
             NazivMjesta = mjesto.NazivMjesta,
-            Akcije = mjesto.AkcijaAssignments.Select(a => a.ToDbModel(mjesto.Id)).ToList(),
-            Aktivnosti = mjesto.AktivnostAssignments.Select(a => a.ToDbModel(mjesto.Id)).ToList(),
-            Edukacije = mjesto.EdukacijaAssignments.Select(e => e.ToDbModel(mjesto.Id)).ToList(),
-            Skole = mjesto.SkolaAssignments.Select(s => s.ToDbModel(mjesto.Id)).ToList(),
-            TerenskeLokacije = mjesto.TerenskaLokacijaAssignments.Select(tl => tl.ToDbModel(mjesto.Id)).ToList()
+            Akcije = mjesto.Akcije.Select(a => a.ToDbModel(mjesto.Id)).ToList(),
+            Aktivnosti = mjesto.Aktivnosti.Select(a => a.ToDbModel(mjesto.Id)).ToList(),
+            Edukacije = mjesto.Edukacije.Select(e => e.ToDbModel(mjesto.Id)).ToList(),
+            Skole = mjesto.Skole.Select(s => s.ToDbModel(mjesto.Id)).ToList(),
+            TerenskeLokacije = mjesto.TerenskeLokacije.Select(tl => tl.ToDbModel(mjesto.Id)).ToList()
 
         };
 
@@ -60,93 +60,6 @@ public static class Mapping
             TerenskeLokacije = potreba.TerenskaLokacijaAssignments.Select(pr => pr.ToDbModel(potreba.Id)).ToList()
 
         };
-
-    public static AkcijaAssignment ToDomain(this Akcije akcija)
-        => new AkcijaAssignment(
-                akcija.ToDomain()
-            );
-
-    public static Akcije ToDbModel(this AkcijaAssignment akcijaAssignment, int id)
-        => new Akcije { 
-            IdAkcija = id,
-            Naziv = akcijaAssignment.Akcija.Naziv,
-            MjestoPbr = akcijaAssignment.Akcija.MjestoPbr,
-            Organizator = akcijaAssignment.Akcija.Organizator,
-            KontaktOsoba = akcijaAssignment.Akcija.KontaktOsoba,
-            Vrsta = akcijaAssignment.Akcija.Vrsta ,
-            MjestoPbrNavigation = akcijaAssignment.Akcija.MjestoPbrNavigation,
-            Aktivnosti = akcijaAssignment.Akcija.Aktivnosti,
-            PolazniciAkcije = akcijaAssignment.Akcija.PolazniciAkcije,
-            PrijavljeniPolazniciAkcije = akcijaAssignment.Akcija.PrijavljeniPolazniciAkcije,
-            MaterijalnePotrebe = akcijaAssignment.Akcija.MaterijalnePotrebe,
-            TerenskeLokacije = akcijaAssignment.Akcija.TerenskeLokacije
-
-        };
-
-    public static AktivnostAssignment ToDomain(this Aktivnosti aktivnost)
-        => new AktivnostAssignment(
-                aktivnost.ToDomain()
-            );
-
-    public static Aktivnosti ToDbModel(this AktivnostAssignment aktivnostAssignment, int id)
-        => new Aktivnosti
-        {
-            IdAktivnost = id,
-            MjestoPbr = aktivnostAssignment.Aktivnost.MjestoPbr,
-            KontaktOsoba = aktivnostAssignment.Aktivnost.KontaktOsoba,
-            Opis = aktivnostAssignment.Aktivnost.Opis,
-            AkcijaId = aktivnostAssignment.Aktivnost.AkcijaId,
-            Akcija = aktivnostAssignment.Aktivnost.Akcija,
-            MjestoPbrNavigation = aktivnostAssignment.Aktivnost.MjestoPbrNavigation
-            PolazniciAkcije = aktivnostAssignment.Aktivnost.PolazniciAkcije,
-            PrijavljeniPolazniciAkcije = aktivnostAssignment.Aktivnost.PrijavljeniPolazniciAkcije
-
-        };
-
-    public static EdukacijaAssignment ToDomain(this Edukacije edukacija)
-        => new EdukacijaAssignment(
-                edukacija.ToDomain()
-            );
-
-    public static Edukacije ToDbModel(this EdukacijaAssignment edukacijaAssignment, int id)
-        => new Edukacije
-        {
-            IdEdukacija = id,
-            NazivEdukacija = edukacijaAssignment.Edukacija.nazivEdukacija,
-            MjestoPbr = edukacijaAssignment.Edukacija.MjestoPbr,
-            OpisEdukacije = edukacijaAssignment.Edukacija.OpisEdukacija,
-            SkolaId = edukacijaAssignment.Edukacija.SkolaId, 
-            MjestoPbrNavigation = edukacijaAssignment.Edukacija.MjestoPbrNavigation,
-            Skola = edukacijaAssignment.Edukacija.Skola,
-            PolazniciSkole = edukacijaAssignment.Edukacija.PolazniciSkole,
-            Predavaci = edukacijaAssignment.Edukacija.Predavaci,
-            PrijavljeniPolazniciSkole = edukacijaAssignment.Edukacija.PrijavljeniPolazniciSkole
-
-        };
-
-    public static SkolaAssignment ToDomain(this Skole skola)
-        => new SkolaAssignment(
-                skola.ToDomain()
-            );
-
-    public static Skole ToDbModel(this SkolaAssignment skolaAssignment, int id)
-        => new Skole
-        {
-            IdSkole = id,
-            NazivSkole = skolaAssignment.Skola.NazivSkole,
-            MjestoPbr = skolaAssignment.Skola.MjestoPbr,
-            Organizator = skolaAssignment.Skola.Organizator,
-            KontaktOsoba = skolaAssignment.Skola.KontaktOsoba,
-            MjestoPbrNavigation = skolaAssignment.Skola.MjestoPbrNavigation,
-            Edukacije = skolaAssignment.Skola.Edukacije,
-            PolazniciSkole = skolaAssignment.Skola.PolazniciSkole,
-            PrijavljeniPolazniciSkole = skolaAssignment.Skola.PrijavljeniPolazniciSkole,
-            MaterijalnePotreb = skolaAssignment.Skola.MaterijalnePotreb,
-            TerenskaLokacija = skolaAssignment.Skola.TerenskaLokacija
-
-        };
-    */
-
 
     public static TerenskaLokacija ToDomain(this DbModels.TerenskeLokacije terenskaLokacija)
         => new TerenskaLokacija(

@@ -1,4 +1,4 @@
-﻿/*
+﻿
 using AkcijeSkole.Commons;
 using AkcijeSkole.DataAccess.SqlServer.Data;
 using AkcijeSkole.DataAccess.SqlServer.Data.DbModels;
@@ -26,10 +26,9 @@ public class MaterijalnaPotrebaRepository : IMaterijalnaPotrebaRepository
 	{
         try
         {
-            var model = _dbContext.MaterijalnePotrebe
-                          .AsNoTracking()
-                          .FirstOrDefault(potreba => potreba.IdMaterijalnePotrebe.Equals(idMaterijalnaPotreba));
-            return model is not null;
+            return _dbContext.MaterijalnePotrebe
+                     .AsNoTracking()
+                     .Contains(model.ToDbModel());
         }
         catch (Exception)
         {
@@ -357,4 +356,4 @@ public class MaterijalnaPotrebaRepository : IMaterijalnaPotrebaRepository
         }
     }
 }
-*/
+

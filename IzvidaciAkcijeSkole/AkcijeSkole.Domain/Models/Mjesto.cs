@@ -1,4 +1,4 @@
-﻿/*
+﻿
 using AkcijeSkole.Commons;
 using BaseLibrary;
 
@@ -6,21 +6,21 @@ namespace AkcijeSkole.Domain.Models;
 public class Mjesto : AggregateRoot<int>
 {
     private string _nazivMjesta;
-    private readonly List<AkcijaAssignment> _akcijaAssignments;
-    private readonly List<AktivnostAssignment> _aktivnostAssignments;
-    private readonly List<EdukacijaAssignment> _edukacijaAssignments;
-    private readonly List<SkolaAssignment> _skolaAssignments;
-    private readonly List<TerenskaLokacijaAssignment> _terenskaLokacijaAssignments;
+    private readonly List<Akcija> _akcije;
+    private readonly List<Aktivnost> _aktivnosti;
+    private readonly List<Edukacija> _edukacije;
+    private readonly List<Skola> _skole;
+    private readonly List<TerenskaLokacija> _terenskeLokacije;
 
     public string NazivMjesta { get => _nazivMjesta; set => _nazivMjesta = value; }
-    public IReadOnlyList<AkcijaAssignment> AkcijaAssignments => _akcijaAssignments.ToList();
-    public IReadOnlyList<AktivnostAssignment> AktivnostAssignments => _aktivnostAssignments.ToList();
-    public IReadOnlyList<EdukacijaAssignment> EdukacijaAssignments => _edukacijaAssignments.ToList();
-    public IReadOnlyList<SkolaAssignment> SkolaAssignments => _skolaAssignments.ToList();
-    public IReadOnlyList<TerenskaLokacijaAssignment> TerenskaLokacijaAssignments => _terenskaLokacijaAssignments.ToList();
-    public Mjesto(int id, string naziv, IEnumerable<AkcijaAssignment>? akcije = null, IEnumerable<AktivnostAssignment>? aktivnosti = null,
-        IEnumerable<EdukacijaAssignment>? edukacije = null, IEnumerable<SkolaAssignment>? skole = null,
-        IEnumerable<TerenskaLokacijaAssignment>? terLokacije = null) : base(id)
+    public IReadOnlyList<Akcija> Akcije => _akcije.ToList();
+    public IReadOnlyList<Aktivnost> Aktivnosti => _aktivnosti.ToList();
+    public IReadOnlyList<Edukacija> Edukacije => _edukacije.ToList();
+    public IReadOnlyList<Skola> Skole => _skole.ToList();
+    public IReadOnlyList<TerenskaLokacija> TerenskeLokacije => _terenskeLokacije.ToList();
+    public Mjesto(int id, string naziv, IEnumerable<Akcija>? akcije = null, IEnumerable<Aktivnost>? aktivnosti = null,
+        IEnumerable<Edukacija>? edukacije = null, IEnumerable<Skola>? skole = null,
+        IEnumerable<TerenskaLokacija>? terLokacije = null) : base(id)
     {
         if (string.IsNullOrEmpty(naziv))
         {
@@ -28,151 +28,71 @@ public class Mjesto : AggregateRoot<int>
         }
 
         _nazivMjesta = naziv;
-        _akcijaAssignments = akcije?.ToList() ?? new List<AkcijaAssignment>();
-        _aktivnostAssignments = aktivnosti?.ToList() ?? new List<AktivnostAssignment>();
-        _edukacijaAssignments = edukacije?.ToList() ?? new List<EdukacijaAssignment>();
-        _skolaAssignments = skole?.ToList() ?? new List<SkolaAssignment>();
-        _terenskaLokacijaAssignments = terLokacije?.ToList() ?? new List<TerenskaLokacijaAssignment>();
+        _akcije = akcije?.ToList() ?? new List<Akcija>();
+        _aktivnosti = aktivnosti?.ToList() ?? new List<Aktivnost>();
+        _edukacije = edukacije?.ToList() ?? new List<Edukacija>();
+        _skole = skole?.ToList() ?? new List<Skola>();
+        _terenskeLokacije = terLokacije?.ToList() ?? new List<TerenskaLokacija>();
     }
 
     public bool AssignAkcija(Akcija akcija) { 
-
-        var akcijaAssignment = new AkcijaAssignment(akcija);
-
-        _akcijaAssignments.Add(akcijaAssignment);
+        _akcije.Add(akcija);
 
         return true;
-    }
-
-    public bool AssignAkcija(AkcijaAssignment akcijaAssignment)
-    {
-        return AssignAkcija(akcijaAssignment.Akcija);
-    }
-
-    public bool DismissFromAkcija(AkcijaAssignment akcijaAssignment)
-    {
-        return _akcijaAssignments.Remove(akcijaAssignment);
     }
 
     public bool DismissFromAkcija(Akcija akcija)
     {
-        var targetAssignment = _akcijaAssignments.FirstOrDefault(ra => ra.Akcija.Equals(akcija));
-
-        return targetAssignment != null &&
-               _akcijaAssignments.Remove(targetAssignment);
+        return _akcije.Remove(akcija);
     }
 
 
-    public bool AssignAktivnost(Aktivnost aktivnost)
-    {
-
-        var aktivnostAssignment = new AktivnostAssignment(aktivnost);
-
-        _aktivnostAssignments.Add(aktivnostAssignment);
+    public bool AssignAktivnost(Aktivnost aktivnost) { 
+        _aktivnosti.Add(aktivnost);
 
         return true;
-    }
-
-    public bool AssignAktivnost(AktivnostAssignment aktivnostAssignemnt)
-    {
-        return AssignAktivnost(aktivnostAssignemnt.Aktivnost);
-    }
-
-    public bool DismissFromAktivnost(AktivnostAssignment aktivnostAssignment)
-    {
-        return _aktivnostAssignments.Remove(aktivnostAssignment);
     }
 
     public bool DismissFromAktivnost(Aktivnost aktivnost)
     {
-        var targetAssignment = _aktivnostAssignments.FirstOrDefault(ra => ra.Aktivnost.Equals(aktivnost));
-
-        return targetAssignment != null &&
-               _aktivnostAssignments.Remove(targetAssignment);
+        return _aktivnosti.Remove(aktivnost);
     }
 
-    public bool AssignEdukacija(Edukacija edukacija)
-    {
 
-        var edukacijaAssignment = new EdukacijaAssignment(edukacija);
-
-        _edukacijaAssignments.Add(edukacijaAssignment);
+    public bool AssignEdukacija(Edukacija edukacija) { 
+        _edukacije.Add(edukacija);
 
         return true;
-    }
-
-    public bool AssignEdukacija(EdukacijaAssignment edukacijaAssignment)
-    {
-        return AssignEdukacija(edukacijaAssignment.Edukacija);
-    }
-
-    public bool DismissFromEdukacija(EdukacijaAssignment edukacijaAssignment)
-    {
-        return _edukacijaAssignments.Remove(edukacijaAssignment);
     }
 
     public bool DismissFromEdukacija(Edukacija edukacija)
     {
-        var targetAssignment = _edukacijaAssignments.FirstOrDefault(ra => ra.Edukacija.Equals(edukacija));
-
-        return targetAssignment != null &&
-               _edukacijaAssignments.Remove(targetAssignment);
+        return _edukacije.Remove(edukacija);
     }
 
-    public bool AssignSkola(Skola skola)
-    {
-
-        var skolaAssignment = new SkolaAssignment(skola);
-
-        _skolaAssignments.Add(skolaAssignment);
+    public bool AssignSkola(Skola skola) { 
+        _skole.Add(skola);
 
         return true;
     }
 
-    public bool AssignSkola(SkolaAssignment skolaAssignment)
-    {
-        return AssignSkola(skolaAssignment.Skola);
-    }
-
-    public bool DismissFromSkola(SkolaAssignment skolaAssignment)
-    {
-        return _skolaAssignments.Remove(skolaAssignment);
-    }
 
     public bool DismissFromSkola(Skola skola)
     {
-        var targetAssignment = _skolaAssignments.FirstOrDefault(ra => ra.Skola.Equals(skola));
-
-        return targetAssignment != null &&
-               _skolaAssignments.Remove(targetAssignment);
+        return _skole.Remove(skola);
     }
+
 
     public bool AssignTerenskaLokacija(TerenskaLokacija terenskaLokacija)
     {
-
-        var terenskaLokacijaAssignment = new TerenskaLokacijaAssignment(terenskaLokacija);
-
-        _terenskaLokacijaAssignments.Add(terenskaLokacijaAssignment);
+        _terenskeLokacije.Add(terenskaLokacija);
 
         return true;
-    }
-
-    public bool AssignTerenskaLokacija(TerenskaLokacijaAssignment terenskaLokacijaAssignment)
-    {
-        return AssignTerenskaLokacija(terenskaLokacijaAssignment.TerenskaLokacija);
-    }
-
-    public bool DismissFromTerenskaLokacija(TerenskaLokacijaAssignment terenskaLokacijaAssignment)
-    {
-        return _terenskaLokacijaAssignments.Remove(terenskaLokacijaAssignment);
     }
 
     public bool DismissFromTerenskaLokacija(TerenskaLokacija terenskaLokacija)
     {
-        var targetAssignment = _terenskaLokacijaAssignments.FirstOrDefault(ra => ra.TerenskaLokacija.Equals(terenskaLokacija));
-
-        return targetAssignment != null &&
-               _terenskaLokacijaAssignments.Remove(targetAssignment);
+        return _terenskeLokacije.Remove(terenskaLokacija);
     }
 
     public override bool Equals(object? other)
@@ -181,16 +101,16 @@ public class Mjesto : AggregateRoot<int>
                other is Mjesto mjesto &&
               _id == mjesto._id &&
               _nazivMjesta == mjesto._nazivMjesta &&
-              _akcijaAssignments.SequenceEqual(mjesto._akcijaAssignments) &&
-              _aktivnostAssignments.SequenceEqual(mjesto._aktivnostAssignments) &&
-              _edukacijaAssignments.SequenceEqual(mjesto._edukacijaAssignments) &&
-              _skolaAssignments.SequenceEqual(mjesto._skolaAssignments) &&
-              _terenskaLokacijaAssignments.SequenceEqual(mjesto._terenskaLokacijaAssignments);
+              _akcije.SequenceEqual(mjesto._akcije) &&
+              _aktivnosti.SequenceEqual(mjesto._aktivnosti) &&
+              _edukacije.SequenceEqual(mjesto._edukacije) &&
+              _skole.SequenceEqual(mjesto._skole) &&
+              _terenskeLokacije.SequenceEqual(mjesto._terenskeLokacije);
     }
 
     public override int GetHashCode()
     {
-        return HashCode.Combine(_id, _nazivMjesta, _akcijaAssignments, _aktivnostAssignments, _edukacijaAssignments, _skolaAssignments, _terenskaLokacijaAssignments);
+        return HashCode.Combine(_id, _nazivMjesta, _akcije, _aktivnosti, _edukacije, _skole, _terenskeLokacije);
     }
 
     public override Result IsValid()
@@ -199,5 +119,5 @@ public class Mjesto : AggregateRoot<int>
             (() => !string.IsNullOrEmpty(_nazivMjesta.Trim()), "Naziv mjesta ne smije biti null, prazan ili empty space.")
             );
 }
-*/
+
 

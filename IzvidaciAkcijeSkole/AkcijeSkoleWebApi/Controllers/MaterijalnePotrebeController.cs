@@ -1,4 +1,4 @@
-﻿/*
+﻿
 using AkcijeSkole.Commons;
 using AkcijeSkole.DataAccess.SqlServer.Data;
 using AkcijeSkole.Repositories.SqlServer;
@@ -386,4 +386,4 @@ public class MaterijalnePotrebeController : ControllerBase
 
         }
     
-*/
+

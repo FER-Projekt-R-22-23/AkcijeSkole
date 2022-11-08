@@ -1,4 +1,4 @@
-﻿/*
+﻿
 using System.ComponentModel.DataAnnotations;
 using System.Data;
 using AkcijeSkole.Domain;
@@ -24,5 +24,5 @@ public static partial class DtoMapping
             akcijaAssignment.Akcija.ToDomain()
             );
 }
-*/
+
 

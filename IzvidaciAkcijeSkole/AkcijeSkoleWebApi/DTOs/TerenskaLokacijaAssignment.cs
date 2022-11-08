@@ -1,13 +1,11 @@
-﻿/*
-using akcijeskole.dataaccess.sqlserver.data.dbmodels;
-using system.componentmodel.dataannotations;
-using system.data;
-using domainmodels = akcijeskole.domain.models;
+﻿
+using domainmodels = AkcijeSkole.Domain.Models;
 namespace akcijeskole.dtos;
+using System.ComponentModel.DataAnnotations;
 
-public class terenskalokacijaassignment
+public class TerenskaLokacijaAsignment
 {
-    [required(errormessage = "terenska lokacija to assign must be provided")]
+    [Required(ErrorMessage = "terenska lokacija to assign must be provided")]
     public terenskalokacija terenskalokacija { get; set; }
 }
 
@@ -26,4 +24,3 @@ public static partial class dtomapping
             terenskalokacijaassignment.terenskalokacija.todomain()
             );
 }
-*/

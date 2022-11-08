@@ -1,4 +1,4 @@
-﻿/*
+﻿
 using AkcijeSkole.DataAccess.SqlServer.Data.DbModels;
 using System.ComponentModel.DataAnnotations;
 using System.Data;
@@ -25,4 +25,3 @@ public static partial class DtoMapping
             aktivnostAssignment.Aktivnost.ToDomain()
             );
 }
-*/

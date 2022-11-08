@@ -1,4 +1,4 @@
-﻿/*
+﻿
 using AkcijeSkole.Commons;
 using BaseLibrary;
 using System;
@@ -15,19 +15,19 @@ public class MaterijalnaPotreba : AggregateRoot<int>
     private int _organizator;
     private int _davatelj;
     private bool _zadovoljeno;
-    private readonly List<AkcijaAssignment> _akcijaAssignments;
-    private readonly List<SkolaAssignment> _skolaAssignments;
-    private readonly List<TerenskaLokacijaAssignment> _terenskaLokacijaAssignments;
+    private readonly List<Akcija> _akcije;
+    private readonly List<Skola> _skole;
+    private readonly List<TerenskaLokacija> _terenskeLokacije;
 
     public string Naziv { get => _naziv; set => _naziv = value; }
     public int Organizator { get => _organizator; set => _organizator = value; }
     public int Davatelj { get => _davatelj; set => _davatelj = value; }
     public bool Zadovoljeno { get => _zadovoljeno; set => _zadovoljeno = value; }
-    public IReadOnlyList<AkcijaAssignment> AkcijaAssignments => _akcijaAssignments.ToList();
-    public IReadOnlyList<SkolaAssignment> SkolaAssignments => _skolaAssignments.ToList();
-    public IReadOnlyList<TerenskaLokacijaAssignment> TerenskaLokacijaAssignments => _terenskaLokacijaAssignments.ToList();
-    public MaterijalnaPotreba(int id, string naziv,int organitator, int davatelj, bool zadovoljeno, IEnumerable<AkcijaAssignment>? akcije = null, IEnumerable<SkolaAssignment>? skole = null,
-        IEnumerable<TerenskaLokacijaAssignment>? terLokacije = null) : base(id)
+    public IReadOnlyList<Akcija> Akcije => _akcije.ToList();
+    public IReadOnlyList<Skola> Skole => _skole.ToList();
+    public IReadOnlyList<TerenskaLokacija> TerenskeLokacije => _terenskeLokacije.ToList();
+    public MaterijalnaPotreba(int id, string naziv,int organitator, int davatelj, bool zadovoljeno, IEnumerable<Akcija>? akcije = null, IEnumerable<Skola>? skole = null,
+        IEnumerable<TerenskaLokacija>? terLokacije = null) : base(id)
     {
         if (string.IsNullOrEmpty(naziv))
         {
@@ -38,94 +38,45 @@ public class MaterijalnaPotreba : AggregateRoot<int>
         _organizator = organitator;
         _davatelj = davatelj;
         _zadovoljeno = zadovoljeno;
-        _akcijaAssignments = akcije?.ToList() ?? new List<AkcijaAssignment>();
-        _skolaAssignments = skole?.ToList() ?? new List<SkolaAssignment>();
-        _terenskaLokacijaAssignments = terLokacije?.ToList() ?? new List<TerenskaLokacijaAssignment>();
+        _akcije = akcije?.ToList() ?? new List<Akcija>();
+        _skole = skole?.ToList() ?? new List<Skola>();
+        _terenskeLokacije = terLokacije?.ToList() ?? new List<TerenskaLokacija>();
     }
 
     public bool AssignAkcija(Akcija akcija)
     {
-
-        var akcijaAssignment = new AkcijaAssignment(akcija);
-
-        _akcijaAssignments.Add(akcijaAssignment);
+        _akcije.Add(akcija);
 
         return true;
     }
 
-    public bool AssignAkcija(AkcijaAssignment akcijaAssignment)
-    {
-        return AssignAkcija(akcijaAssignment.Akcija);
-    }
-
-    public bool DismissFromAkcija(AkcijaAssignment akcijaAssignment)
-    {
-        return _akcijaAssignments.Remove(akcijaAssignment);
-    }
-
     public bool DismissFromAkcija(Akcija akcija)
     {
-        var targetAssignment = _akcijaAssignments.FirstOrDefault(aa => aa.Akcija.Equals(akcija));
-
-        return targetAssignment != null &&
-               _akcijaAssignments.Remove(targetAssignment);
+        return _akcije.Remove(akcija);
     }
 
 
     public bool AssignSkola(Skola skola)
     {
-
-        var skolaAssignment = new SkolaAssignment(skola);
-
-        _skolaAssignments.Add(skolaAssignment);
+        _skole.Add(skola);
 
         return true;
-    }
-
-    public bool AssignSkola(SkolaAssignment skolaAssignment)
-    {
-        return AssignSkola(skolaAssignment.Skola);
-    }
-
-    public bool DismissFromSkola(SkolaAssignment skolaAssignment)
-    {
-        return _skolaAssignments.Remove(skolaAssignment);
     }
 
     public bool DismissFromSkola(Skola skola)
     {
-        var targetAssignment = _skolaAssignments.FirstOrDefault(sa => sa.Skola.Equals(skola));
-
-        return targetAssignment != null &&
-               _skolaAssignments.Remove(targetAssignment);
+        return _skole.Remove(skola);
     }
 
     public bool AssignTerenskaLokacija(TerenskaLokacija terenskaLokacija)
     {
-
-        var terenskaLokacijaAssignment = new TerenskaLokacijaAssignment(terenskaLokacija);
-
-        _terenskaLokacijaAssignments.Add(terenskaLokacijaAssignment);
-
+         _terenskeLokacije.Add(terenskaLokacija);
         return true;
-    }
-
-    public bool AssignTerenskaLokacija(TerenskaLokacijaAssignment terenskaLokacijaAssignment)
-    {
-        return AssignTerenskaLokacija(terenskaLokacijaAssignment.TerenskaLokacija);
-    }
-
-    public bool DismissFromTerenskaLokacija(TerenskaLokacijaAssignment terenskaLokacijaAssignment)
-    {
-        return _terenskaLokacijaAssignments.Remove(terenskaLokacijaAssignment);
     }
 
     public bool DismissFromTerenskaLokacija(TerenskaLokacija terenskaLokacija)
     {
-        var targetAssignment = _terenskaLokacijaAssignments.FirstOrDefault(tl => tl.TerenskaLokacija.Equals(terenskaLokacija));
-
-        return targetAssignment != null &&
-               _terenskaLokacijaAssignments.Remove(targetAssignment);
+        return _terenskeLokacije.Remove(terenskaLokacija);
     }
 
     public override Result IsValid()
@@ -143,15 +94,15 @@ public class MaterijalnaPotreba : AggregateRoot<int>
                _organizator == potreba._organizator &&
                _davatelj == potreba._davatelj &&
                _zadovoljeno == potreba._zadovoljeno &&
-               _akcijaAssignments.SequenceEqual(potreba._akcijaAssignments) &&
-               _skolaAssignments.SequenceEqual(potreba._skolaAssignments) &&
-               _terenskaLokacijaAssignments.SequenceEqual(potreba._terenskaLokacijaAssignments);
+               _akcije.SequenceEqual(potreba._akcije) &&
+               _skole.SequenceEqual(potreba._skole) &&
+               _terenskeLokacije.SequenceEqual(potreba._terenskeLokacije);
     }
 
     public override int GetHashCode()
     {
-        return HashCode.Combine(_id, _naziv, _organizator, _davatelj, _zadovoljeno, _akcijaAssignments, _skolaAssignments, _terenskaLokacijaAssignments);
+        return HashCode.Combine(_id, _naziv, _organizator, _davatelj, _zadovoljeno, _akcije, _skole, _terenskeLokacije);
     }
 }
-*/
+
 

@@ -1,5 +1,7 @@
-﻿/*
+﻿
 using AkcijeSkole.DataAccess.SqlServer.Data.DbModels;
+using AkcijeSkole.Domain.Models;
+using AkcijeSkoleWebApi.DTOs;
 using System.ComponentModel.DataAnnotations;
 using System.Data;
 using DomainModels = AkcijeSkole.Domain.Models;
@@ -8,7 +10,7 @@ namespace AkcijeSkole.DTOs;
 public class SkolaAssignment
 {
     [Required(ErrorMessage = "Skola to assign must be provided")]
-    public Skola Skola { get; set; }
+    public AkcijeSkoleWebApi.DTOs.Skola Skola { get; set; }
 }
 
 
@@ -22,7 +24,6 @@ public static partial class DtoMapping
 
     public static DomainModels.SkolaAssignment ToDomain(this SkolaAssignment skolaAssignment, int id)
         => new DomainModels.SkolaAssignment(
-            skolaAssignment.Skola.ToDomain()
+            skolaAssignment.Skola.toDomain()
             );
 }
-*/

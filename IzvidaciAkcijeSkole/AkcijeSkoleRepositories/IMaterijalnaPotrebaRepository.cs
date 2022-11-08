@@ -1,4 +1,4 @@
-﻿/*
+﻿
 using AkcijeSkole.Domain.Models;
 using AkcijeSkole.Repositories;
 
@@ -7,4 +7,4 @@ public interface IMaterijalnaPotrebaRepository
       IAggregateRepository<int, MaterijalnaPotreba>
 {
 }
-*/
+

@@ -1,4 +1,4 @@
-﻿/*
+﻿
 using Microsoft.AspNetCore.Mvc;
 using AkcijeSkole.DataAccess.SqlServer.Data;
 using AkcijeSkoleWebApi.DTOs;
@@ -561,4 +561,4 @@ namespace AkcijeSkoleWebApi.Controllers
 
     }
 }
-*/
+
