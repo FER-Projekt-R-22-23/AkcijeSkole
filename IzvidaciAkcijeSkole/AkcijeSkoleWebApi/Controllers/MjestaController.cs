@@ -24,7 +24,7 @@ namespace AkcijeSkoleWebApi.Controllers
         }
 
         [HttpGet]
-        public ActionResult<IEnumerable<Mjesto>> GetAllMjesta()
+        public ActionResult<IEnumerable<DTOs.Mjesto>> GetAllMjesta()
         {
             var mjestoResult = _mjestoRepository.GetAll()
             .Map(mjesto => mjesto.Select(DtoMapping.ToDto));
@@ -48,7 +48,7 @@ namespace AkcijeSkoleWebApi.Controllers
             };
         }
 
-        [HttpGet("/AggregateAkcija/{id}")]
+        [HttpGet("/AggregateAkcijaMjesto/{id}")]
         public ActionResult<MjestoAkcijeAggregate> GetAkcijaAggregate(int id)
         {
             var potrebaResult = _mjestoRepository.GetAkcijaAggregate(id).Map(DtoMapping.ToAkcijeAggregateDto);
@@ -61,7 +61,7 @@ namespace AkcijeSkoleWebApi.Controllers
             };
         }
 
-        [HttpGet("/AggregateAktivnost/{id}")]
+        [HttpGet("/AggregateAktivnostMjesto/{id}")]
         public ActionResult<MjestoAkcijeAggregate> GetAktivnostAggregate(int id)
         {
             var potrebaResult = _mjestoRepository.GetAktivnostAggregate(id).Map(DtoMapping.ToAktivostiAggregateDto);
@@ -74,7 +74,7 @@ namespace AkcijeSkoleWebApi.Controllers
             };
         }
 
-        [HttpGet("/AggregateEdukacija/{id}")]
+        [HttpGet("/AggregateEdukacijaMjesto/{id}")]
         public ActionResult<MjestoAkcijeAggregate> GetEdukacijaAggregate(int id)
         {
             var potrebaResult = _mjestoRepository.GetEdukacijaAggregate(id).Map(DtoMapping.ToEdukacijaAggregateDto);
@@ -87,7 +87,7 @@ namespace AkcijeSkoleWebApi.Controllers
             };
         }
 
-        [HttpGet("/AggregateSkola/{id}")]
+        [HttpGet("/AggregateSkolaMjesto/{id}")]
         public ActionResult<MjestoAkcijeAggregate> GetSkolaAggregate(int id)
         {
             var potrebaResult = _mjestoRepository.GetSkoleAggregate(id).Map(DtoMapping.ToSkolaAggregateDto);
@@ -100,7 +100,7 @@ namespace AkcijeSkoleWebApi.Controllers
             };
         }
 
-        [HttpGet("/AggregateTerenskeLokacije/{id}")]
+        [HttpGet("/AggregateTerenskeLokacijeMjesto/{id}")]
         public ActionResult<MjestoAkcijeAggregate> GetTerenskeLokacijeAggregate(int id)
         {
             var potrebaResult = _mjestoRepository.GetTerenskeLokacijeAggregate(id).Map(DtoMapping.ToTerLokacijaAggregateDto);
@@ -114,7 +114,7 @@ namespace AkcijeSkoleWebApi.Controllers
         }
 
         [HttpPost("AssignToAkcija/{id}")]
-        public IActionResult AssignMjestoToAkcija(int pbr, AkcijeSkole.Domain.Models.AkcijaAssignment akcijaAssignment)
+        public IActionResult AssignMjestoToAkcija(int pbr, DTOs.Akcija akcijaAssignment)
         {
             if (!ModelState.IsValid)
             {
@@ -133,7 +133,7 @@ namespace AkcijeSkoleWebApi.Controllers
 
             var mjesto = mjestoResult.Data;
 
-            var domainAkcijaAssignment = akcijaAssignment.ToDomain(pbr);
+            var domainAkcijaAssignment = akcijaAssignment.ToDomain();
             var validationResult = domainAkcijaAssignment.IsValid();
 
             if (!validationResult)
@@ -153,7 +153,7 @@ namespace AkcijeSkoleWebApi.Controllers
         }
 
         [HttpPost("AssignToAktivnost/{id}")]
-        public IActionResult AssignMjestoToAktivnost(int pbr, AkcijeSkole.Domain.Models.AktivnostAssignment aktivnostAssignment)
+        public IActionResult AssignMjestoToAktivnost(int pbr, DTOs.Aktivnost aktivnostAssignment)
         {
             if (!ModelState.IsValid)
             {
@@ -172,7 +172,7 @@ namespace AkcijeSkoleWebApi.Controllers
 
             var mjesto = mjestoResult.Data;
 
-            var domainAktivnostAssignment = aktivnostAssignment.ToDomain(pbr);
+            var domainAktivnostAssignment = aktivnostAssignment.ToDomain();
             var validationResult = domainAktivnostAssignment.IsValid();
 
             if (!validationResult)
@@ -192,7 +192,7 @@ namespace AkcijeSkoleWebApi.Controllers
         }
 
         [HttpPost("AssignToEdukacija/{id}")]
-        public IActionResult AssignMjestoToEdukacija(int pbr, AkcijeSkole.Domain.Models.EdukacijaAssignment edukacijaAssignment)
+        public IActionResult AssignMjestoToEdukacija(int pbr, DTOs.Edukacija edukacijaAssignment)
         {
             if (!ModelState.IsValid)
             {
@@ -211,7 +211,7 @@ namespace AkcijeSkoleWebApi.Controllers
 
             var mjesto = mjestoResult.Data;
 
-            var domainEdukacijaAssignment = edukacijaAssignment.ToDomain(pbr);
+            var domainEdukacijaAssignment = edukacijaAssignment.toDomain();
             var validationResult = domainEdukacijaAssignment.IsValid();
 
             if (!validationResult)
@@ -231,7 +231,7 @@ namespace AkcijeSkoleWebApi.Controllers
         }
 
         [HttpPost("AssignToSkola/{id}")]
-        public IActionResult AssignMjestoToSkola(int pbr, AkcijeSkole.Domain.Models.SkolaAssignment skolaAssignment)
+        public IActionResult AssignMjestoToSkola(int pbr, DTOs.Skola skolaAssignment)
         {
             if (!ModelState.IsValid)
             {
@@ -250,7 +250,7 @@ namespace AkcijeSkoleWebApi.Controllers
 
             var mjesto = mjestoResult.Data;
 
-            var domainSkolaAssignment = skolaAssignment.ToDomain(pbr);
+            var domainSkolaAssignment = skolaAssignment.toDomain();
             var validationResult = domainSkolaAssignment.IsValid();
 
             if (!validationResult)
@@ -270,7 +270,7 @@ namespace AkcijeSkoleWebApi.Controllers
         }
 
         [HttpPost("AssignToTerenskaLokacija/{id}")]
-        public IActionResult AssignMjestoToTerenskaLokacija(int pbr, AkcijeSkole.Domain.Models.TerenskaLokacijaAssignment terenskaLokacijaAssignment)
+        public IActionResult AssignMjestoToTerenskaLokacija(int pbr, DTOs.TerenskaLokacija terenskaLokacijaAssignment)
         {
             if (!ModelState.IsValid)
             {
@@ -289,7 +289,7 @@ namespace AkcijeSkoleWebApi.Controllers
 
             var mjesto = mjestoResult.Data;
 
-            var domainLokacijaAssignment = terenskaLokacijaAssignment.ToDomain(pbr);
+            var domainLokacijaAssignment = terenskaLokacijaAssignment.ToDomain();
             var validationResult = domainLokacijaAssignment.IsValid();
 
             if (!validationResult)
@@ -310,7 +310,7 @@ namespace AkcijeSkoleWebApi.Controllers
 
 
         [HttpPost("DismissFromAkcija/{id}")]
-        public IActionResult DismissMjestoFromAkcija(int pbr, Akcija akcija)
+        public IActionResult DismissMjestoFromAkcija(int pbr, DTOs.Akcija akcija)
         {
             if (!ModelState.IsValid)
             {
@@ -346,7 +346,7 @@ namespace AkcijeSkoleWebApi.Controllers
         }
 
         [HttpPost("DismissFromAktivnost/{id}")]
-        public IActionResult DismissMjestoFromAktivnost(int pbr, Aktivnost aktivnost)
+        public IActionResult DismissMjestoFromAktivnost(int pbr, DTOs.Aktivnost aktivnost)
         {
             if (!ModelState.IsValid)
             {
@@ -382,7 +382,7 @@ namespace AkcijeSkoleWebApi.Controllers
         }
 
         [HttpPost("DismissFromEdukacija/{id}")]
-        public IActionResult DismissMjestoFromEdukacija(int pbr, Edukacija edukacija)
+        public IActionResult DismissMjestoFromEdukacija(int pbr, DTOs.Edukacija edukacija)
         {
             if (!ModelState.IsValid)
             {
@@ -401,7 +401,7 @@ namespace AkcijeSkoleWebApi.Controllers
 
             var mjesto = mjestoResult.Data;
 
-            var domainEdukacija = edukacija.ToDomain();
+            var domainEdukacija = edukacija.toDomain();
 
             if (!mjesto.DismissFromEdukacija(domainEdukacija))
             {
@@ -418,7 +418,7 @@ namespace AkcijeSkoleWebApi.Controllers
         }
 
         [HttpPost("DismissFromSkola/{id}")]
-        public IActionResult DismissMjestoFromSkola(int pbr, Skola skola)
+        public IActionResult DismissMjestoFromSkola(int pbr, DTOs.Skola skola)
         {
             if (!ModelState.IsValid)
             {
@@ -437,7 +437,7 @@ namespace AkcijeSkoleWebApi.Controllers
 
             var mjesto = mjestoResult.Data;
 
-            var domainSkola = skola.ToDomain();
+            var domainSkola = skola.toDomain();
 
             if (!mjesto.DismissFromSkola(domainSkola))
             {
@@ -454,7 +454,7 @@ namespace AkcijeSkoleWebApi.Controllers
         }
 
         [HttpPost("DismissFromTerenskaLokacija/{id}")]
-        public IActionResult DismissMjestoFromTerenskaLokacija(int pbr, TerenskaLokacija terenskaLokacija)
+        public IActionResult DismissMjestoFromTerenskaLokacija(int pbr, DTOs.TerenskaLokacija terenskaLokacija)
         {
             if (!ModelState.IsValid)
             {
@@ -490,7 +490,7 @@ namespace AkcijeSkoleWebApi.Controllers
         }
 
 
-        [HttpPut]
+        [HttpPut("{id}")]
         public IActionResult EditMjesto(int pbr, DTOs.Mjesto mjesto)
         {
             if (!ModelState.IsValid)

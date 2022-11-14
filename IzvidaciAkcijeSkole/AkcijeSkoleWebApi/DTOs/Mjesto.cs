@@ -1,4 +1,4 @@
-﻿/*
+﻿
 using AkcijeSkole.DataAccess.SqlServer.Data.DbModels;
 using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -34,5 +34,5 @@ public static partial class DtoMapping
             );
        
 }
-*/
+
 

@@ -1,12 +1,9 @@
 ﻿
-using AkcijeSkole.Commons;
+
 using AkcijeSkole.DataAccess.SqlServer.Data;
-using AkcijeSkole.DataAccess.SqlServer.Data.DbModels;
 using AkcijeSkole.Domain.Models;
 using BaseLibrary;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Linq;
 
 namespace AkcijeSkole.Repositories.SqlServer;
 
@@ -26,9 +23,10 @@ public class MaterijalnaPotrebaRepository : IMaterijalnaPotrebaRepository
 	{
         try
         {
-            return _dbContext.MaterijalnePotrebe
-                     .AsNoTracking()
-                     .Contains(model.ToDbModel());
+            var model = _dbContext.MaterijalnePotrebe
+                          .AsNoTracking()
+                          .FirstOrDefault(potreba => potreba.IdMaterijalnePotrebe.Equals(idMaterijalnaPotreba));
+            return model is not null;
         }
         catch (Exception)
         {
@@ -264,22 +262,22 @@ public class MaterijalnaPotrebaRepository : IMaterijalnaPotrebaRepository
             dbModel.Davatelj = model.Davatelj;
 
             // check if persons in roles have been modified or added
-            foreach (var akcijaAssignment in model.AkcijaAssignments)
+            foreach (var akcija in model.Akcije)
             {
                 // it exists in the DB, so just update it
                 var potrebaToUpdate =
                     dbModel.Akcije
-                           .FirstOrDefault(ak => ak.IdAkcija.Equals(model.Id) && ak.IdAkcija.Equals(akcijaAssignment.Akcija.IdAkcija));
+                           .FirstOrDefault(ak => ak.MaterijalnePotrebe.Equals(model.Id) && ak.IdAkcija.Equals(akcija.Id));
                 if (potrebaToUpdate == null)
                  // it does not exist in the DB, so add it
                 {
-                    dbModel.Akcije.Add(akcijaAssignment.ToDbModel(model.Id));
+                    dbModel.Akcije.Add(akcija.ToDbModel());
                 }
             }
 
             // check if persons in roles have been removed
             dbModel.Akcije
-                   .Where(ak => !model.AkcijaAssignments.Any(_ => _.Akcija.IdAkcija == ak.IdAkcija))
+                   .Where(ak => !model.Akcije.Any(_ => _.Id == ak.IdAkcija))
                    .ToList()
                    .ForEach(ak =>
                    {
@@ -290,22 +288,22 @@ public class MaterijalnaPotrebaRepository : IMaterijalnaPotrebaRepository
                       .Update(dbModel);
 
 
-            foreach (var skolaAssignment in model.SkolaAssignments)
+            foreach (var skolaAssignment in model.Skole)
             {
                 // it exists in the DB, so just update it
                 var potrebaToUpdate =
                     dbModel.Skole
-                           .FirstOrDefault(sk => sk.IdSkole.Equals(model.Id) && sk.IdSkole.Equals(skolaAssignment.Skola.IdSkola));
+                           .FirstOrDefault(sk => sk.MjestoPbr.Equals(model.Id) && sk.IdSkole.Equals(skolaAssignment.Id));
                 if (potrebaToUpdate == null)
                 // it does not exist in the DB, so add it
                 {
-                    dbModel.Skole.Add(skolaAssignment.ToDbModel(model.Id));
+                    dbModel.Skole.Add(skolaAssignment.ToDbModel());
                 }
             }
 
             // check if persons in roles have been removed
             dbModel.Skole
-                   .Where(sk => !model.SkolaAssignments.Any(_ => _.Skola.IdSkole == sk.IdSkole))
+                   .Where(sk => !model.Skole.Any(_ => _.Id == sk.IdSkole))
                    .ToList()
                    .ForEach(sk =>
                    {
@@ -317,22 +315,22 @@ public class MaterijalnaPotrebaRepository : IMaterijalnaPotrebaRepository
 
 
 
-            foreach (var terenskaLokacijaAssignment in model.TerenskaLokacijaAssignments)
+            foreach (var terenskaLokacijaAssignment in model.TerenskeLokacije)
             {
                 // it exists in the DB, so just update it
                 var potrebaToUpdate =
                     dbModel.TerenskeLokacije
-                           .FirstOrDefault(tl => tl.IdTerenskeLokacije.Equals(model.Id) && tl.IdTerenskeLokacije.Equals(terenskaLokacijaAssignment.TerenskaLokacija.IdTerenskeLokacije));
+                           .FirstOrDefault(tl => tl.MjestoPbr.Equals(model.Id) && tl.IdTerenskeLokacije.Equals(terenskaLokacijaAssignment.Id));
                 if (potrebaToUpdate == null)
                 // it does not exist in the DB, so add it
                 {
-                    dbModel.TerenskeLokacije.Add(terenskaLokacijaAssignment.ToDbModel(model.Id));
+                    dbModel.TerenskeLokacije.Add(terenskaLokacijaAssignment.ToDbModel());
                 }
             }
 
             // check if persons in roles have been removed
             dbModel.TerenskeLokacije
-                   .Where(ak => !model.TerenskaLokacijaAssignments.Any(_ => _.TerenskaLokacija.IdTerenskeLokacije == ak.IdTerenskeLokacije))
+                   .Where(ak => !model.TerenskeLokacije.Any(_ => _.Id == ak.IdTerenskeLokacije))
                    .ToList()
                    .ForEach(tl =>
                    {
@@ -353,6 +351,29 @@ public class MaterijalnaPotrebaRepository : IMaterijalnaPotrebaRepository
         catch (Exception e)
         {
             return Results.OnException(e);
+        }
+    }
+
+    public Result<MaterijalnaPotreba> GetAggregate(int id)
+    {
+        try
+        {
+            var model = _dbContext.MaterijalnePotrebe
+                          .Include(potreba => potreba.Akcije)
+                          .Include(potreba => potreba.Skole)
+                          .Include(potreba => potreba.TerenskeLokacije)
+                          .AsNoTracking()
+                          .FirstOrDefault(potreba => potreba.IdMaterijalnePotrebe.Equals(id)) // give me the first or null; substitute for .Where() // single or default throws an exception if more than one element meets the criteria
+                          ?.ToDomain();
+
+
+            return model is not null
+                ? Results.OnSuccess(model)
+                : Results.OnFailure<MaterijalnaPotreba>();
+        }
+        catch (Exception e)
+        {
+            return Results.OnException<MaterijalnaPotreba>(e);
         }
     }
 }

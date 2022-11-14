@@ -27,11 +27,11 @@ public static class Mapping
         {
             PbrMjesta = mjesto.Id,
             NazivMjesta = mjesto.NazivMjesta,
-            Akcije = mjesto.Akcije.Select(a => a.ToDbModel(mjesto.Id)).ToList(),
-            Aktivnosti = mjesto.Aktivnosti.Select(a => a.ToDbModel(mjesto.Id)).ToList(),
-            Edukacije = mjesto.Edukacije.Select(e => e.ToDbModel(mjesto.Id)).ToList(),
-            Skole = mjesto.Skole.Select(s => s.ToDbModel(mjesto.Id)).ToList(),
-            TerenskeLokacije = mjesto.TerenskeLokacije.Select(tl => tl.ToDbModel(mjesto.Id)).ToList()
+            Akcije = mjesto.Akcije.Select(a => a.ToDbModel()).ToList(),
+            Aktivnosti = mjesto.Aktivnosti.Select(a => a.ToDbModel()).ToList(),
+            Edukacije = mjesto.Edukacije.Select(e => e.ToDbModel()).ToList(),
+            Skole = mjesto.Skole.Select(s => s.ToDbModel()).ToList(),
+            TerenskeLokacije = mjesto.TerenskeLokacije.Select(tl => tl.ToDbModel()).ToList()
 
         };
 
@@ -42,8 +42,8 @@ public static class Mapping
             potreba.Organizator,
             potreba.Davatelj,
             potreba.Zadovoljeno,
-            potreba.Akcije.Select(ToDomain),
-            potreba.Skole.Select(ToDomain),
+            potreba.Akcije.Select(ToDomainAkcija),
+            potreba.Skole.Select(ToDomainSkola),
             potreba.TerenskeLokacije.Select(ToDomain)
     );
 
@@ -55,9 +55,9 @@ public static class Mapping
             Organizator = potreba.Organizator,
             Davatelj = potreba.Davatelj,
             Zadovoljeno = potreba.Zadovoljeno,
-            Akcije = potreba.AkcijaAssignments.Select(pr => pr.ToDbModel(potreba.Id)).ToList(),
-            Skole = potreba.SkolaAssignments.Select(pr => pr.ToDbModel(potreba.Id)).ToList(),
-            TerenskeLokacije = potreba.TerenskaLokacijaAssignments.Select(pr => pr.ToDbModel(potreba.Id)).ToList()
+            Akcije = potreba.Akcije.Select(pr => pr.ToDbModel()).ToList(),
+            Skole = potreba.Skole.Select(pr => pr.ToDbModel()).ToList(),
+            TerenskeLokacije = potreba.TerenskeLokacije.Select(pr => pr.ToDbModel()).ToList()
 
         };
 

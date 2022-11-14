@@ -302,22 +302,22 @@ public class MjestoRepository : IMjestoRepository
             dbModel.PbrMjesta = model.Id;
 
             // check if mjesta in akcije have been modified or added
-            foreach (var akcijeAssignment in model.AkcijaAssignments)
+            foreach (var akcijeAssignment in model.Akcije)
             {
                 // it exists in the DB, so just update it
                 var mjToUpdate =
                     dbModel.Akcije
-                           .FirstOrDefault(pr => pr.MjestoPbr.Equals(model.Id) && pr.MjestoPbr.Equals(akcijeAssignment.Akcija.MjestoPbr));
+                           .FirstOrDefault(pr => pr.MjestoPbr.Equals(model.Id) && pr.MjestoPbr.Equals(akcijeAssignment.MjestoPbr));
                 
                 if(mjToUpdate != null) // it does not exist in the DB, so add it
                 {
-                    dbModel.Akcije.Add(akcijeAssignment.ToDbModel(model.Id));
+                    dbModel.Akcije.Add(akcijeAssignment.ToDbModel());
                 }
             }
 
             // check if persons in roles have been removed
             dbModel.Akcije
-                   .Where(pr => !model.AkcijaAssignments.Any(_ => _.Akcija.IdAkcija == pr.IdAkcija))
+                   .Where(pr => !model.Akcije.Any(_ => _.Id == pr.IdAkcija))
                    .ToList()
                    .ForEach(p =>
                    {
@@ -327,22 +327,22 @@ public class MjestoRepository : IMjestoRepository
             _dbContext.Mjesta
                       .Update(dbModel);
 
-            foreach (var aktivnostAssignment in model.AktivnostAssignments)
+            foreach (var aktivnostAssignment in model.Aktivnosti)
             {
                 // it exists in the DB, so just update it
                 var mjToUpdate =
                     dbModel.Aktivnosti
-                           .FirstOrDefault(pr => pr.MjestoPbr.Equals(model.Id) && pr.MjestoPbr.Equals(aktivnostAssignment.Aktivnost.MjestoPbr));
+                           .FirstOrDefault(pr => pr.MjestoPbr.Equals(model.Id) && pr.MjestoPbr.Equals(aktivnostAssignment.MjestoPbr));
 
                 if (mjToUpdate != null) // it does not exist in the DB, so add it
                 {
-                    dbModel.Aktivnosti.Add(aktivnostAssignment.ToDbModel(model.Id));
+                    dbModel.Aktivnosti.Add(aktivnostAssignment.ToDbModel());
                 }
             }
 
             // check if persons in roles have been removed
             dbModel.Aktivnosti
-                   .Where(pr => !model.AktivnostAssignments.Any(_ => _.Aktivnost.IdAktivnost == pr.IdAktivnost))
+                   .Where(pr => !model.Aktivnosti.Any(_ => _.Id == pr.IdAktivnost))
                    .ToList()
                    .ForEach(p =>
                    {
@@ -352,22 +352,22 @@ public class MjestoRepository : IMjestoRepository
             _dbContext.Mjesta
                       .Update(dbModel);
 
-            foreach (var edukacijaAssignment in model.EdukacijaAssignments)
+            foreach (var edukacijaAssignment in model.Edukacije)
             {
                 // it exists in the DB, so just update it
                 var mjToUpdate =
                     dbModel.Edukacije
-                           .FirstOrDefault(pr => pr.MjestoPbr.Equals(model.Id) && pr.MjestoPbr.Equals(edukacijaAssignment.Edukacija.MjestoPbr));
+                           .FirstOrDefault(pr => pr.MjestoPbr.Equals(model.Id) && pr.MjestoPbr.Equals(edukacijaAssignment.MjestoPbr));
 
                 if (mjToUpdate != null) // it does not exist in the DB, so add it
                 {
-                    dbModel.Edukacije.Add(edukacijaAssignment.ToDbModel(model.Id));
+                    dbModel.Edukacije.Add(edukacijaAssignment.ToDbModel());
                 }
             }
 
             // check if persons in roles have been removed
             dbModel.Edukacije
-                   .Where(pr => !model.EdukacijaAssignments.Any(_ => _.Edukacija.IdEdukacija == pr.IdEdukacija))
+                   .Where(pr => !model.Edukacije.Any(_ => _.Id == pr.IdEdukacija))
                    .ToList()
                    .ForEach(p =>
                    {
@@ -377,22 +377,22 @@ public class MjestoRepository : IMjestoRepository
             _dbContext.Mjesta
                       .Update(dbModel);
 
-            foreach (var skolaAssignment in model.SkolaAssignments)
+            foreach (var skolaAssignment in model.Skole)
             {
                 // it exists in the DB, so just update it
                 var mjToUpdate =
                     dbModel.Skole
-                           .FirstOrDefault(pr => pr.MjestoPbr.Equals(model.Id) && pr.MjestoPbr.Equals(skolaAssignment.Skola.MjestoPbr));
+                           .FirstOrDefault(pr => pr.MjestoPbr.Equals(model.Id) && pr.MjestoPbr.Equals(skolaAssignment.MjestoPbr));
 
                 if (mjToUpdate != null) // it does not exist in the DB, so add it
                 {
-                    dbModel.Skole.Add(skolaAssignment.ToDbModel(model.Id));
+                    dbModel.Skole.Add(skolaAssignment.ToDbModel());
                 }
             }
 
             // check if persons in roles have been removed
             dbModel.Skole
-                   .Where(pr => !model.SkolaAssignments.Any(_ => _.Skola.IdSkole == pr.IdSkole))
+                   .Where(pr => !model.Skole.Any(_ => _.Id == pr.IdSkole))
                    .ToList()
                    .ForEach(p =>
                    {
@@ -402,22 +402,22 @@ public class MjestoRepository : IMjestoRepository
             _dbContext.Mjesta
                       .Update(dbModel);
 
-            foreach (var terenskaLokacijaAssignment in model.TerenskaLokacijaAssignments)
+            foreach (var terenskaLokacijaAssignment in model.TerenskeLokacije)
             {
                 // it exists in the DB, so just update it
                 var mjToUpdate =
                     dbModel.TerenskeLokacije
-                           .FirstOrDefault(pr => pr.MjestoPbr.Equals(model.Id) && pr.MjestoPbr.Equals(terenskaLokacijaAssignment.TerenskaLokacija.MjestoPbr));
+                           .FirstOrDefault(pr => pr.MjestoPbr.Equals(model.Id) && pr.MjestoPbr.Equals(terenskaLokacijaAssignment.MjestoPbr));
 
                 if (mjToUpdate != null) // it does not exist in the DB, so add it
                 {
-                    dbModel.TerenskeLokacije.Add(terenskaLokacijaAssignment.ToDbModel(model.Id));
+                    dbModel.TerenskeLokacije.Add(terenskaLokacijaAssignment.ToDbModel());
                 }
             }
 
             // check if persons in roles have been removed
             dbModel.TerenskeLokacije
-                   .Where(pr => !model.TerenskaLokacijaAssignments.Any(_ => _.TerenskaLokacija.IdTerenskeLokacije == pr.IdTerenskeLokacije))
+                   .Where(pr => !model.TerenskeLokacije.Any(_ => _.Id == pr.IdTerenskeLokacije))
                    .ToList()
                    .ForEach(p =>
                    {
@@ -457,6 +457,11 @@ public class MjestoRepository : IMjestoRepository
         {
             return Results.OnException<IEnumerable<Mjesto>>(e);
         }
+    }
+
+    public Result<Mjesto> GetAggregate(int id)
+    {
+        throw new NotImplementedException();
     }
 }
 

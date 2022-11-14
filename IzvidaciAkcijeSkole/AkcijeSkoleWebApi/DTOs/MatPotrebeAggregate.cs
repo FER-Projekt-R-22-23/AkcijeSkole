@@ -18,7 +18,7 @@ namespace AkcijeSkoleWebApi.DTOs;
     public int Organizator { get; set; }
     public int Davatelj { get; set; }
     public bool Zadovoljeno { get; set; }
-    public IEnumerable<AkcijeSkole.Domain.Models.AkcijaAssignment> AkcijaAssignment { get; set; } = Enumerable.Empty<AkcijeSkole.Domain.Models.AkcijaAssignment>();
+    public IEnumerable<DTOs.Akcija> AkcijaAssignment { get; set; } = Enumerable.Empty<DTOs.Akcija>();
 }
 
 public class MatPotrebeSkoleAggregate
@@ -31,7 +31,7 @@ public class MatPotrebeSkoleAggregate
     public int Organizator { get; set; }
     public int Davatelj { get; set; }
     public bool Zadovoljeno { get; set; }
-    public IEnumerable<AkcijeSkole.Domain.Models.SkolaAssignment> SkolaAssignment { get; set; } = Enumerable.Empty<AkcijeSkole.Domain.Models.SkolaAssignment>();
+    public IEnumerable<DTOs.Skola> SkolaAssignment { get; set; } = Enumerable.Empty<DTOs.Skola>();
 }
 
 public class MatPotrebeTerLokacijeAggregate
@@ -44,7 +44,7 @@ public class MatPotrebeTerLokacijeAggregate
     public int Organizator { get; set; }
     public int Davatelj { get; set; }
     public bool Zadovoljeno { get; set; }
-    public IEnumerable<AkcijeSkole.Domain.Models.TerenskaLokacijaAssignment> TerenskaLokacijaAssignment { get; set; } = Enumerable.Empty<AkcijeSkole.Domain.Models.TerenskaLokacijaAssignment>();
+    public IEnumerable<DTOs.TerenskaLokacija> TerenskaLokacijaAssignment { get; set; } = Enumerable.Empty<DTOs.TerenskaLokacija>();
 }
 
 public static partial class DtoMapping
@@ -57,9 +57,9 @@ public static partial class DtoMapping
             Organizator = potreba.Organizator,
             Davatelj = potreba.Davatelj,
             Zadovoljeno = potreba.Zadovoljeno,
-            AkcijaAssignment = potreba.AkcijaAssignments == null
-                            ? new List<AkcijeSkole.Domain.Models.AkcijaAssignment>()
-                            : potreba.AkcijaAssignments.Select(pr => pr.ToDto()).ToList()
+            AkcijaAssignment = potreba.Akcije == null
+                            ? new List<DTOs.Akcija>()
+                            : potreba.Akcije.Select(pr => pr.ToDto()).ToList()
         };
 
     public static AkcijeSkole.Domain.Models.MaterijalnaPotreba ToDomainWithAkcije(MatPotrebeAkcijeAggregate potreba)
@@ -69,9 +69,7 @@ public static partial class DtoMapping
             potreba.Organizator,
             potreba.Davatelj,
             potreba.Zadovoljeno,
-            potreba.AkcijaAssignment == null
-            ? new List<AkcijeSkole.Domain.Models.AkcijaAssignment>() 
-            : potreba.AkcijaAssignment.Select(ToDomain)
+            potreba.AkcijaAssignment.Select(ToDomain)
             );
 
     public static MatPotrebeSkoleAggregate ToSkoleAggregateDto(this AkcijeSkole.Domain.Models.MaterijalnaPotreba potreba)
@@ -82,22 +80,21 @@ public static partial class DtoMapping
             Organizator = potreba.Organizator,
             Davatelj = potreba.Davatelj,
             Zadovoljeno = potreba.Zadovoljeno,
-            SkolaAssignment = potreba.SkolaAssignments == null
-                            ? new List<AkcijeSkole.Domain.Models.SkolaAssignment>()
-                            : potreba.SkolaAssignments.Select(pr => pr.ToDto()).ToList()
+            SkolaAssignment = potreba.Skole == null
+                            ? new List<DTOs.Skola>()
+                            : potreba.Skole.Select(pr => pr.ToDto()).ToList()
         };
 
-    public static MaterijalnePotrebe ToDomainlWithSkole(AkcijeSkole.Domain.Models.MaterijalnaPotreba potreba)
+    public static AkcijeSkole.Domain.Models.MaterijalnaPotreba ToDomainlWithSkole(MatPotrebeSkoleAggregate potreba)
         => new AkcijeSkole.Domain.Models.MaterijalnaPotreba(
 
-            potreba.Id,
+            potreba.IdMaterijalnePotrebe,
             potreba.Naziv,
             potreba.Organizator,
             potreba.Davatelj,
             potreba.Zadovoljeno,
-            potreba.SkolaAssignments == null
-                            ? new List<Skole>()
-                            : potreba.SkolaAssignments.Select(ToDomain)
+            null,
+            potreba.SkolaAssignment.Select(toDomain)
         );
 
 
@@ -109,9 +106,9 @@ public static partial class DtoMapping
             Organizator = potreba.Organizator,
             Davatelj = potreba.Davatelj,
             Zadovoljeno = potreba.Zadovoljeno,
-            TerenskaLokacijaAssignment = potreba.TerenskaLokacijaAssignments == null
-                            ? new List<AkcijeSkole.Domain.Models.TerenskaLokacijaAssignment>()
-                            : potreba.TerenskaLokacijaAssignments.Select(pr => pr.ToDto()).ToList()
+            TerenskaLokacijaAssignment = potreba.TerenskeLokacije == null
+                            ? new List<DTOs.TerenskaLokacija>()
+                            : potreba.TerenskeLokacije.Select(pr => pr.ToDto()).ToList()
         };
 
     public static AkcijeSkole.Domain.Models.MaterijalnaPotreba ToDomainlWithTerLokacije(MatPotrebeTerLokacijeAggregate potreba)
@@ -121,9 +118,9 @@ public static partial class DtoMapping
             potreba.Organizator,
             potreba.Davatelj,
             potreba.Zadovoljeno,
-            potreba.TerenskaLokacijaAssignment == null
-                            ? new List<AkcijeSkole.Domain.Models.TerenskaLokacijaAssignment>()
-                            : potreba.TerenskaLokacijaAssignment.Select(ToDomain)
+            null,
+            null,
+            potreba.TerenskaLokacijaAssignment.Select(DtoMapping.ToDomain)
             );
 }
 

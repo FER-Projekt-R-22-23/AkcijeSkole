@@ -1,12 +1,6 @@
 ﻿
 using AkcijeSkole.Commons;
 using BaseLibrary;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace AkcijeSkole.Domain.Models;
 public class MaterijalnaPotreba : AggregateRoot<int>

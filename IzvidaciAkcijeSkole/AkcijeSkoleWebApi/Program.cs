@@ -20,6 +20,8 @@ builder.Services.AddTransient<IEdukacijeRepository, EdukacijeRepository>();
 builder.Services.AddTransient<IAkcijeRepository, AkcijeRepository>();
 builder.Services.AddTransient<IAktivnostiRepository, AktivnostiRepository>();
 builder.Services.AddTransient<ITerenskaLokacijaRepository, TerenskaLokacijaRepository>();
+builder.Services.AddTransient<IMjestoRepository, MjestoRepository>();
+builder.Services.AddTransient<IMaterijalnaPotrebaRepository, MaterijalnaPotrebaRepository>();
 // Add services to the container.
 
 builder.Services.AddControllers();
