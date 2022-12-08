@@ -15,12 +15,11 @@ namespace AkcijeSkoleWebApi.Controllers
     [ApiController]
     public class MjestaController : ControllerBase
     {
-        private readonly AkcijeSkoleDbContext _context;
-        private readonly MjestoRepository _mjestoRepository;
+        private readonly IMjestoRepository _mjestoRepository;
 
-        public MjestaController(MjestoRepository mjestoRepository)
+        public MjestaController(IMjestoRepository context)
         {
-            _mjestoRepository = mjestoRepository;
+            _mjestoRepository = context;
         }
 
         [HttpGet]
@@ -62,7 +61,7 @@ namespace AkcijeSkoleWebApi.Controllers
         }
 
         [HttpGet("/AggregateAktivnostMjesto/{id}")]
-        public ActionResult<MjestoAkcijeAggregate> GetAktivnostAggregate(int id)
+        public ActionResult<MjestoAktivnostiAggregate> GetAktivnostAggregate(int id)
         {
             var potrebaResult = _mjestoRepository.GetAktivnostAggregate(id).Map(DtoMapping.ToAktivostiAggregateDto);
 
@@ -75,7 +74,7 @@ namespace AkcijeSkoleWebApi.Controllers
         }
 
         [HttpGet("/AggregateEdukacijaMjesto/{id}")]
-        public ActionResult<MjestoAkcijeAggregate> GetEdukacijaAggregate(int id)
+        public ActionResult<MjestoEdukacijeAggregate> GetEdukacijaAggregate(int id)
         {
             var potrebaResult = _mjestoRepository.GetEdukacijaAggregate(id).Map(DtoMapping.ToEdukacijaAggregateDto);
 
@@ -88,7 +87,7 @@ namespace AkcijeSkoleWebApi.Controllers
         }
 
         [HttpGet("/AggregateSkolaMjesto/{id}")]
-        public ActionResult<MjestoAkcijeAggregate> GetSkolaAggregate(int id)
+        public ActionResult<MjestoSkoleAggregate> GetSkolaAggregate(int id)
         {
             var potrebaResult = _mjestoRepository.GetSkoleAggregate(id).Map(DtoMapping.ToSkolaAggregateDto);
 
@@ -101,7 +100,7 @@ namespace AkcijeSkoleWebApi.Controllers
         }
 
         [HttpGet("/AggregateTerenskeLokacijeMjesto/{id}")]
-        public ActionResult<MjestoAkcijeAggregate> GetTerenskeLokacijeAggregate(int id)
+        public ActionResult<MjestoTerLokacijeAggregate> GetTerenskeLokacijeAggregate(int id)
         {
             var potrebaResult = _mjestoRepository.GetTerenskeLokacijeAggregate(id).Map(DtoMapping.ToTerLokacijaAggregateDto);
 
@@ -113,7 +112,7 @@ namespace AkcijeSkoleWebApi.Controllers
             };
         }
 
-        [HttpPost("AssignToAkcija/{id}")]
+       /* [HttpPost("AssignToAkcija/{pbr}")]
         public IActionResult AssignMjestoToAkcija(int pbr, DTOs.Akcija akcijaAssignment)
         {
             if (!ModelState.IsValid)
@@ -152,7 +151,7 @@ namespace AkcijeSkoleWebApi.Controllers
                 : Problem(updateResult.Message, statusCode: 500);
         }
 
-        [HttpPost("AssignToAktivnost/{id}")]
+        [HttpPost("AssignToAktivnost/{pbr}")]
         public IActionResult AssignMjestoToAktivnost(int pbr, DTOs.Aktivnost aktivnostAssignment)
         {
             if (!ModelState.IsValid)
@@ -191,7 +190,7 @@ namespace AkcijeSkoleWebApi.Controllers
                 : Problem(updateResult.Message, statusCode: 500);
         }
 
-        [HttpPost("AssignToEdukacija/{id}")]
+        [HttpPost("AssignToEdukacija/{pbr}")]
         public IActionResult AssignMjestoToEdukacija(int pbr, DTOs.Edukacija edukacijaAssignment)
         {
             if (!ModelState.IsValid)
@@ -230,7 +229,7 @@ namespace AkcijeSkoleWebApi.Controllers
                 : Problem(updateResult.Message, statusCode: 500);
         }
 
-        [HttpPost("AssignToSkola/{id}")]
+        [HttpPost("AssignToSkola/{pbr}")]
         public IActionResult AssignMjestoToSkola(int pbr, DTOs.Skola skolaAssignment)
         {
             if (!ModelState.IsValid)
@@ -269,7 +268,7 @@ namespace AkcijeSkoleWebApi.Controllers
                 : Problem(updateResult.Message, statusCode: 500);
         }
 
-        [HttpPost("AssignToTerenskaLokacija/{id}")]
+        [HttpPost("AssignToTerenskaLokacija/{pbr}")]
         public IActionResult AssignMjestoToTerenskaLokacija(int pbr, DTOs.TerenskaLokacija terenskaLokacijaAssignment)
         {
             if (!ModelState.IsValid)
@@ -308,8 +307,8 @@ namespace AkcijeSkoleWebApi.Controllers
                 : Problem(updateResult.Message, statusCode: 500);
         }
 
-
-        [HttpPost("DismissFromAkcija/{id}")]
+        
+        [HttpPost("DismissFromAkcija/{pbr}")]
         public IActionResult DismissMjestoFromAkcija(int pbr, DTOs.Akcija akcija)
         {
             if (!ModelState.IsValid)
@@ -345,7 +344,7 @@ namespace AkcijeSkoleWebApi.Controllers
                 : Problem(updateResult.Message, statusCode: 500);
         }
 
-        [HttpPost("DismissFromAktivnost/{id}")]
+        [HttpPost("DismissFromAktivnost/{pbr}")]
         public IActionResult DismissMjestoFromAktivnost(int pbr, DTOs.Aktivnost aktivnost)
         {
             if (!ModelState.IsValid)
@@ -381,7 +380,7 @@ namespace AkcijeSkoleWebApi.Controllers
                 : Problem(updateResult.Message, statusCode: 500);
         }
 
-        [HttpPost("DismissFromEdukacija/{id}")]
+        [HttpPost("DismissFromEdukacija/{pbr}")]
         public IActionResult DismissMjestoFromEdukacija(int pbr, DTOs.Edukacija edukacija)
         {
             if (!ModelState.IsValid)
@@ -417,7 +416,7 @@ namespace AkcijeSkoleWebApi.Controllers
                 : Problem(updateResult.Message, statusCode: 500);
         }
 
-        [HttpPost("DismissFromSkola/{id}")]
+        [HttpPost("DismissFromSkola/{pbr}")]
         public IActionResult DismissMjestoFromSkola(int pbr, DTOs.Skola skola)
         {
             if (!ModelState.IsValid)
@@ -453,7 +452,7 @@ namespace AkcijeSkoleWebApi.Controllers
                 : Problem(updateResult.Message, statusCode: 500);
         }
 
-        [HttpPost("DismissFromTerenskaLokacija/{id}")]
+        [HttpPost("DismissFromTerenskaLokacija/{pbr}")]
         public IActionResult DismissMjestoFromTerenskaLokacija(int pbr, DTOs.TerenskaLokacija terenskaLokacija)
         {
             if (!ModelState.IsValid)
@@ -488,9 +487,9 @@ namespace AkcijeSkoleWebApi.Controllers
                 ? Accepted()
                 : Problem(updateResult.Message, statusCode: 500);
         }
+       */
 
-
-        [HttpPut("{id}")]
+        [HttpPut("{pbr}")]
         public IActionResult EditMjesto(int pbr, DTOs.Mjesto mjesto)
         {
             if (!ModelState.IsValid)
@@ -540,7 +539,7 @@ namespace AkcijeSkoleWebApi.Controllers
                 .Bind(() => _mjestoRepository.Insert(domainMjesto));
 
             return result
-                ? CreatedAtAction("Get", new { id = mjesto.PbrMjesta }, mjesto)
+                ? CreatedAtAction("CreateMjesto", new { id = mjesto.PbrMjesta }, mjesto)
                 : Problem(result.Message, statusCode: 500);
         }
 
