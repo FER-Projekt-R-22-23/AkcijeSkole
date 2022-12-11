@@ -87,7 +87,7 @@ public static class Mapping
 
 
     public static Skola ToDomainSkola(this DbModels.Skole skola)
-        => new Skola(skola.IdSkole, skola.NazivSkole, skola.MjestoPbr, skola.Organizator, skola.KontaktOsoba);
+        => new Skola(skola.IdSkole, skola.NazivSkole, skola.MjestoPbr, skola.Organizator, skola.KontaktOsoba, skola.Edukacije.Select(ToDomainEdukacija), skola.PolazniciSkole.Select(ToDomain));
 
     public static DbModels.Skole ToDbModel(this Skola skola)
     {

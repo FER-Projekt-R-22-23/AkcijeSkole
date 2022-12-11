@@ -1,4 +1,6 @@
-﻿using AkcijeSkole.Domain.Models;
+﻿using AkcijeSkole.DataAccess.SqlServer.Data.DbModels;
+using AkcijeSkole.Domain.Models;
+using AkcijeSkole.Repositories.SqlServer;
 using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 using DbModels = AkcijeSkole.DataAccess.SqlServer.Data.DbModels;
@@ -17,6 +19,7 @@ namespace AkcijeSkoleWebApi.DTOs
         public int Organizator { get; set; }
         public int KontaktOsoba { get; set; }
         public IEnumerable<PolaznikSkole> PolazniciSkole { get; set; } = Enumerable.Empty<PolaznikSkole>();
+        public IEnumerable<Edukacija> EdukacijeUSkoli { get; set; } = Enumerable.Empty<Edukacija>();
     }
 
     public static partial class DtoMapping
@@ -30,12 +33,13 @@ namespace AkcijeSkoleWebApi.DTOs
                 MjestoPbr = skola.MjestoPbr,
                 Organizator = skola.Organizator,
                 KontaktOsoba = skola.KontaktOsoba,
-                PolazniciSkole = skola.PolazniciSkole == null ? new List<PolaznikSkole>() : skola.PolazniciSkole.Select(polaznik => polaznik.ToDto()).ToList()
+                PolazniciSkole = skola.PolazniciSkole == null ? new List<PolaznikSkole>() : skola.PolazniciSkole.Select(polaznik => polaznik.ToDto()).ToList(),
+                EdukacijeUSkoli = skola.EdukacijeUSkoli == null ? new List<Edukacija>() : skola.EdukacijeUSkoli.Select(edukacija => edukacija.ToDto()).ToList()
             };
         }
         public static DomainModels.Skola toDomain(this SkolaAggregate skola)
         {
-            return new DomainModels.Skola(skola.IdSkole, skola.NazivSkole, skola.MjestoPbr, skola.Organizator, skola.KontaktOsoba);
+            return new DomainModels.Skola(skola.IdSkole, skola.NazivSkole, skola.MjestoPbr, skola.Organizator, skola.KontaktOsoba, skola.EdukacijeUSkoli.Select(toDomain), skola.PolazniciSkole.Select(ToDomain));
         }
 
     }
