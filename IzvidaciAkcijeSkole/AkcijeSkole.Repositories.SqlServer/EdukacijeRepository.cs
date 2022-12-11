@@ -208,7 +208,7 @@ public class EdukacijeRepository : IEdukacijeRepository
                               //.AsNoTracking()
                               .FirstOrDefault(_ => _.IdEdukacija == model.Id);
             if (dbModel == null)
-                return Results.OnFailure($"Person with id {model.Id} not found.");
+                return Results.OnFailure($"Edukacija with id {model.Id} not found.");
 
             dbModel.NazivEdukacija = model.NazivEdukacije;
             dbModel.OpisEdukacije = model.OpisEdukacije;

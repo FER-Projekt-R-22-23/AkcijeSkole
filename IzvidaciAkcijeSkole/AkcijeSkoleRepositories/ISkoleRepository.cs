@@ -8,6 +8,7 @@ namespace AkcijeSkole.Repositories;
 /// <typeparam name="TKey"></typeparam>
 /// <typeparam name="TDomainModel"></typeparam>
 public interface ISkoleRepository
-    : IRepository<int, Skola>
+    : IRepository<int, Skola>,
+      IAggregateRepository<int, Skola>
 {
 }

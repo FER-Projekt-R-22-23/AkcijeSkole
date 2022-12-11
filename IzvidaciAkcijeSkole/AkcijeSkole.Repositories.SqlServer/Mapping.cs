@@ -112,6 +112,18 @@ public static class Mapping
             ClanId = predavacNaEdukaciji.idClan,
             EdukacijaId = edukacijaId
         };
+
+    public static PolaznikSkole ToDomain(this DbModels.PolazniciSkole polaznikSkole)
+        => new PolaznikSkole(polaznikSkole.Polaznik, polaznikSkole.EdukacijaId);
+
+    public static DbModels.PolazniciSkole ToDbModel(this PolaznikSkole polaznikSkole, int skolaId)
+        => new DbModels.PolazniciSkole()
+        {
+            Polaznik = polaznikSkole.idPolaznik,
+            EdukacijaId = polaznikSkole.idPolaznik,
+            SkolaId = skolaId
+        };
+
     public static Edukacija ToDomainEdukacija(this DbModels.Edukacije edukacija)
         => new Edukacija(edukacija.IdEdukacija, edukacija.NazivEdukacija, edukacija.MjestoPbr, edukacija.OpisEdukacije, edukacija.SkolaId, edukacija.Predavaci.Select(ToDomain));
 

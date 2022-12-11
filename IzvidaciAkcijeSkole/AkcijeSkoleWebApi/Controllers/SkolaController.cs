@@ -46,6 +46,21 @@ namespace AkcijeSkoleWebApi.Controllers
             };
         }
 
+        [HttpGet("/SkoleAggregate/{id}")]
+        public ActionResult<SkolaAggregate> GetSkoleAggregate(int id)
+        {
+            var skolaResult = _skolaRepository.GetAggregate(id).Map(DtoMapping.ToAggregateDto);
+
+            return skolaResult switch
+            {
+                { IsSuccess: true } => Ok(skolaResult.Data),
+                { IsFailure: true } => NotFound(),
+                { IsException: true } or _ => Problem(skolaResult.Message, statusCode: 500)
+            };
+        }
+
+
+
         // PUT: api/Skole/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
