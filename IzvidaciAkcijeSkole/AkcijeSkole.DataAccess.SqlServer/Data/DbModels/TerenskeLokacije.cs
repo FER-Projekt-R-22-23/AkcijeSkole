@@ -23,7 +23,6 @@ namespace AkcijeSkole.DataAccess.SqlServer.Data.DbModels
         [StringLength(50)]
         [Unicode(false)]
         public string NazivTerenskeLokacije { get; set; }
-        [Required]
         public byte[] Slika { get; set; }
         public bool ImaSanitarniCvor { get; set; }
         public int MjestoPbr { get; set; }

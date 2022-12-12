@@ -11,8 +11,6 @@ public class TerenskaLokacija
     [Required(ErrorMessage = "Naziv terenske lokacije can't be null", AllowEmptyStrings = false)]
     [StringLength(50, ErrorMessage = "Naziv terenske lokacije can't be longer than 50 characters")]
     public string NazivTerenskaLokacija { get; set; } = string.Empty;
-
-    [Required(ErrorMessage = "Slika can't be null")]
     public byte[]? Slika { get; set; }
 
     public bool ImaSanitarniCvor { get; set; }

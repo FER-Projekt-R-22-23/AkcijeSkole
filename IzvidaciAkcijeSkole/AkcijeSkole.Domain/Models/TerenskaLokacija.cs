@@ -3,7 +3,7 @@ using AkcijeSkole.Commons;
 
 namespace AkcijeSkole.Domain.Models;
 
-public class TerenskaLokacija : Entity<int>
+public class TerenskaLokacija : AggregateRoot<int>
 {
     private string _nazivTerenskaLokacija;
     private byte[] _slika;
@@ -25,11 +25,6 @@ public class TerenskaLokacija : Entity<int>
         if (string.IsNullOrEmpty(nazivTerenskaLokacija))
         {
             throw new ArgumentException($"'{nameof(nazivTerenskaLokacija)}' cannot be null or empty.", nameof(nazivTerenskaLokacija));
-        }
-
-        if(slika == null || slika.Length == 0)
-        {
-            throw new ArgumentException($"'{nameof(slika)}' cannot be null or empty.", nameof(slika));
         }
 
         if (string.IsNullOrEmpty(opis))
@@ -65,7 +60,6 @@ public class TerenskaLokacija : Entity<int>
         => Validation.Validate(
             (() => _nazivTerenskaLokacija.Length <= 50, "Naziv terenske lokacije length must be less than 50 characters"),
             (() => !string.IsNullOrEmpty(_nazivTerenskaLokacija.Trim()), "Naziv terenske lokacije can't be null, empty or whitespace"),
-            (() => !(_slika == null || _slika.Length == 0), "Slika can't be null" ),
             (() => !string.IsNullOrEmpty(_opis.Trim()), "Opis can't be null, empty or whitespace")
             );
 }
