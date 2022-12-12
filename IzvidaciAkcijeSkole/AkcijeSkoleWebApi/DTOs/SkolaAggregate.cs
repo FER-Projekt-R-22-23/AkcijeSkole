@@ -18,7 +18,6 @@ namespace AkcijeSkoleWebApi.DTOs
         public int MjestoPbr { get; set; }
         public int Organizator { get; set; }
         public int KontaktOsoba { get; set; }
-        public IEnumerable<PolaznikSkole> PolazniciSkole { get; set; } = Enumerable.Empty<PolaznikSkole>();
         public IEnumerable<Edukacija> EdukacijeUSkoli { get; set; } = Enumerable.Empty<Edukacija>();
     }
 
@@ -33,13 +32,12 @@ namespace AkcijeSkoleWebApi.DTOs
                 MjestoPbr = skola.MjestoPbr,
                 Organizator = skola.Organizator,
                 KontaktOsoba = skola.KontaktOsoba,
-                PolazniciSkole = skola.PolazniciSkole == null ? new List<PolaznikSkole>() : skola.PolazniciSkole.Select(polaznik => polaznik.ToDto()).ToList(),
                 EdukacijeUSkoli = skola.EdukacijeUSkoli == null ? new List<Edukacija>() : skola.EdukacijeUSkoli.Select(edukacija => edukacija.ToDto()).ToList()
             };
         }
         public static DomainModels.Skola toDomain(this SkolaAggregate skola)
         {
-            return new DomainModels.Skola(skola.IdSkole, skola.NazivSkole, skola.MjestoPbr, skola.Organizator, skola.KontaktOsoba, skola.EdukacijeUSkoli.Select(toDomain), skola.PolazniciSkole.Select(ToDomain));
+            return new DomainModels.Skola(skola.IdSkole, skola.NazivSkole, skola.MjestoPbr, skola.Organizator, skola.KontaktOsoba, skola.EdukacijeUSkoli.Select(toDomain));
         }
 
     }

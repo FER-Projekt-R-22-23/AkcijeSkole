@@ -7,6 +7,7 @@ using System.Data;
 using AkcijeSkole.Domain.Models;
 using BaseLibrary;
 using System;
+using System.Diagnostics;
 
 namespace AkcijeSkole.Repositories.SqlServer;
 public class EdukacijeRepository : IEdukacijeRepository
@@ -58,7 +59,7 @@ public class EdukacijeRepository : IEdukacijeRepository
 
             return model is not null
                 ? Results.OnSuccess(model)
-                : Results.OnFailure<Edukacija>($"No person with id {id} found");
+                : Results.OnFailure<Edukacija>($"No edukacija with id {id} found");
         }
         catch (Exception e)
         {
@@ -68,14 +69,16 @@ public class EdukacijeRepository : IEdukacijeRepository
 
     public Result<Edukacija> GetAggregate(int id)
     {
+     
         try
         {
             var model = _dbContext.Edukacije
+                          .Include(edukacija => edukacija.PolazniciSkole)
                           .Include(edukacija => edukacija.Predavaci)
+                          .Include(edukacija => edukacija.PrijavljeniPolazniciSkole)
                           .AsNoTracking()
                           .FirstOrDefault(edukacija => edukacija.IdEdukacija.Equals(id)) // give me the first or null; substitute for .Where() // single or default throws an exception if more than one element meets the criteria
                           ?.ToDomainEdukacija();
-
 
             return model is not null
                 ? Results.OnSuccess(model)

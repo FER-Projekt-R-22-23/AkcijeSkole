@@ -9,9 +9,9 @@ public class Skola : AggregateRoot<int>
     private int _Organizator;
     private int _KontaktOsoba;
     private readonly List<Edukacija> _edukacijeUSkoli;
-    private readonly List<PolaznikSkole> _polazniciSkole;
+    private readonly List<PolaznikNaEdukaciji> _polazniciSkole;
 
-    public Skola(int id, string nazivSkole, int mjestoPbr, int organizator, int kontaktOsoba, IEnumerable<Edukacija>? edukacijaUSkoli = null, IEnumerable<PolaznikSkole>? polazniciSkole = null) : base(id)
+    public Skola(int id, string nazivSkole, int mjestoPbr, int organizator, int kontaktOsoba, IEnumerable<Edukacija>? edukacijaUSkoli = null, IEnumerable<PolaznikNaEdukaciji>? polazniciSkole = null) : base(id)
     {
         if (string.IsNullOrEmpty(nazivSkole))
         {
@@ -22,7 +22,7 @@ public class Skola : AggregateRoot<int>
         _Organizator = organizator;
         _KontaktOsoba = kontaktOsoba;
         _edukacijeUSkoli = edukacijaUSkoli?.ToList() ?? new List<Edukacija>();
-        _polazniciSkole = polazniciSkole?.ToList() ?? new List<PolaznikSkole>();
+        _polazniciSkole = polazniciSkole?.ToList() ?? new List<PolaznikNaEdukaciji>();
     }
 
     public string NazivSkole { get => _NazivSkole; set => _NazivSkole = value; }
@@ -30,7 +30,7 @@ public class Skola : AggregateRoot<int>
     public int MjestoPbr { get => _MjestoPbr; set => _MjestoPbr = value; }
     public int KontaktOsoba { get => _KontaktOsoba; set => _KontaktOsoba = value; }
     public IReadOnlyList<Edukacija> EdukacijeUSkoli => _edukacijeUSkoli.ToList();
-    public IReadOnlyList<PolaznikSkole> PolazniciSkole => _polazniciSkole.ToList();
+    public IReadOnlyList<PolaznikNaEdukaciji> PolazniciSkole => _polazniciSkole.ToList();
 
     public override bool Equals(object? obj)
     {
@@ -78,7 +78,7 @@ public class Skola : AggregateRoot<int>
         return targetAssignment != null && _edukacijeUSkoli.Remove(targetAssignment);
     }
 
-    public bool newPolaznik(PolaznikSkole polaznikSkole)
+    public bool newPolaznik(PolaznikNaEdukaciji polaznikSkole)
     {
         try
         {

@@ -113,19 +113,31 @@ public static class Mapping
             EdukacijaId = edukacijaId
         };
 
-    public static PolaznikSkole ToDomain(this DbModels.PolazniciSkole polaznikSkole)
-        => new PolaznikSkole(polaznikSkole.Polaznik, polaznikSkole.EdukacijaId);
+    public static PolaznikNaEdukaciji ToDomain(this DbModels.PolazniciSkole polaznik)
+        => new PolaznikNaEdukaciji(polaznik.Polaznik);
 
-    public static DbModels.PolazniciSkole ToDbModel(this PolaznikSkole polaznikSkole, int skolaId)
+    public static DbModels.PolazniciSkole ToDbModel(this PolaznikNaEdukaciji polaznik, int skolaId, int edukacijaId)
         => new DbModels.PolazniciSkole()
         {
-            Polaznik = polaznikSkole.idPolaznik,
-            EdukacijaId = polaznikSkole.idPolaznik,
+            Polaznik = polaznik.idPolaznik,
+            EdukacijaId = edukacijaId,
+            SkolaId = skolaId
+        };
+
+    public static PrijavljeniClanNaEdukaciji ToDomain(this DbModels.PrijavljeniPolazniciSkole prijavljeni)
+        => new PrijavljeniClanNaEdukaciji(prijavljeni.PrijavljenClan, prijavljeni.DatumPrijave);
+
+    public static DbModels.PrijavljeniPolazniciSkole ToDbModel(this PrijavljeniClanNaEdukaciji prijavljeni, int skolaId, int edukacijaId)
+        => new DbModels.PrijavljeniPolazniciSkole()
+        {
+            PrijavljenClan = prijavljeni.idPolaznik,
+            DatumPrijave = prijavljeni.datumPrijave,
+            EdukacijaId = edukacijaId,
             SkolaId = skolaId
         };
 
     public static Edukacija ToDomainEdukacija(this DbModels.Edukacije edukacija)
-        => new Edukacija(edukacija.IdEdukacija, edukacija.NazivEdukacija, edukacija.MjestoPbr, edukacija.OpisEdukacije, edukacija.SkolaId, edukacija.Predavaci.Select(ToDomain));
+        => new Edukacija(edukacija.IdEdukacija, edukacija.NazivEdukacija, edukacija.MjestoPbr, edukacija.OpisEdukacije, edukacija.SkolaId, edukacija.Predavaci.Select(ToDomain), edukacija.PolazniciSkole.Select(ToDomain), edukacija.PrijavljeniPolazniciSkole.Select(ToDomain));
 
     public static DbModels.Edukacije ToDbModel(this Edukacija edukacija)
     {
@@ -136,7 +148,9 @@ public static class Mapping
             MjestoPbr = edukacija.MjestoPbr,
             OpisEdukacije = edukacija.OpisEdukacije,
             SkolaId = edukacija.SkolaId,
-            Predavaci = edukacija.PredavaciNaEdukaciji.Select(obj => obj.ToDbModel(edukacija.Id)).ToList()
+            Predavaci = edukacija.PredavaciNaEdukaciji.Select(obj => obj.ToDbModel(edukacija.Id)).ToList(),
+            PrijavljeniPolazniciSkole = edukacija.PrijavljeniNaEdukaciji.Select(obj => obj.ToDbModel(edukacija.SkolaId,edukacija.Id)).ToList(),
+            PolazniciSkole = edukacija.PolazniciEdukacije.Select(obj => obj.ToDbModel(edukacija.SkolaId, edukacija.Id)).ToList()
         };
     }
 

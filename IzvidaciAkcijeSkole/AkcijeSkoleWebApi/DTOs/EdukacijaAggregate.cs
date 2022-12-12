@@ -15,6 +15,8 @@ namespace AkcijeSkoleWebApi.DTOs
         public string OpisEdukacije { get; set; } = String.Empty;
         public int SkolaId { get; set; }
         public IEnumerable<PredavacNaEdukaciji> PredavaciNaEdukaciji { get; set; } = Enumerable.Empty<PredavacNaEdukaciji>();
+        public IEnumerable<PolaznikNaEdukaciji> PolazniciEdukacije { get; set; } = Enumerable.Empty<PolaznikNaEdukaciji>();
+        public IEnumerable<PrijavljenClanNaEdukaciju> PrijavljeniNaEdukaciju { get; set; } = Enumerable.Empty<PrijavljenClanNaEdukaciju>();
     }
 
     public static partial class DtoMapping
@@ -28,12 +30,14 @@ namespace AkcijeSkoleWebApi.DTOs
                 MjestoPbr = edukacija.MjestoPbr,
                 OpisEdukacije = edukacija.OpisEdukacije,
                 SkolaId = edukacija.SkolaId,
-                PredavaciNaEdukaciji = edukacija.PredavaciNaEdukaciji == null ? new List<PredavacNaEdukaciji>() : edukacija.PredavaciNaEdukaciji.Select(predavac => predavac.ToDto()).ToList()
+                PredavaciNaEdukaciji = edukacija.PredavaciNaEdukaciji == null ? new List<PredavacNaEdukaciji>() : edukacija.PredavaciNaEdukaciji.Select(predavac => predavac.ToDto()).ToList(),
+                PolazniciEdukacije = edukacija.PolazniciEdukacije == null ? new List<PolaznikNaEdukaciji>() : edukacija.PolazniciEdukacije.Select(polaznik => polaznik.ToDto()).ToList(),
+                PrijavljeniNaEdukaciju = edukacija.PrijavljeniNaEdukaciji == null ? new List<PrijavljenClanNaEdukaciju>() : edukacija.PrijavljeniNaEdukaciji.Select(prijavljeni => prijavljeni.ToDto()).ToList()
             };
         }
         public static DomainModels.Edukacija toDomain(this EdukacijaAggregate edukacija)
         {
-            return new DomainModels.Edukacija(edukacija.IdEdukacija, edukacija.NazivEdukacija, edukacija.MjestoPbr, edukacija.OpisEdukacije, edukacija.SkolaId, edukacija.PredavaciNaEdukaciji.Select(ToDomain));
+            return new DomainModels.Edukacija(edukacija.IdEdukacija, edukacija.NazivEdukacija, edukacija.MjestoPbr, edukacija.OpisEdukacije, edukacija.SkolaId, edukacija.PredavaciNaEdukaciji.Select(ToDomain), edukacija.PolazniciEdukacije.Select(ToDomain), edukacija.PrijavljeniNaEdukaciju.Select(ToDomain));
         }
 
     }
