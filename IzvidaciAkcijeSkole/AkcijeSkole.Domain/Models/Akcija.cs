@@ -14,8 +14,9 @@ namespace AkcijeSkole.Domain.Models
         private int _MjestoPbr;
         private int _Organizator;
         private int _KontaktOsoba;
+        private string _Vrsta;
 
-        public Akcija(int id, string naziv, int mjestoPbr, int organizator, int kontaktOsoba) : base(id)
+        public Akcija(int id, string naziv, int mjestoPbr, int organizator, int kontaktOsoba, string vrsta)  : base(id)
         {
             if(string.IsNullOrEmpty(naziv))
             {
@@ -25,6 +26,7 @@ namespace AkcijeSkole.Domain.Models
             _MjestoPbr = mjestoPbr;
             _Organizator = organizator;
             _KontaktOsoba = kontaktOsoba;
+            _Vrsta = vrsta;
         }
 
         public string Naziv { get => _Naziv; set => _Naziv = value; }
@@ -35,6 +37,8 @@ namespace AkcijeSkole.Domain.Models
 
         public int KontaktOsoba { get => _KontaktOsoba; set => _KontaktOsoba = value;}
 
+        public string Vrsta { get => _Vrsta; set => _Vrsta = value; }
+
         public override bool Equals(object? obj)
         {
             return obj is not null &&
@@ -42,7 +46,8 @@ namespace AkcijeSkole.Domain.Models
                 Id.Equals(akcija.Id) &&
                 Naziv.Equals(akcija.Naziv) &&
                 MjestoPbr.Equals(akcija.MjestoPbr) &&
-                Organizator.Equals(akcija.Organizator);
+                Organizator.Equals(akcija.Organizator) &&
+                KontaktOsoba.Equals(akcija.KontaktOsoba);
     
         }
 

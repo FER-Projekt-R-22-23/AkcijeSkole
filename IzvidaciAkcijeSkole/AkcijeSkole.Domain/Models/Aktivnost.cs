@@ -48,8 +48,8 @@ namespace AkcijeSkole.Domain.Models
         }
 
         public override Result IsValid()
-        {
-            throw new NotImplementedException();
-        }
+        => Validation.Validate(
+            (() => !string.IsNullOrEmpty(_Opis), "Opis akcije can't be null, empty or withespaces! Please fill in.")
+            );
     }
 }

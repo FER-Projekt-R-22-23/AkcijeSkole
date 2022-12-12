@@ -15,6 +15,8 @@ namespace AkcijeSkoleWebApi.DTOs
         public int MjestoPbr { get; set; }
         public int Organizator { get; set; }
         public int KontaktOsoba { get; set; }
+
+        public string Vrsta { get; set; }
     }
 
     public static partial class DtoMapping
@@ -28,11 +30,12 @@ namespace AkcijeSkoleWebApi.DTOs
                 MjestoPbr = akcija.MjestoPbr,
                 Organizator = akcija.Organizator,
                 KontaktOsoba = akcija.KontaktOsoba,
+                Vrsta = akcija.Vrsta
             };
         }
         public static DomainModels.Akcija ToDomain(this Akcija akcija)
         {
-            return new DomainModels.Akcija(akcija.IdAkcije, akcija.Naziv, akcija.MjestoPbr, akcija.Organizator, akcija.KontaktOsoba);
+            return new DomainModels.Akcija(akcija.IdAkcije, akcija.Naziv, akcija.MjestoPbr, akcija.Organizator, akcija.KontaktOsoba, akcija.Vrsta);
         }
 
     }
