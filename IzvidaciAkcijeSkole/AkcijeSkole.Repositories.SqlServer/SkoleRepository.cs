@@ -73,7 +73,6 @@ public class SkolaRepository : ISkoleRepository
         {
             var model = _dbContext.Skole
                           .Include(skola => skola.Edukacije)
-                          .Include(skola => skola.PolazniciSkole)
                           .AsNoTracking()
                           .FirstOrDefault(skola => skola.IdSkole.Equals(id)) // give me the first or null; substitute for .Where() // single or default throws an exception if more than one element meets the criteria
                           ?.ToDomainSkola();
@@ -111,7 +110,6 @@ public class SkolaRepository : ISkoleRepository
         {
             var models = _dbContext.Skole
                           .Include(skola => skola.Edukacije)
-                          .Include(skola => skola.PolazniciSkole)
                           .AsNoTracking().Select(Mapping.ToDomainSkola);
 
             return Results.OnSuccess(models);
@@ -153,6 +151,9 @@ public class SkolaRepository : ISkoleRepository
         try
         {
             var model = _dbContext.Skole
+                          .Include(_skole => _skole.Edukacije)
+                          .Include(_skole => _skole.PolazniciSkole)
+                          .Include(_skole => _skole.PrijavljeniPolazniciSkole)
                           .AsNoTracking()
                           .FirstOrDefault(skola => skola.IdSkole.Equals(id));
             if (model is not null)
@@ -205,15 +206,14 @@ public class SkolaRepository : ISkoleRepository
 
             var dbModel = _dbContext.Skole
                               .Include(skola => skola.Edukacije)
-                              .Include(skola => skola.PolazniciSkole)
                               //.AsNoTracking()
                               .FirstOrDefault(_ => _.IdSkole == model.Id);
             if (dbModel == null)
                 return Results.OnFailure($"Skola with id {model.Id} not found.");
 
             dbModel.NazivSkole = model.NazivSkole;
-            dbModel.Organizator = model.Organizator;
             dbModel.MjestoPbr = model.MjestoPbr;
+            dbModel.Organizator = model.Organizator;
             dbModel.KontaktOsoba = model.KontaktOsoba;
 
 
@@ -221,21 +221,21 @@ public class SkolaRepository : ISkoleRepository
             foreach (var edukacija in model.EdukacijeUSkoli)
             {
                 // it exists in the DB, so just update it
-                var edukacijaUSkoliToUpdate =
+                var edukacijaToUpdate =
                     dbModel.Edukacije
-                           .FirstOrDefault(ed => ed.SkolaId.Equals(model.Id) && ed.IdEdukacija.Equals(edukacija.Id));
-                if (edukacijaUSkoliToUpdate != null)
+                           .FirstOrDefault(pr => pr.SkolaId.Equals(model.Id) && pr.IdEdukacija.Equals(edukacija.Id));
+                if (edukacijaToUpdate != null)
                 {
-                    edukacijaUSkoliToUpdate.IdEdukacija = edukacija.Id;
-                    edukacijaUSkoliToUpdate.NazivEdukacija = edukacija.NazivEdukacije;
-                    edukacijaUSkoliToUpdate.MjestoPbr = edukacija.MjestoPbr;
-                    edukacijaUSkoliToUpdate.OpisEdukacije = edukacija.OpisEdukacije;
+                    edukacijaToUpdate.NazivEdukacija = edukacija.NazivEdukacije;
+                    edukacijaToUpdate.OpisEdukacije = edukacija.OpisEdukacije;
+                    edukacijaToUpdate.MjestoPbr = edukacija.MjestoPbr;
                 }
                 else // it does not exist in the DB, so add it
                 {
-                    dbModel.Edukacije.Add(edukacijaUSkoliToUpdate);
+                    dbModel.Edukacije.Add(edukacija.ToDbModel());
                 }
             }
+
 
             dbModel.Edukacije
                    .Where(pr => !model.EdukacijeUSkoli.Any(_ => _.Id == pr.IdEdukacija))
@@ -244,6 +244,7 @@ public class SkolaRepository : ISkoleRepository
                    {
                        dbModel.Edukacije.Remove(edukacija);
                    });
+
 
             _dbContext.Skole
                       .Update(dbModel);

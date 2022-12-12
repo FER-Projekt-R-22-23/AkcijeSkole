@@ -7,6 +7,7 @@ using System.Data;
 using AkcijeSkole.Domain.Models;
 using DTOs = AkcijeSkoleWebApi.DTOs;
 using AkcijeSkole.DataAccess.SqlServer.Data.DbModels;
+using AkcijeSkole.Repositories.SqlServer;
 
 namespace AkcijeSkoleWebApi.Controllers
 {
@@ -48,7 +49,7 @@ namespace AkcijeSkoleWebApi.Controllers
         }
 
         [HttpGet("/EdukacijaAggregate/{id}")]
-        public ActionResult<EdukacijaAggregate> GetPersonAggregate(int id)
+        public ActionResult<EdukacijaAggregate> GetEdukacijaAggregate(int id)
         {
             var edukacijaResult = _edukacijaRepository.GetAggregate(id).Map(DtoMapping.ToAggregateDto);
 
@@ -215,6 +216,80 @@ namespace AkcijeSkoleWebApi.Controllers
             return deleteResult
                 ? NoContent()
                 : Problem(deleteResult.Message, statusCode: 500);
+        }
+
+        [HttpPost("PrijaviPolaznika/{edukacijaId}")]
+        public IActionResult DodajaPolaznika(int edukacijaId, DTOs.PrijavljenClanNaEdukaciju prijavljeni)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var edukacijaResult = _edukacijaRepository.GetAggregate(edukacijaId);
+            if (edukacijaResult.IsFailure)
+            {
+                return NotFound();
+            }
+            if (edukacijaResult.IsException)
+            {
+                return Problem(edukacijaResult.Message, statusCode: 500);
+            }
+
+            var edukacija = edukacijaResult.Data;
+
+            var domainPrijavljeni = prijavljeni.ToDomain();
+            var validationResult = domainPrijavljeni.IsValid();
+
+            if (!validationResult)
+            {
+                return Problem(validationResult.Message, statusCode: 500);
+            }
+
+            edukacija.newPrijavljeni(domainPrijavljeni);
+
+            var updateResult =
+                edukacija.IsValid()
+                .Bind(() => _edukacijaRepository.UpdateAggregate(edukacija));
+
+            return updateResult
+                ? Accepted()
+                : Problem(updateResult.Message, statusCode: 500);
+        }
+
+        [HttpPost("OdjaviPolaznika/{edukacijaId}")]
+        public IActionResult OdjaviPolaznika(int edukacijaId, int polaznikId)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var edukacijaResult = _edukacijaRepository.GetAggregate(edukacijaId);
+            if (edukacijaResult.IsFailure)
+            {
+                return NotFound();
+            }
+            if (edukacijaResult.IsException)
+            {
+                return Problem(edukacijaResult.Message, statusCode: 500);
+            }
+
+            var edukacija = edukacijaResult.Data;
+
+
+            if (!edukacija.removePrijavljeni(polaznikId))
+            {
+                return NotFound($"Couldn't find polaznik {polaznikId}");
+            }
+
+            var updateResult =
+                edukacija.IsValid()
+                .Bind(() => _edukacijaRepository.UpdateAggregate(edukacija));
+
+            return updateResult
+                ? Accepted()
+                : Problem(updateResult.Message, statusCode: 500);
         }
     }
 }

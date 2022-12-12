@@ -87,7 +87,7 @@ public static class Mapping
 
 
     public static Skola ToDomainSkola(this DbModels.Skole skola)
-        => new Skola(skola.IdSkole, skola.NazivSkole, skola.MjestoPbr, skola.Organizator, skola.KontaktOsoba, skola.Edukacije.Select(ToDomainEdukacija), skola.PolazniciSkole.Select(ToDomain));
+        => new Skola(skola.IdSkole, skola.NazivSkole, skola.MjestoPbr, skola.Organizator, skola.KontaktOsoba, skola.Edukacije.Select(ToDomainEdukacija));
 
     public static DbModels.Skole ToDbModel(this Skola skola)
     {
@@ -98,6 +98,7 @@ public static class Mapping
             MjestoPbr = skola.MjestoPbr,
             Organizator = skola.Organizator,
             KontaktOsoba = skola.KontaktOsoba,
+            Edukacije = skola.EdukacijeUSkoli.Select(obj => obj.ToDbModel()).ToList(),
 
         };
     }

@@ -208,6 +208,7 @@ public class EdukacijeRepository : IEdukacijeRepository
 
             var dbModel = _dbContext.Edukacije
                               .Include(edukacija => edukacija.Predavaci)
+                              .Include(edukacija => edukacija.PrijavljeniPolazniciSkole)
                               //.AsNoTracking()
                               .FirstOrDefault(_ => _.IdEdukacija == model.Id);
             if (dbModel == null)
@@ -237,7 +238,7 @@ public class EdukacijeRepository : IEdukacijeRepository
                 }
             }
 
-            // check if persons in roles have been removed
+           
             dbModel.Predavaci
                    .Where(pr => !model.PredavaciNaEdukaciji.Any(_ => _.idPredavac == pr.IdPredavac))
                    .ToList()
@@ -245,6 +246,35 @@ public class EdukacijeRepository : IEdukacijeRepository
                    {
                        dbModel.Predavaci.Remove(predavac);
                    });
+
+
+            foreach (var prijavljeni in model.PrijavljeniNaEdukaciji)
+            {
+                // it exists in the DB, so just update it
+                var prijavljeniToUpdate =
+                    dbModel.PrijavljeniPolazniciSkole
+                           .FirstOrDefault(pr => pr.EdukacijaId.Equals(model.Id) && pr.PrijavljenClan.Equals(prijavljeni.idPolaznik) && pr.SkolaId.Equals(model.SkolaId));
+                if (prijavljeniToUpdate != null)
+                {
+                    prijavljeniToUpdate.PrijavljenClan = prijavljeni.idPolaznik;
+                    prijavljeniToUpdate.DatumPrijave = prijavljeni.datumPrijave;
+                }
+                else // it does not exist in the DB, so add it
+                {
+                    dbModel.PrijavljeniPolazniciSkole.Add(prijavljeni.ToDbModel(model.SkolaId, model.Id));
+                }
+            }
+
+
+            dbModel.PrijavljeniPolazniciSkole
+                   .Where(pr => !model.PrijavljeniNaEdukaciji.Any(_ => _.idPolaznik == pr.PrijavljenClan))
+                   .ToList()
+                   .ForEach(prijavljeni =>
+                   {
+                       dbModel.PrijavljeniPolazniciSkole.Remove(prijavljeni);
+                   });
+
+
 
             _dbContext.Edukacije
                       .Update(dbModel);
