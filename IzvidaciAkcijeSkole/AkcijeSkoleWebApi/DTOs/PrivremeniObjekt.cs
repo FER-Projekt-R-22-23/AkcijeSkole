@@ -1,6 +1,8 @@
 using System.ComponentModel.DataAnnotations;
 using DomainModels = AkcijeSkole.Domain.Models;
 
+
+namespace AkcijeSkoleWebApi.DTOs;
 public class PrivremeniObjekt
 {
     public int IdPrivremeniObjekt { get; set; }
