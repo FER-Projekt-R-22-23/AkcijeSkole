@@ -83,5 +83,45 @@ public class Edukacija : AggregateRoot<int>
         var targetAssignment = _predavaciNaEdukaciji.FirstOrDefault(obj => obj.idPredavac.Equals(predavacId));
         return targetAssignment != null && _predavaciNaEdukaciji.Remove(targetAssignment);
     }
+
+    public bool newPrijavljeni(PrijavljeniClanNaEdukaciji prijavljeni)
+    {
+        try
+        {
+            _prijavljeniNaEdukaciju.Add(prijavljeni);
+            return true;
+        }
+        catch (Exception)
+        {
+            return false;
+
+        }
+    }
+
+    public bool removePrijavljeni(int prijavljeniId)
+    {
+        var targetAssignment = _prijavljeniNaEdukaciju.FirstOrDefault(obj => obj.idPolaznik.Equals(prijavljeniId));
+        return targetAssignment != null && _prijavljeniNaEdukaciju.Remove(targetAssignment);
+    }
+
+    public bool newPolaznik(PolaznikNaEdukaciji polaznik)
+    {
+        try
+        {
+            _polazniciNaEdukaciji.Add(polaznik);
+            return true;
+        }
+        catch (Exception)
+        {
+            return false;
+
+        }
+    }
+
+    public bool removePolaznik(int polaznikId)
+    {
+        var targetAssignment = _polazniciNaEdukaciji.FirstOrDefault(obj => obj.idPolaznik.Equals(polaznikId));
+        return targetAssignment != null && _polazniciNaEdukaciji.Remove(targetAssignment);
+    }
 }
 

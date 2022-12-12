@@ -78,25 +78,5 @@ public class Skola : AggregateRoot<int>
         return targetAssignment != null && _edukacijeUSkoli.Remove(targetAssignment);
     }
 
-    public bool newPolaznik(PolaznikNaEdukaciji polaznikSkole)
-    {
-        try
-        {
-            _polazniciSkole.Add(polaznikSkole);
-            return true;
-        }
-        catch (Exception)
-        {
-            return false;
-
-        }
-    }
-
-    public bool removePolaznik(int idPolaznik)
-    {
-        var targetAssignment = _polazniciSkole.FirstOrDefault(obj => obj.idPolaznik.Equals(idPolaznik));
-        return targetAssignment != null && _polazniciSkole.Remove(targetAssignment);
-    }
-
 }
 
