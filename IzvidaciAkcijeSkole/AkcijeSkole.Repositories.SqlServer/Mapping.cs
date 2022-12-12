@@ -129,7 +129,7 @@ public static class Mapping
     }
 
     public static Akcija ToDomainAkcija(this DbModels.Akcije akcija)
-       => new Akcija(akcija.IdAkcija, akcija.Naziv, akcija.MjestoPbr, akcija.Organizator, akcija.KontaktOsoba, akcija.Vrsta);
+       => new Akcija(akcija.IdAkcija, akcija.Naziv, akcija.MjestoPbr, akcija.Organizator, akcija.KontaktOsoba, akcija.Vrsta, akcija.Aktivnosti.Select(ToDomainAktivnost));
 
     public static DbModels.Akcije ToDbModel(this Akcija akcija)
     {
@@ -140,7 +140,8 @@ public static class Mapping
             MjestoPbr = akcija.MjestoPbr,
             Organizator = akcija.Organizator,
             KontaktOsoba = akcija.KontaktOsoba,
-            Vrsta = akcija.Vrsta
+            Vrsta = akcija.Vrsta,
+            Aktivnosti = akcija.AktivnostiAkcije.Select(a => a.ToDbModel()).ToList()
 
         };
     }

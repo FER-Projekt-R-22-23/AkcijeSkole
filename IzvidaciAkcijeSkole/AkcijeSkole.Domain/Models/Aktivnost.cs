@@ -10,7 +10,7 @@ using System.Data;
 
 namespace AkcijeSkole.Domain.Models
 {
-    public class Aktivnost : AggregateRoot<int>
+    public class Aktivnost : Entity<int>
     {
         private int _MjestoPbr;
         private int _KontaktOsoba;
@@ -25,6 +25,7 @@ namespace AkcijeSkole.Domain.Models
             _KontaktOsoba = kontaktOsoba;
             _AkcijaId = akcijaId;
         }
+
 
         public int MjestoPbr { get => _MjestoPbr; set => _MjestoPbr = value; }
         public int KontaktOsoba { get => _KontaktOsoba; set => _KontaktOsoba = value; } 

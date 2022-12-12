@@ -110,5 +110,20 @@ namespace AkcijeSkoleWebApi.Controllers
                 ? NoContent()
                 : Problem(deleteResult.Message, statusCode: 500);
         }
+
+        [HttpGet("/AggregateAktivnost/{id}")]
+        public ActionResult<MatPotrebeAkcijeAggregate> GetAkcijaAktivnostAggregate(int id)
+        {
+            var akcijaResult = _context.GetAggregate(id).Map(DtoMapping.ToAktivnostiAggregateDto);
+
+            return akcijaResult switch
+            {
+                { IsSuccess: true } => Ok(akcijaResult.Data),
+                { IsFailure: true } => NotFound(),
+                { IsException: true } or _ => Problem(akcijaResult.Message, statusCode: 500)
+            };
+        }
+
+
     }
 }

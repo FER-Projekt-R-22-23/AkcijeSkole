@@ -8,15 +8,16 @@ using AkcijeSkole.Commons;
 
 namespace AkcijeSkole.Domain.Models
 {
-    public class Akcija : Entity<int>
+    public class Akcija : AggregateRoot<int>
     {
         private string _Naziv;
         private int _MjestoPbr;
         private int _Organizator;
         private int _KontaktOsoba;
         private string _Vrsta;
+        private List<Aktivnost> _aktivnostiAkcije;
 
-        public Akcija(int id, string naziv, int mjestoPbr, int organizator, int kontaktOsoba, string vrsta)  : base(id)
+        public Akcija(int id, string naziv, int mjestoPbr, int organizator, int kontaktOsoba, string vrsta, IEnumerable<Aktivnost>? aktivnostiAkcije = null)  : base(id)
         {
             if(string.IsNullOrEmpty(naziv))
             {
@@ -27,6 +28,7 @@ namespace AkcijeSkole.Domain.Models
             _Organizator = organizator;
             _KontaktOsoba = kontaktOsoba;
             _Vrsta = vrsta;
+            _aktivnostiAkcije = aktivnostiAkcije?.ToList() ?? new List<Aktivnost>();
         }
 
         public string Naziv { get => _Naziv; set => _Naziv = value; }
@@ -39,6 +41,8 @@ namespace AkcijeSkole.Domain.Models
 
         public string Vrsta { get => _Vrsta; set => _Vrsta = value; }
 
+        public IReadOnlyList<Aktivnost> AktivnostiAkcije => _aktivnostiAkcije.ToList();
+
         public override bool Equals(object? obj)
         {
             return obj is not null &&
@@ -48,6 +52,7 @@ namespace AkcijeSkole.Domain.Models
                 MjestoPbr.Equals(akcija.MjestoPbr) &&
                 Organizator.Equals(akcija.Organizator) &&
                 KontaktOsoba.Equals(akcija.KontaktOsoba);
+                AktivnostiAkcije.SequenceEqual(akcija.AktivnostiAkcije);
     
         }
 

@@ -1,7 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore;
-using System.ComponentModel.DataAnnotations;
-using DbModels = AkcijeSkole.DataAccess.SqlServer.Data.DbModels;
-using DomainModels = AkcijeSkole.Domain.Models;
+﻿    using Microsoft.EntityFrameworkCore;
+    using System.ComponentModel.DataAnnotations;
+    using DbModels = AkcijeSkole.DataAccess.SqlServer.Data.DbModels;
+    using DomainModels = AkcijeSkole.Domain.Models;
 
 namespace AkcijeSkoleWebApi.DTOs
 {

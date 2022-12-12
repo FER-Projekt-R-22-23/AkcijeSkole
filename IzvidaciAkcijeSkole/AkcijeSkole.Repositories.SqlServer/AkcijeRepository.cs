@@ -162,5 +162,95 @@ namespace AkcijeSkole.Repositories.SqlServer;
             return Results.OnException(e);
         }
     }
+
+    public Result<Akcija> GetAggregate(int id)
+    {
+        try
+        {
+            var model = _dbContext.Akcije
+                .Include(akcija => akcija.Aktivnosti)
+                .AsNoTracking()
+                .FirstOrDefault(akcija => akcija.IdAkcija.Equals(id))
+                ?.ToDomainAkcija();
+
+            return model is not null
+                ? Results.OnSuccess(model)
+                : Results.OnFailure<Akcija>();
+        }
+        catch (Exception e)
+        {
+            return Results.OnException<Akcija>(e);
+        }
+    }
+
+    public Result<IEnumerable<Akcija>> GetAllAggregates()
+    {
+        try
+        {
+            var models = _dbContext.Akcije
+                          .Include(akcija => akcija.Aktivnosti)
+                          .AsNoTracking().Select(Mapping.ToDomainAkcija);
+
+            return Results.OnSuccess(models);
+        }
+        catch (Exception e)
+        {
+            return Results.OnException<IEnumerable<Akcija>>(e);
+        }
+    }
+
+    public Result UpdateAggregate(Akcija model)
+    {
+        try
+        {
+            _dbContext.ChangeTracker.Clear();
+
+            var dbModel = _dbContext.Akcije
+                              .Include(akcija => akcija.Aktivnosti)
+                              .FirstOrDefault(akcija => akcija.IdAkcija == model.Id);
+            if (dbModel == null)
+                return Results.OnFailure($"Akcija with id {model.Id} not found.");
+
+            dbModel.Naziv = model.Naziv;
+            dbModel.MjestoPbr = model.MjestoPbr;
+            dbModel.Organizator = model.Organizator;
+            dbModel.KontaktOsoba = model.KontaktOsoba;
+            dbModel.Vrsta = model.Vrsta;
+
+
+            foreach (var aktivnost in model.AktivnostiAkcije)
+            {
+                var akcijaToUpdate =
+                    dbModel.Aktivnosti
+                           .FirstOrDefault(a => a.AkcijaId.Equals(model.Id) && a.IdAktivnost.Equals(aktivnost.Id));
+                if(akcijaToUpdate == null)
+                {
+                    dbModel.Aktivnosti.Add(aktivnost.ToDbModel());
+                }
+            }
+
+            dbModel.Aktivnosti
+                   .Where(ak => !model.AktivnostiAkcije.Any(_ => _.Id == ak.IdAktivnost))
+                   .ToList()
+                   .ForEach(ak =>
+                   {
+                       dbModel.Aktivnosti.Remove(ak);
+                   });
+
+            _dbContext.Akcije
+                      .Update(dbModel);
+
+
+            var isSuccess = _dbContext.SaveChanges() > 0;
+            _dbContext.ChangeTracker.Clear();
+            return isSuccess
+                ? Results.OnSuccess()
+                : Results.OnFailure();
+        }
+        catch (Exception e)
+        {
+            return Results.OnException(e);
+        }
+    }
 }
 

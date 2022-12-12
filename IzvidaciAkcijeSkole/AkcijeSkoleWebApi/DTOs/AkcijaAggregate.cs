@@ -1,11 +1,12 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 using DbModels = AkcijeSkole.DataAccess.SqlServer.Data.DbModels;
 using DomainModels = AkcijeSkole.Domain.Models;
 
 namespace AkcijeSkoleWebApi.DTOs
 {
-    public class Akcija
+    public class AkcijaAggregate
     {
         public int IdAkcije { get; set; }
 
@@ -17,26 +18,29 @@ namespace AkcijeSkoleWebApi.DTOs
         public int KontaktOsoba { get; set; }
 
         public string? Vrsta { get; set; }
+
+        public IEnumerable<Aktivnost> AktivnostiAkcije { get; set; } = Enumerable.Empty<Aktivnost>();
     }
 
-    public static partial class DtoMapping
+    public partial class DtoMapping
     {
-        public static Akcija ToDto(this DomainModels.Akcija akcija)
+        public static AkcijaAggregate ToAktivnostiAggregateDto(this DomainModels.Akcija akcija)
         {
-            return new Akcija()
+            return new AkcijaAggregate()
             {
                 IdAkcije = akcija.Id,
                 Naziv = akcija.Naziv,
                 MjestoPbr = akcija.MjestoPbr,
                 Organizator = akcija.Organizator,
                 KontaktOsoba = akcija.KontaktOsoba,
-                Vrsta = akcija.Vrsta
+                Vrsta = akcija.Vrsta,
+                AktivnostiAkcije = akcija.AktivnostiAkcije == null ? new List<Aktivnost>() : akcija.AktivnostiAkcije.Select(a => a.ToDto()).ToList()
             };
         }
-        public static DomainModels.Akcija ToDomain(this Akcija akcija)
-        {
-            return new DomainModels.Akcija(akcija.IdAkcije, akcija.Naziv, akcija.MjestoPbr, akcija.Organizator, akcija.KontaktOsoba, akcija.Vrsta);
-        }
 
+        public static DomainModels.Akcija toDomain(this AkcijaAggregate akcija)
+        {
+            return new DomainModels.Akcija(akcija.IdAkcije, akcija.Naziv, akcija.MjestoPbr, akcija.Organizator, akcija.KontaktOsoba, akcija.Vrsta, akcija.AktivnostiAkcije.Select(ToDomain));
+        }
     }
 }
