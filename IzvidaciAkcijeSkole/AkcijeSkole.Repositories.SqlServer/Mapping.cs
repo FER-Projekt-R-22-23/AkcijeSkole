@@ -68,7 +68,11 @@ public static class Mapping
             terenskaLokacija.Slika,
             terenskaLokacija.ImaSanitarniCvor,
             terenskaLokacija.MjestoPbr,
-            terenskaLokacija.Opis
+            terenskaLokacija.Opis/*,
+            terenskaLokacija.CvrstiNamjenskiObjekti,
+            terenskaLokacija.CvrstiObjektiZaObitavanje,
+            terenskaLokacija.Logorista,
+            terenskaLokacija.PrivremeniObjekti*/
             );
 
     public static DbModels.TerenskeLokacije ToDbModel(this TerenskaLokacija terenskaLokacija)
@@ -80,7 +84,11 @@ public static class Mapping
             Slika = terenskaLokacija.Slika,
             ImaSanitarniCvor = terenskaLokacija.ImaSanitarniCvor,
             MjestoPbr = terenskaLokacija.MjestoPbr,
-            Opis = terenskaLokacija.Opis
+            Opis = terenskaLokacija.Opis/*,
+            CvrstiNamjenskiObjekti = terenskaLokacija.CvrstiNamjenskiObjekt,
+            CvrstiObjektiZaObitavanje = terenskaLokacija.CvrstiObjektZaObitavanje,
+            Logorista = terenskaLokacija.Logoriste,
+            PrivremeniObjekti = terenskaLokacija.PrivremeniObjekt*/
         };
     }
     
