@@ -72,7 +72,7 @@ public class MaterijalnePotrebeController : ControllerBase
         };
     }
 
-    [HttpGet("/AggregateTerenskaLokacijat/{id}")]
+    [HttpGet("/AggregateTerenskaLokacija/{id}")]
     public ActionResult<MatPotrebeTerLokacijeAggregate> GetMatPotrebaTerLokacijaAggregate(int id)
     {
         var matPotrebaResult = _materijalnaPotrebaRepository.GetTerenskaLokacijaAggregate(id).Map(DtoMapping.ToTerLokacijeAggregateDto);
@@ -86,7 +86,7 @@ public class MaterijalnePotrebeController : ControllerBase
     }
 
 
-    [HttpPost("AssignToAkcija/{IdMaterijalnPotreba}")]
+    [HttpPost("DodajAkciju/{IdMaterijalnPotreba}")]
     public IActionResult AssignPotrebaToAkcija(int IdMaterijalnPotreba, DTOs.Akcija akcija)
     {
         if (!ModelState.IsValid)
@@ -125,7 +125,7 @@ public class MaterijalnePotrebeController : ControllerBase
             : Problem(updateResult.Message, statusCode: 500);
     }
 
-    [HttpPost("AssignToSkola/{IdMaterijalnaPotreba}")]
+    [HttpPost("DodajSkolu/{IdMaterijalnaPotreba}")]
     public IActionResult AssignPotrebaToSkola(int IdMaterijalnaPotreba, DTOs.Skola skolaAssignment)
     {
         if (!ModelState.IsValid)
@@ -164,7 +164,7 @@ public class MaterijalnePotrebeController : ControllerBase
             : Problem(updateResult.Message, statusCode: 500);
     }
 
-    [HttpPost("AssignToTerenskaLokacija/{IdMaterijalnaPotreba}")]
+    [HttpPost("DodajTerenskuLokaciju/{IdMaterijalnaPotreba}")]
     public IActionResult AssignPotrebaToLokacija(int IdMaterijalnaPotreba, DTOs.TerenskaLokacija terenskaLokacijaAssignment)
     {
         if (!ModelState.IsValid)
@@ -203,7 +203,7 @@ public class MaterijalnePotrebeController : ControllerBase
             : Problem(updateResult.Message, statusCode: 500);
     }
 
-    [HttpPost("DismissFromAkcija/{IdMaterijalnaPotreba}")]
+    [HttpPost("UkloniAkciju/{IdMaterijalnaPotreba}")]
     public IActionResult DismissPotrebaFromAkcija(int IdMaterijalnaPotreba, Akcija akcija)
     {
         if (!ModelState.IsValid)
@@ -239,7 +239,7 @@ public class MaterijalnePotrebeController : ControllerBase
             : Problem(updateResult.Message, statusCode: 500);
     }
 
-    [HttpPost("DismissFromSkola/{IdMaterijalnaPotreba}")]
+    [HttpPost("UkloniSkolu/{IdMaterijalnaPotreba}")]
     public IActionResult DismissPotrebaFromSkola(int IdMaterijalnaPotreba, Skola skola)
     {
         if (!ModelState.IsValid)
@@ -275,7 +275,7 @@ public class MaterijalnePotrebeController : ControllerBase
             : Problem(updateResult.Message, statusCode: 500);
     }
 
-    [HttpPost("DismissFromLokacija/{IdMaterijalnaPotreba}")]
+    [HttpPost("UkloniTerenskuLokaciju/{IdMaterijalnaPotreba}")]
     public IActionResult DismissPotrebaFromLokacija(int IdMaterijalnaPotreba, TerenskaLokacija terenskaLokacija)
     {
         if (!ModelState.IsValid)
