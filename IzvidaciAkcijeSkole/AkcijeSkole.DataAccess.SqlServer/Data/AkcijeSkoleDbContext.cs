@@ -79,7 +79,7 @@ namespace AkcijeSkole.DataAccess.SqlServer.Data
                 entity.HasOne(d => d.IdNamjenskiObjektNavigation)
                     .WithOne(p => p.CvrstiNamjenskiObjekti)
                     .HasForeignKey<CvrstiNamjenskiObjekti>(d => d.IdNamjenskiObjekt)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .OnDelete(DeleteBehavior.Cascade)
                     .HasConstraintName("FK_CvrstiNamjenskiObjekt_TerenskeLokacije");
             });
 
@@ -93,7 +93,7 @@ namespace AkcijeSkole.DataAccess.SqlServer.Data
                 entity.HasOne(d => d.IdObjektaZaObitavanjeNavigation)
                     .WithOne(p => p.CvrstiObjektiZaObitavanje)
                     .HasForeignKey<CvrstiObjektiZaObitavanje>(d => d.IdObjektaZaObitavanje)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .OnDelete(DeleteBehavior.Cascade)
                     .HasConstraintName("FK_CvrstiObjektiZaObitavanje_TerenskeLokacije");
             });
 
@@ -125,7 +125,7 @@ namespace AkcijeSkole.DataAccess.SqlServer.Data
                 entity.HasOne(d => d.IdLogoristeNavigation)
                     .WithOne(p => p.Logorista)
                     .HasForeignKey<Logorista>(d => d.IdLogoriste)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .OnDelete(DeleteBehavior.Cascade)
                     .HasConstraintName("FK_Logorista_TerenskeLokacije");
             });
 
@@ -266,7 +266,7 @@ namespace AkcijeSkole.DataAccess.SqlServer.Data
                 entity.HasOne(d => d.IdPrivremeniObjektNavigation)
                     .WithOne(p => p.PrivremeniObjekti)
                     .HasForeignKey<PrivremeniObjekti>(d => d.IdPrivremeniObjekt)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .OnDelete(DeleteBehavior.Cascade)
                     .HasConstraintName("FK_PrivremeniObjekti_TerenskeLokacije");
             });
 

@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using AkcijeSkole.DataAccess.SqlServer.Data.DbModels;
 using DbModels = AkcijeSkole.DataAccess.SqlServer.Data.DbModels;
+using System.Linq.Expressions;
 
 namespace AkcijeSkole.Repositories.SqlServer;
 public static class Mapping
@@ -114,12 +115,12 @@ public static class Mapping
 
     public static CvrstiObjektZaObitavanje ToDomainCvrstiObitavanje(this DbModels.CvrstiObjektiZaObitavanje cvrstiObitavanje)
         => new CvrstiObjektZaObitavanje(
-            cvrstiObitavanje.IdNamjenskiObjekt,
-            cvrstiObitavanje.IdNamjenskiObjektNavigation.NazivTerenskeLokacije,
-            cvrstiObitavanje.IdNamjenskiObjektNavigation.Slika,
-            cvrstiObitavanje.IdNamjenskiObjektNavigation.ImaSanitarniCvor,
-            cvrstiObitavanje.IdNamjenskiObjektNavigation.MjestoPbr,
-            cvrstiObitavanje.IdNamjenskiObjektNavigation.Opis,
+            cvrstiObitavanje.IdObjektaZaObitavanje,
+            cvrstiObitavanje.IdObjektaZaObitavanjeNavigation.NazivTerenskeLokacije,
+            cvrstiObitavanje.IdObjektaZaObitavanjeNavigation.Slika,
+            cvrstiObitavanje.IdObjektaZaObitavanjeNavigation.ImaSanitarniCvor,
+            cvrstiObitavanje.IdObjektaZaObitavanjeNavigation.MjestoPbr,
+            cvrstiObitavanje.IdObjektaZaObitavanjeNavigation.Opis,
             cvrstiObitavanje.BrojPredvidenihSpavacihMjesta
             );
 
@@ -144,11 +145,11 @@ public static class Mapping
     public static Logoriste ToDomainLogoriste(this DbModels.Logorista logoriste)
         => new Logoriste(
             logoriste.IdLogoriste,
-            logoriste.IdNamjenskiObjektNavigation.NazivTerenskeLokacije,
-            logoriste.IdNamjenskiObjektNavigation.Slika,
-            logoriste.IdNamjenskiObjektNavigation.ImaSanitarniCvor,
-            logoriste.IdNamjenskiObjektNavigation.MjestoPbr,
-            logoriste.IdNamjenskiObjektNavigation.Opis,
+            logoriste.IdLogoristeNavigation.NazivTerenskeLokacije,
+            logoriste.IdLogoristeNavigation.Slika,
+            logoriste.IdLogoristeNavigation.ImaSanitarniCvor,
+            logoriste.IdLogoristeNavigation.MjestoPbr,
+            logoriste.IdLogoristeNavigation.Opis,
             logoriste.KoodinateMreze,
             logoriste.PredvideniBrojClanova
             );
@@ -174,12 +175,12 @@ public static class Mapping
 
     public static PrivremeniObjekt ToDomainPrivremeni(this DbModels.PrivremeniObjekti privremeni)
         => new PrivremeniObjekt(
-            privremeni.IdNamjenskiObjekt,
-            privremeni.IdNamjenskiObjektNavigation.NazivTerenskeLokacije,
-            privremeni.IdNamjenskiObjektNavigation.Slika,
-            privremeni.IdNamjenskiObjektNavigation.ImaSanitarniCvor,
-            privremeni.IdNamjenskiObjektNavigation.MjestoPbr,
-            privremeni.IdNamjenskiObjektNavigation.Opis
+            privremeni.IdPrivremeniObjekt,
+            privremeni.IdPrivremeniObjektNavigation.NazivTerenskeLokacije,
+            privremeni.IdPrivremeniObjektNavigation.Slika,
+            privremeni.IdPrivremeniObjektNavigation.ImaSanitarniCvor,
+            privremeni.IdPrivremeniObjektNavigation.MjestoPbr,
+            privremeni.IdPrivremeniObjektNavigation.Opis
             );
 
     public static DbModels.PrivremeniObjekti ToDbModelPrivremeni(this PrivremeniObjekt privremeni)
@@ -273,5 +274,10 @@ public static class Mapping
             Opis = aktivnost.Opis,
             AkcijaId = aktivnost.AkcijaId
         };
+    }
+
+    internal static Expression<Func<CvrstiNamjenskiObjekti, int, object>> ToDomainCvrstiNamjenski()
+    {
+        throw new NotImplementedException();
     }
 }

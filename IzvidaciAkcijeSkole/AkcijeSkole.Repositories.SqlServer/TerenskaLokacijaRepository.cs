@@ -51,7 +51,7 @@ public class TerenskaLokacijaRepository : ITerenskaLokacijaRepository
         {
             return _dbContext.CvrstiNamjenskiObjekti
                              .AsNoTracking()
-                             .Contains(model.ToDbModel());
+                             .Contains(model.ToDbModelCvrstiNamjenski());
         }
         catch (Exception)
         {
@@ -65,7 +65,7 @@ public class TerenskaLokacijaRepository : ITerenskaLokacijaRepository
         {
             return _dbContext.CvrstiObjektiZaObitavanje
                              .AsNoTracking()
-                             .Contains(model.ToDbModel());
+                             .Contains(model.ToDbModelCvrstiObitavanje());
         }
         catch (Exception)
         {
@@ -79,7 +79,7 @@ public class TerenskaLokacijaRepository : ITerenskaLokacijaRepository
         {
             return _dbContext.Logorista
                              .AsNoTracking()
-                             .Contains(model.ToDbModel());
+                             .Contains(model.ToDbModelLogoriste());
         }
         catch (Exception)
         {
@@ -93,7 +93,7 @@ public class TerenskaLokacijaRepository : ITerenskaLokacijaRepository
         {
             return _dbContext.PrivremeniObjekti
                              .AsNoTracking()
-                             .Contains(model.ToDbModel());
+                             .Contains(model.ToDbModelPrivremeni());
         }
         catch (Exception)
         {
@@ -206,7 +206,8 @@ public class TerenskaLokacijaRepository : ITerenskaLokacijaRepository
         {
             var models = _dbContext.CvrstiNamjenskiObjekti
                                    .AsNoTracking()
-                                   .Select(Mapping.ToDomainCvrstiNamjenski());
+                                   .Include(tl => tl.IdNamjenskiObjektNavigation)
+                                   .Select(Mapping.ToDomainCvrstiNamjenski);
 
             return Results.OnSuccess(models);
         }
@@ -222,7 +223,8 @@ public class TerenskaLokacijaRepository : ITerenskaLokacijaRepository
         {
             var models = _dbContext.CvrstiObjektiZaObitavanje
                                    .AsNoTracking()
-                                   .Select(Mapping.ToDomainCvrstiObitavanje());
+                                   .Include(tl => tl.IdObjektaZaObitavanjeNavigation)
+                                   .Select(Mapping.ToDomainCvrstiObitavanje);
 
             return Results.OnSuccess(models);
         }
@@ -238,7 +240,8 @@ public class TerenskaLokacijaRepository : ITerenskaLokacijaRepository
         {
             var models = _dbContext.Logorista
                                    .AsNoTracking()
-                                   .Select(Mapping.ToDomainLogoriste());
+                                   .Include(tl => tl.IdLogoristeNavigation)
+                                   .Select(Mapping.ToDomainLogoriste);
 
             return Results.OnSuccess(models);
         }
@@ -254,7 +257,8 @@ public class TerenskaLokacijaRepository : ITerenskaLokacijaRepository
         {
             var models = _dbContext.PrivremeniObjekti
                                    .AsNoTracking()
-                                   .Select(Mapping.ToDomainPrivremeni());
+                                   .Include(tl => tl.IdPrivremeniObjektNavigation)
+                                   .Select(Mapping.ToDomainPrivremeni);
 
             return Results.OnSuccess(models);
         }
