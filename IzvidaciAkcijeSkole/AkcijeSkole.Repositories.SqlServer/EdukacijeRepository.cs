@@ -209,6 +209,7 @@ public class EdukacijeRepository : IEdukacijeRepository
             var dbModel = _dbContext.Edukacije
                               .Include(edukacija => edukacija.Predavaci)
                               .Include(edukacija => edukacija.PrijavljeniPolazniciSkole)
+                              .Include(edukacija => edukacija.PolazniciSkole)
                               //.AsNoTracking()
                               .FirstOrDefault(_ => _.IdEdukacija == model.Id);
             if (dbModel == null)
@@ -220,7 +221,6 @@ public class EdukacijeRepository : IEdukacijeRepository
             dbModel.SkolaId = model.SkolaId;
 
 
-            // check if persons in roles have been modified or added
             foreach (var predavacNaEdukaciji in model.PredavaciNaEdukaciji)
             {
                 // it exists in the DB, so just update it
@@ -272,6 +272,33 @@ public class EdukacijeRepository : IEdukacijeRepository
                    .ForEach(prijavljeni =>
                    {
                        dbModel.PrijavljeniPolazniciSkole.Remove(prijavljeni);
+                   });
+
+
+            foreach (var polaznik in model.PolazniciEdukacije)
+            {
+                Debug.WriteLine(polaznik.idPolaznik);
+                // it exists in the DB, so just update it
+                var polaznikToUpdate =
+                    dbModel.PolazniciSkole
+                           .FirstOrDefault(pr => pr.EdukacijaId.Equals(model.Id) && pr.Polaznik.Equals(polaznik.idPolaznik) && pr.SkolaId.Equals(model.SkolaId));
+                if (polaznikToUpdate != null)
+                {
+                    polaznikToUpdate.Polaznik = polaznik.idPolaznik;
+                }
+                else // it does not exist in the DB, so add it
+                {
+                    dbModel.PolazniciSkole.Add(polaznik.ToDbModel(model.SkolaId, model.Id)); //ne radi iz nekog razloga
+                }
+            }
+
+
+            dbModel.PolazniciSkole
+                   .Where(pr => !model.PolazniciEdukacije.Any(_ => _.idPolaznik == pr.Polaznik))
+                   .ToList()
+                   .ForEach(polaznik =>
+                   {
+                       dbModel.PolazniciSkole.Remove(polaznik);
                    });
 
 
