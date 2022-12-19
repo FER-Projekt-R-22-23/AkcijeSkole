@@ -68,11 +68,7 @@ public static class Mapping
             terenskaLokacija.Slika,
             terenskaLokacija.ImaSanitarniCvor,
             terenskaLokacija.MjestoPbr,
-            terenskaLokacija.Opis/*,
-            terenskaLokacija.CvrstiNamjenskiObjekti,
-            terenskaLokacija.CvrstiObjektiZaObitavanje,
-            terenskaLokacija.Logorista,
-            terenskaLokacija.PrivremeniObjekti*/
+            terenskaLokacija.Opis
             );
 
     public static DbModels.TerenskeLokacije ToDbModel(this TerenskaLokacija terenskaLokacija)
@@ -84,15 +80,125 @@ public static class Mapping
             Slika = terenskaLokacija.Slika,
             ImaSanitarniCvor = terenskaLokacija.ImaSanitarniCvor,
             MjestoPbr = terenskaLokacija.MjestoPbr,
-            Opis = terenskaLokacija.Opis/*,
-            CvrstiNamjenskiObjekti = terenskaLokacija.CvrstiNamjenskiObjekt,
-            CvrstiObjektiZaObitavanje = terenskaLokacija.CvrstiObjektZaObitavanje,
-            Logorista = terenskaLokacija.Logoriste,
-            PrivremeniObjekti = terenskaLokacija.PrivremeniObjekt*/
+            Opis = terenskaLokacija.Opis
         };
     }
-    
 
+    public static CvrstiNamjenskiObjekt ToDomainCvrstiNamjenski(this DbModels.CvrstiNamjenskiObjekti cvrstiNamjenski)
+        => new CvrstiNamjenskiObjekt(
+            cvrstiNamjenski.IdNamjenskiObjekt,
+            cvrstiNamjenski.IdNamjenskiObjektNavigation.NazivTerenskeLokacije,
+            cvrstiNamjenski.IdNamjenskiObjektNavigation.Slika,
+            cvrstiNamjenski.IdNamjenskiObjektNavigation.ImaSanitarniCvor,
+            cvrstiNamjenski.IdNamjenskiObjektNavigation.MjestoPbr,
+            cvrstiNamjenski.IdNamjenskiObjektNavigation.Opis
+            );
+
+    public static DbModels.CvrstiNamjenskiObjekti ToDbModelCvrstiNamjenski(this CvrstiNamjenskiObjekt cvrstiNamjenski)
+    {
+        return new DbModels.CvrstiNamjenskiObjekti()
+        {
+            IdNamjenskiObjekt = cvrstiNamjenski.Id,
+            Opis = cvrstiNamjenski.Opis,
+            IdNamjenskiObjektNavigation = new DbModels.TerenskeLokacije()
+            {
+                IdTerenskeLokacije = cvrstiNamjenski.Id,
+                NazivTerenskeLokacije = cvrstiNamjenski.NazivTerenskaLokacija,
+                Slika = cvrstiNamjenski.Slika,
+                ImaSanitarniCvor = cvrstiNamjenski.ImaSanitarniCvor,
+                MjestoPbr = cvrstiNamjenski.MjestoPbr,
+                Opis = cvrstiNamjenski.Opis
+            }
+        };
+    }
+
+    public static CvrstiObjektZaObitavanje ToDomainCvrstiObitavanje(this DbModels.CvrstiObjektiZaObitavanje cvrstiObitavanje)
+        => new CvrstiObjektZaObitavanje(
+            cvrstiObitavanje.IdNamjenskiObjekt,
+            cvrstiObitavanje.IdNamjenskiObjektNavigation.NazivTerenskeLokacije,
+            cvrstiObitavanje.IdNamjenskiObjektNavigation.Slika,
+            cvrstiObitavanje.IdNamjenskiObjektNavigation.ImaSanitarniCvor,
+            cvrstiObitavanje.IdNamjenskiObjektNavigation.MjestoPbr,
+            cvrstiObitavanje.IdNamjenskiObjektNavigation.Opis,
+            cvrstiObitavanje.BrojPredvidenihSpavacihMjesta
+            );
+
+    public static DbModels.CvrstiObjektiZaObitavanje ToDbModelCvrstiObitavanje(this CvrstiObjektZaObitavanje cvrstiObitavanje)
+    {
+        return new DbModels.CvrstiObjektiZaObitavanje()
+        {
+            IdObjektaZaObitavanje = cvrstiObitavanje.Id,
+            BrojPredvidenihSpavacihMjesta = cvrstiObitavanje.BrojPredvidenihSpavacihMjesta,
+            IdObjektaZaObitavanjeNavigation = new DbModels.TerenskeLokacije()
+            {
+                IdTerenskeLokacije = cvrstiObitavanje.Id,
+                NazivTerenskeLokacije = cvrstiObitavanje.NazivTerenskaLokacija,
+                Slika = cvrstiObitavanje.Slika,
+                ImaSanitarniCvor = cvrstiObitavanje.ImaSanitarniCvor,
+                MjestoPbr = cvrstiObitavanje.MjestoPbr,
+                Opis = cvrstiObitavanje.Opis
+            }
+        };
+    }
+
+    public static Logoriste ToDomainLogoriste(this DbModels.Logorista logoriste)
+        => new Logoriste(
+            logoriste.IdLogoriste,
+            logoriste.IdNamjenskiObjektNavigation.NazivTerenskeLokacije,
+            logoriste.IdNamjenskiObjektNavigation.Slika,
+            logoriste.IdNamjenskiObjektNavigation.ImaSanitarniCvor,
+            logoriste.IdNamjenskiObjektNavigation.MjestoPbr,
+            logoriste.IdNamjenskiObjektNavigation.Opis,
+            logoriste.KoodinateMreze,
+            logoriste.PredvideniBrojClanova
+            );
+
+    public static DbModels.Logorista ToDbModelLogoriste(this Logoriste logoriste)
+    {
+        return new DbModels.Logorista()
+        {
+            IdLogoriste = logoriste.Id,
+            KoodinateMreze = logoriste.KoordinateMreze,
+            PredvideniBrojClanova = logoriste.PredvideniBrojClanova,
+            IdLogoristeNavigation = new DbModels.TerenskeLokacije()
+            {
+                IdTerenskeLokacije = logoriste.Id,
+                NazivTerenskeLokacije = logoriste.NazivTerenskaLokacija,
+                Slika = logoriste.Slika,
+                ImaSanitarniCvor = logoriste.ImaSanitarniCvor,
+                MjestoPbr = logoriste.MjestoPbr,
+                Opis = logoriste.Opis
+            }
+        };
+    }
+
+    public static PrivremeniObjekt ToDomainPrivremeni(this DbModels.PrivremeniObjekti privremeni)
+        => new PrivremeniObjekt(
+            privremeni.IdNamjenskiObjekt,
+            privremeni.IdNamjenskiObjektNavigation.NazivTerenskeLokacije,
+            privremeni.IdNamjenskiObjektNavigation.Slika,
+            privremeni.IdNamjenskiObjektNavigation.ImaSanitarniCvor,
+            privremeni.IdNamjenskiObjektNavigation.MjestoPbr,
+            privremeni.IdNamjenskiObjektNavigation.Opis
+            );
+
+    public static DbModels.PrivremeniObjekti ToDbModelPrivremeni(this PrivremeniObjekt privremeni)
+    {
+        return new DbModels.PrivremeniObjekti()
+        {
+            IdPrivremeniObjekt = privremeni.Id,
+            Opis = privremeni.Opis,
+            IdPrivremeniObjektNavigation = new DbModels.TerenskeLokacije()
+            {
+                IdTerenskeLokacije = privremeni.Id,
+                NazivTerenskeLokacije = privremeni.NazivTerenskaLokacija,
+                Slika = privremeni.Slika,
+                ImaSanitarniCvor = privremeni.ImaSanitarniCvor,
+                MjestoPbr = privremeni.MjestoPbr,
+                Opis = privremeni.Opis
+            }
+        };
+    }
 
     public static Skola ToDomainSkola(this DbModels.Skole skola)
         => new Skola(skola.IdSkole, skola.NazivSkole, skola.MjestoPbr, skola.Organizator, skola.KontaktOsoba);

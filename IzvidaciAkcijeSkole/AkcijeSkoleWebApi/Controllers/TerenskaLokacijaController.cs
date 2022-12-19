@@ -1,8 +1,9 @@
-﻿using AkcijeSkole.Repositories;
-using AkcijeSkole.Repositories.SqlServer;
+﻿using AkcijeSkole.DataAccess.SqlServer.Data.DbModels;
+using AkcijeSkole.Repositories;
 using AkcijeSkoleWebApi.DTOs;
 using BaseLibrary;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Build.Framework;
 
 namespace AkcijeSkoleWebApi.Controllers;
 
@@ -17,7 +18,6 @@ public class TerenskaLokacijaController : ControllerBase
         _terenskaLokacijaRepository = terenskaLokacijaRepository;
     }
 
-    // GET: api/TerenskaLokacija
     [HttpGet]
     public ActionResult<IEnumerable<TerenskaLokacija>> GetAllTerenskeLokacije()
     {
@@ -29,7 +29,50 @@ public class TerenskaLokacijaController : ControllerBase
             : Problem(terenskaLokacijaResults.Message, statusCode: 500);
     }
 
-    // GET: api/TerenskaLokacija/5
+    [HttpGet("CvrstiNamjenskiObjekti")]
+    public ActionResult<IEnumerable<CvrstiNamjenskiObjekt>> GetAllCvrstiNamjenski()
+    {
+        var cvrstiNamjenskiResult = _terenskaLokacijaRepository.GetAllCvrstiNamjenski()
+            .Map(cvrstiNamjenski => cvrstiNamjenski.Select(DtoMapping.ToDto));
+
+        return cvrstiNamjenskiResult
+            ? Ok(cvrstiNamjenskiResult.Data)
+            : Problem(cvrstiNamjenskiResult.Message, statusCode: 500);
+    }
+
+    [HttpGet("CvrstiObjektiZaObitavanje")]
+    public ActionResult<IEnumerable<CvrstiObjektZaObitavanje>> GetAllCvrstiObitavanje()
+    {
+        var cvrstiObitavanjeResult = _terenskaLokacijaRepository.GetAllCvrstiObitavanje()
+            .Map(cvrstiObitavanje => cvrstiObitavanje.Select(DtoMapping.ToDto));
+
+        return cvrstiObitavanjeResult
+            ? Ok(cvrstiObitavanjeResult.Data)
+            : Problem(cvrstiObitavanjeResult.Message, statusCode: 500);
+    }
+
+    [HttpGet("Logorista")]
+    public ActionResult<IEnumerable<Logoriste>> GetAllLogorista()
+    {
+        var logoristeResult = _terenskaLokacijaRepository.GetAllLogoriste()
+            .Map(logoriste => logoriste.Select(DtoMapping.ToDto));
+
+        return logoristeResult
+            ? Ok(logoristeResult.Data)
+            : Problem(logoristeResult.Message, statusCode: 500);
+    }
+
+    [HttpGet("PrivremeniObjekti")]
+    public ActionResult<IEnumerable<PrivremeniObjekt>> GetAllPrivremeni()
+    {
+        var privremeniResult = _terenskaLokacijaRepository.GetAllPrivremeni()
+            .Map(privremeni => privremeni.Select(DtoMapping.ToDto));
+
+        return privremeniResult
+            ? Ok(privremeniResult.Data)
+            : Problem(privremeniResult.Message, statusCode: 500);
+    }
+
     [HttpGet("{id}")]
     public ActionResult<TerenskaLokacija> GetTerenskaLokacija(int id)
     {
@@ -43,7 +86,125 @@ public class TerenskaLokacijaController : ControllerBase
         };
     }
 
-    // PUT: api/TerenskaLokacija/5
+    [HttpPost]
+    public ActionResult<TerenskaLokacija> CreateTerenskaLokacija(TerenskaLokacija terenskaLokacija)
+    {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
+        var domainTerenskaLokacija = terenskaLokacija.ToDomain();
+
+        var validationResult = domainTerenskaLokacija.IsValid();
+        if (!validationResult)
+        {
+            return Problem(validationResult.Message, statusCode: 500);
+        }
+
+        var result = domainTerenskaLokacija.IsValid()
+                        .Bind(() => _terenskaLokacijaRepository.Insert(domainTerenskaLokacija));
+
+        return result
+            ? CreatedAtAction("GetTerenskaLokacija", new { id = terenskaLokacija.IdTerenskaLokacija }, terenskaLokacija)
+            : Problem(result.Message, statusCode: 500);
+    }
+
+    [HttpPost("CvrstiNamjenskiObjekti")]
+    public ActionResult<CvrstiNamjenskiObjekt> CreateCvrstiNamjenski(CvrstiNamjenskiObjekt cvrstiNamjenski)
+    {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
+        var domainTerenskaLokacija = cvrstiNamjenski.ToDomain();
+
+        var validationResult = domainTerenskaLokacija.IsValid();
+        if (!validationResult)
+        {
+            return Problem(validationResult.Message, statusCode: 500);
+        }
+
+        var result = domainTerenskaLokacija.IsValid()
+                        .Bind(() => _terenskaLokacijaRepository.Insert(domainTerenskaLokacija));
+
+        return result
+            ? CreatedAtAction("GetTerenskaLokacija", new { id = cvrstiNamjenski.IdTerenskaLokacija }, cvrstiNamjenski)
+            : Problem(result.Message, statusCode: 500);
+    }
+
+    [HttpPost("CvrstiObjektiZaObitavanje")]
+    public ActionResult<CvrstiObjektZaObitavanje> CreateCvrstiObitavanje(CvrstiObjektZaObitavanje cvrstiObitavanje)
+    {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
+        var domainTerenskaLokacija = cvrstiObitavanje.ToDomain();
+
+        var validationResult = domainTerenskaLokacija.IsValid();
+        if (!validationResult)
+        {
+            return Problem(validationResult.Message, statusCode: 500);
+        }
+
+        var result = domainTerenskaLokacija.IsValid()
+                        .Bind(() => _terenskaLokacijaRepository.Insert(domainTerenskaLokacija));
+
+        return result
+            ? CreatedAtAction("GetTerenskaLokacija", new { id = cvrstiObitavanje.IdTerenskaLokacija }, cvrstiObitavanje)
+            : Problem(result.Message, statusCode: 500);
+    }
+
+    [HttpPost("Logorista")]
+    public ActionResult<Logoriste> CreateLogoriste(Logoriste logoriste)
+    {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
+        var domainTerenskaLokacija = logoriste.ToDomain();
+
+        var validationResult = domainTerenskaLokacija.IsValid();
+        if (!validationResult)
+        {
+            return Problem(validationResult.Message, statusCode: 500);
+        }
+
+        var result = domainTerenskaLokacija.IsValid()
+                        .Bind(() => _terenskaLokacijaRepository.Insert(domainTerenskaLokacija));
+
+        return result
+            ? CreatedAtAction("GetTerenskaLokacija", new { id = logoriste.IdTerenskaLokacija }, logoriste)
+            : Problem(result.Message, statusCode: 500);
+    }
+
+    [HttpPost("PrivremeniObjekti")]
+    public ActionResult<PrivremeniObjekt> CreatePrivremeni(PrivremeniObjekt privremeni)
+    {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
+        var domainTerenskaLokacija = privremeni.ToDomain();
+
+        var validationResult = domainTerenskaLokacija.IsValid();
+        if (!validationResult)
+        {
+            return Problem(validationResult.Message, statusCode: 500);
+        }
+
+        var result = domainTerenskaLokacija.IsValid()
+                        .Bind(() => _terenskaLokacijaRepository.Insert(domainTerenskaLokacija));
+        return result
+        ? CreatedAtAction("GetTerenskaLokacija", new { id = privremeni.IdTerenskaLokacija }, privremeni)
+        : Problem(result.Message, statusCode: 500);
+    }
+
     [HttpPut("{id}")]
     public IActionResult EditTerenskaLokacija(int id, TerenskaLokacija terenskaLokacija)
     {
@@ -72,116 +233,129 @@ public class TerenskaLokacijaController : ControllerBase
             : Problem(result.Message, statusCode: 500);
     }
 
-    // POST: api/TerenskaLokacija
-    [HttpPost]
-    public ActionResult<TerenskaLokacija> CreateTerenskaLokacija(TerenskaLokacija terenskaLokacija)
+    [HttpPut("CvrstiNamjenskiObjekti/{id}")]
+    public IActionResult EditCvrstiNamjenski(int id, CvrstiNamjenskiObjekt cvrstiNamjenski)
     {
         if (!ModelState.IsValid)
         {
             return BadRequest(ModelState);
         }
 
-        var domainTerenskaLokacija = terenskaLokacija.ToDomain();
-
-        var validationResult = domainTerenskaLokacija.IsValid();
-        if (!validationResult)
+        if(id != cvrstiNamjenski.IdTerenskaLokacija)
         {
-            return Problem(validationResult.Message, statusCode: 500);
+            return BadRequest();
         }
 
+        if (!_terenskaLokacijaRepository.ExistsCvrstiNamjenski(id))
+        {
+            return NotFound();
+        }
+
+        var domainTerenskaLokacija = cvrstiNamjenski.ToDomain();
+
         var result = domainTerenskaLokacija.IsValid()
-                        .Bind(() => _terenskaLokacijaRepository.Insert(domainTerenskaLokacija));
+                        .Bind(() => _terenskaLokacijaRepository.Update(domainTerenskaLokacija));
 
         return result
-            ? CreatedAtAction("GetTerenskaLokacija", new { id = terenskaLokacija.IdTerenskaLokacija }, terenskaLokacija)
+            ? AcceptedAtAction("EditCvrstiNamjenski", cvrstiNamjenski)
             : Problem(result.Message, statusCode: 500);
     }
 
-    // DELETE: api/TerenskaLokacija/5
+    [HttpPut("CvrstiObjektiZaObitavanje/{id}")]
+    public IActionResult EditCvrstiObitavanje(int id, CvrstiObjektZaObitavanje cvrstiObitavanje)
+    {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+        
+        if(id != cvrstiObitavanje.IdTerenskaLokacija)
+        {
+            return BadRequest();
+        }
+
+        if (!_terenskaLokacijaRepository.ExistsCvrstiObitavanje(id))
+        {
+            return NotFound();
+        }
+
+        var domainTerenskaLokacija = cvrstiObitavanje.ToDomain();
+
+        var result = domainTerenskaLokacija.IsValid()
+                        .Bind(() => _terenskaLokacijaRepository.Update(domainTerenskaLokacija));
+
+        return result
+            ? AcceptedAtAction("EditCvrstiObitavanje", cvrstiObitavanje)
+            : Problem(result.Message, statusCode: 500);
+    }
+
+    [HttpPut("Logorista/{id}")]
+    public IActionResult EditLogoriste(int id, Logoriste logoriste)
+    {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
+        if(id != logoriste.IdTerenskaLokacija)
+        {
+            return BadRequest();
+        }
+
+        if (!_terenskaLokacijaRepository.ExistsLogoriste(id))
+        {
+            return NotFound();
+        }
+
+        var domainTerenskaLokacija = logoriste.ToDomain();
+
+        var result = domainTerenskaLokacija.IsValid()
+                        .Bind(() => _terenskaLokacijaRepository.Update(domainTerenskaLokacija));
+
+        return result
+            ? AcceptedAtAction("EditLogoriste", logoriste)
+            : Problem(result.Message, statusCode: 500);
+    }
+
+    [HttpPut("PrivremeniObjekti/{id}")]
+    public IActionResult EditPrivremeni(int id, PrivremeniObjekt privremeni)
+    {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
+        if(id != privremeni.IdTerenskaLokacija)
+        {
+            return BadRequest();
+        }
+
+        if (!_terenskaLokacijaRepository.ExistsPrivremeni(id))
+        {
+            return NotFound();
+        }
+
+        var domainTerenskaLokacija = privremeni.ToDomain();
+
+        var result = domainTerenskaLokacija.IsValid()
+                        .Bind(() => _terenskaLokacijaRepository.Update(domainTerenskaLokacija));
+
+        return result
+            ? AcceptedAtAction("EditPrivremeni", privremeni)
+            : Problem(result.Message, statusCode: 500);
+    }
+
     [HttpDelete("{id}")]
     public IActionResult DeleteTerenskaLokacija(int id)
     {
         if (!_terenskaLokacijaRepository.Exists(id))
+        {
             return NotFound();
+        }    
 
         var deleteResult = _terenskaLokacijaRepository.Remove(id);
         return deleteResult
             ? NoContent()
             : Problem(deleteResult.Message, statusCode: 500);
     }
-    /*
-    [HttpGet("/CvrstiNamjenski/{id}")]
-    public ActionResult<TerenskaLokacijaCvrstiNamjenski> GetCvrstiNamjenski(int id)
-    {
-        var cvrstiNamjenskiResult = _terenskaLokacijaRepository.GetAggregate(id).Map(DtoMapping.ToCvrstiNamjenskiDto);
-
-        return cvrstiNamjenskiResult switch
-        {
-            { IsSuccess: true } => Ok(cvrstiNamjenskiResult.Data),
-            { IsFailure: true } => NotFound(),
-            { IsException: true } or _ => Problem(cvrstiNamjenskiResult.Message, statusCode: 500)
-        };
-    }
-
-    [HttpGet("/CvrstiObitavanje/{id}")]
-    public ActionResult<TerenskaLokacijaCvrstiObitavanje> GetCvrstiObitavanje(int id)
-    {
-        var cvrstiObitavanjeResult = _terenskaLokacijaRepository.GetAggregate(id).Map(DtoMapping.ToCvrstiObitavanjeDto);
-
-        return cvrstiObitavanjeResult switch
-        {
-            { IsSuccess: true } => Ok(cvrstiObitavanjeResult.Data),
-            { IsFailure: true } => NotFound(),
-            { IsException: true } or _ => Problem(cvrstiObitavanjeResult.Message, statusCode: 500)
-        };
-    }
-
-    [HttpGet("/Logoriste/{id}")]
-    public ActionResult<TerenskaLokacijaLogoriste> GetLogoriste(int id)
-    {
-        var logoristeResult = _terenskaLokacijaRepository.GetAggregate(id).Map(DtoMapping.ToLogoristeDto);
-
-        return logoristeResult switch
-        {
-            { IsSuccess: true } => Ok(logoristeResult.Data),
-            { IsFailure: true } => NotFound(),
-            { IsException: true } or _ => Problem(logoristeResult.Message, statusCode: 500)
-        };
-    }
-
-    [HttpGet("/Privremeni/{id}")]
-    public ActionResult<TerenskaLokacijaPrivremeniObjekt> GetPrivremenei(int id)
-    {
-        var privremeniResult = _terenskaLokacijaRepository.GetAggregate(id).Map(DtoMapping.ToPrivremeniDto);
-
-        return privremeniResult switch
-        {
-            { IsSuccess: true } => Ok(privremeniResult.Data),
-            { IsFailure: true } => NotFound(),
-            { IsException: true } or _ => Problem(privremeniResult.Message, statusCode: 500)
-        };
-    }
-
-    [HttpGet("/Objekti/{id}")]
-    public ActionResult<TerenskaLokacijaObjekti> GetAggregate(int id)
-    {
-        var objektiResult = _terenskaLokacijaRepository.GetAggregate(id).Map(DtoMapping.ToObjektiDto);
-
-        return objektiResult switch
-        {
-            { IsSuccess: true } => Ok(objektiResult.Data),
-            { IsFailure: true } => NotFound(),
-            { IsException: true } or _ => Problem(objektiResult.Message, statusCode: 500)
-        };
-    }
-
-    [HttpGet("/Objekti")]
-    public ActionResult<IEnumerable<TerenskaLokacijaObjekti>> GetAllAggregate()
-    {
-        var objektiResult = _terenskaLokacijaRepository.GetAllAggregates().Map(terenskaLokacija => terenskaLokacija.Select(DtoMapping.ToObjektiDto));
-
-        return objektiResult
-            ? Ok(objektiResult.Data)
-            : Problem(objektiResult.Message, statusCode: 500);
-    }*/
 }
