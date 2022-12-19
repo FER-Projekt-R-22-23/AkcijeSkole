@@ -3,24 +3,30 @@ using DomainModels = AkcijeSkole.Domain.Models;
 
 namespace AkcijeSkoleWebApi.DTOs;
 
-public class CvrstiNamjenskiObjekt
+public class CvrstiNamjenskiObjekt : TerenskaLokacija
 {
-    public int IdCvrstiNamjenskiObjekt { get; set; }
-    public string Opis { get; set; }
 }
 
 public static partial class DtoMapping
 {
-    public static CvrstiNamjenskiObjekt ToDto(this DomainModels.CvrstiNamjenskiObjekti cvrstiNamjenskiObjekt)
+    public static CvrstiNamjenskiObjekt ToDto(this DomainModels.CvrstiNamjenskiObjekt cvrstiNamjenskiObjekt)
         => new CvrstiNamjenskiObjekt()
         {
-            IdCvrstiNamjenskiObjekt = cvrstiNamjenskiObjekt.IdCvrstiNamjenskiObjekt,
+            IdTerenskaLokacija = cvrstiNamjenskiObjekt.Id,
+            NazivTerenskaLokacija = cvrstiNamjenskiObjekt.NazivTerenskaLokacija,
+            Slika = cvrstiNamjenskiObjekt.Slika,
+            ImaSanitarniCvor = cvrstiNamjenskiObjekt.ImaSanitarniCvor,
+            MjestoPbr = cvrstiNamjenskiObjekt.MjestoPbr,
             Opis = cvrstiNamjenskiObjekt.Opis
         };
 
-    public static DomainModels.CvrstiNamjenskiObjekti ToDomain(this CvrstiNamjenskiObjekt cvrstiNamjenskiObjekt)
-        => new DomainModels.CvrstiNamjenskiObjekti(
-            cvrstiNamjenskiObjekt.IdCvrstiNamjenskiObjekt,
+    public static DomainModels.CvrstiNamjenskiObjekt ToDomain(this CvrstiNamjenskiObjekt cvrstiNamjenskiObjekt)
+        => new DomainModels.CvrstiNamjenskiObjekt(
+            cvrstiNamjenskiObjekt.IdTerenskaLokacija,
+            cvrstiNamjenskiObjekt.NazivTerenskaLokacija,
+            cvrstiNamjenskiObjekt.Slika,
+            cvrstiNamjenskiObjekt.ImaSanitarniCvor,
+            cvrstiNamjenskiObjekt.MjestoPbr,
             cvrstiNamjenskiObjekt.Opis
             );
 }
