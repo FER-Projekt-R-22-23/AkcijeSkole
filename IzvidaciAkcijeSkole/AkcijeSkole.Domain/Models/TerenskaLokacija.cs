@@ -3,32 +3,22 @@ using AkcijeSkole.Commons;
 
 namespace AkcijeSkole.Domain.Models;
 
-public class TerenskaLokacija : AggregateRoot<int>
+public class TerenskaLokacija : Entity<int>
 {
     private string _nazivTerenskaLokacija;
     private byte[] _slika;
     private bool _imaSanitarniCvor;
     private int _mjestoPbr;
     private string _opis;
-    //private CvrstiNamjenskiObjekti _cvrstiNamjenskiObjekt;
-    //private CvrstiObjektiZaObitavanje _cvrstiObjektZaObitavanje;
-    //private Logorista _logoriste;
-    //private PrivremeniObjekti _privremeniObjekt;
 
     public string NazivTerenskaLokacija { get => _nazivTerenskaLokacija; set => _nazivTerenskaLokacija = value; }
     public byte[] Slika { get => _slika; set => _slika = value; }
     public bool ImaSanitarniCvor { get => _imaSanitarniCvor; set => _imaSanitarniCvor = value; }
     public int MjestoPbr { get => _mjestoPbr; set => _mjestoPbr = value; }
     public string Opis { get => _opis; set => _opis = value; }
-    //public CvrstiNamjenskiObjekti CvrstiNamjenskiObjekt { get => _cvrstiNamjenskiObjekt; set => _cvrstiNamjenskiObjekt = value; }
-    //public CvrstiObjektiZaObitavanje CvrstiObjektZaObitavanje { get => _cvrstiObjektZaObitavanje; set => _cvrstiObjektZaObitavanje = value; }
-    //public Logorista Logoriste { get => _logoriste; set => _logoriste = value; }
-    //public PrivremeniObjekti PrivremeniObjekt { get => _privremeniObjekt; set => _privremeniObjekt = value; }
 
 
-    public TerenskaLokacija(int id, string nazivTerenskaLokacija, byte[]? slika, bool imaSanitarniCvor, int mjestoPbr, string opis,
-        IEnumerable<CvrstiNamjenskiObjekti>? cvrstiNamjenskiObjekt = null, IEnumerable<CvrstiObjektiZaObitavanje>? cvrstiObjektZaObitavanje = null,
-        IEnumerable<Logorista>? logoriste = null, IEnumerable<PrivremeniObjekti>? privremeniObjekt = null) : base(id)
+    public TerenskaLokacija(int id, string nazivTerenskaLokacija, byte[]? slika, bool imaSanitarniCvor, int mjestoPbr, string opis) : base(id)
     {
         if (string.IsNullOrEmpty(nazivTerenskaLokacija))
         {
@@ -45,10 +35,6 @@ public class TerenskaLokacija : AggregateRoot<int>
         _imaSanitarniCvor = imaSanitarniCvor;
         _mjestoPbr = mjestoPbr;
         _opis = opis;
-        //_cvrstiNamjenskiObjekt = cvrstiNamjenskiObjekt;
-        //_cvrstiObjektZaObitavanje = cvrstiObjektZaObitavanje;
-        //_logoriste = logoriste;
-        //_privremeniObjekt = privremeniObjekt;
     }
 
     public override bool Equals(object? obj)
@@ -61,10 +47,6 @@ public class TerenskaLokacija : AggregateRoot<int>
                _imaSanitarniCvor == TerenskaLokacija._imaSanitarniCvor &&
                _mjestoPbr == TerenskaLokacija._mjestoPbr &&
                _opis == TerenskaLokacija._opis;
-               //_cvrstiNamjenskiObjekt == TerenskaLokacija._cvrstiNamjenskiObjekt &&
-               //_cvrstiObjektZaObitavanje == TerenskaLokacija._cvrstiObjektZaObitavanje &&
-               //_logoriste == TerenskaLokacija._logoriste &&
-               //_privremeniObjekt == TerenskaLokacija._privremeniObjekt;
     }
 
     public override int GetHashCode()
