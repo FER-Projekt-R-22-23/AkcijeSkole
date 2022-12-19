@@ -7,6 +7,7 @@ using System.Data;
 using AkcijeSkole.Domain.Models;
 using BaseLibrary;
 using System;
+using System.Diagnostics;
 
 namespace AkcijeSkole.Repositories.SqlServer;
 public class EdukacijeRepository : IEdukacijeRepository
@@ -58,7 +59,7 @@ public class EdukacijeRepository : IEdukacijeRepository
 
             return model is not null
                 ? Results.OnSuccess(model)
-                : Results.OnFailure<Edukacija>($"No person with id {id} found");
+                : Results.OnFailure<Edukacija>($"No edukacija with id {id} found");
         }
         catch (Exception e)
         {
@@ -68,14 +69,16 @@ public class EdukacijeRepository : IEdukacijeRepository
 
     public Result<Edukacija> GetAggregate(int id)
     {
+     
         try
         {
             var model = _dbContext.Edukacije
+                          .Include(edukacija => edukacija.PolazniciSkole)
                           .Include(edukacija => edukacija.Predavaci)
+                          .Include(edukacija => edukacija.PrijavljeniPolazniciSkole)
                           .AsNoTracking()
                           .FirstOrDefault(edukacija => edukacija.IdEdukacija.Equals(id)) // give me the first or null; substitute for .Where() // single or default throws an exception if more than one element meets the criteria
                           ?.ToDomainEdukacija();
-
 
             return model is not null
                 ? Results.OnSuccess(model)
@@ -205,10 +208,12 @@ public class EdukacijeRepository : IEdukacijeRepository
 
             var dbModel = _dbContext.Edukacije
                               .Include(edukacija => edukacija.Predavaci)
+                              .Include(edukacija => edukacija.PrijavljeniPolazniciSkole)
+                              .Include(edukacija => edukacija.PolazniciSkole)
                               //.AsNoTracking()
                               .FirstOrDefault(_ => _.IdEdukacija == model.Id);
             if (dbModel == null)
-                return Results.OnFailure($"Person with id {model.Id} not found.");
+                return Results.OnFailure($"Edukacija with id {model.Id} not found.");
 
             dbModel.NazivEdukacija = model.NazivEdukacije;
             dbModel.OpisEdukacije = model.OpisEdukacije;
@@ -216,7 +221,6 @@ public class EdukacijeRepository : IEdukacijeRepository
             dbModel.SkolaId = model.SkolaId;
 
 
-            // check if persons in roles have been modified or added
             foreach (var predavacNaEdukaciji in model.PredavaciNaEdukaciji)
             {
                 // it exists in the DB, so just update it
@@ -234,7 +238,7 @@ public class EdukacijeRepository : IEdukacijeRepository
                 }
             }
 
-            // check if persons in roles have been removed
+           
             dbModel.Predavaci
                    .Where(pr => !model.PredavaciNaEdukaciji.Any(_ => _.idPredavac == pr.IdPredavac))
                    .ToList()
@@ -242,6 +246,62 @@ public class EdukacijeRepository : IEdukacijeRepository
                    {
                        dbModel.Predavaci.Remove(predavac);
                    });
+
+
+            foreach (var prijavljeni in model.PrijavljeniNaEdukaciji)
+            {
+                // it exists in the DB, so just update it
+                var prijavljeniToUpdate =
+                    dbModel.PrijavljeniPolazniciSkole
+                           .FirstOrDefault(pr => pr.EdukacijaId.Equals(model.Id) && pr.PrijavljenClan.Equals(prijavljeni.idPolaznik) && pr.SkolaId.Equals(model.SkolaId));
+                if (prijavljeniToUpdate != null)
+                {
+                    prijavljeniToUpdate.PrijavljenClan = prijavljeni.idPolaznik;
+                    prijavljeniToUpdate.DatumPrijave = prijavljeni.datumPrijave;
+                }
+                else // it does not exist in the DB, so add it
+                {
+                    dbModel.PrijavljeniPolazniciSkole.Add(prijavljeni.ToDbModel(model.SkolaId, model.Id));
+                }
+            }
+
+
+            dbModel.PrijavljeniPolazniciSkole
+                   .Where(pr => !model.PrijavljeniNaEdukaciji.Any(_ => _.idPolaznik == pr.PrijavljenClan))
+                   .ToList()
+                   .ForEach(prijavljeni =>
+                   {
+                       dbModel.PrijavljeniPolazniciSkole.Remove(prijavljeni);
+                   });
+
+
+            foreach (var polaznik in model.PolazniciEdukacije)
+            {
+                Debug.WriteLine(polaznik.idPolaznik);
+                // it exists in the DB, so just update it
+                var polaznikToUpdate =
+                    dbModel.PolazniciSkole
+                           .FirstOrDefault(pr => pr.EdukacijaId.Equals(model.Id) && pr.Polaznik.Equals(polaznik.idPolaznik) && pr.SkolaId.Equals(model.SkolaId));
+                if (polaznikToUpdate != null)
+                {
+                    polaznikToUpdate.Polaznik = polaznik.idPolaznik;
+                }
+                else // it does not exist in the DB, so add it
+                {
+                    dbModel.PolazniciSkole.Add(polaznik.ToDbModel(model.SkolaId, model.Id)); //ne radi iz nekog razloga
+                }
+            }
+
+
+            dbModel.PolazniciSkole
+                   .Where(pr => !model.PolazniciEdukacije.Any(_ => _.idPolaznik == pr.Polaznik))
+                   .ToList()
+                   .ForEach(polaznik =>
+                   {
+                       dbModel.PolazniciSkole.Remove(polaznik);
+                   });
+
+
 
             _dbContext.Edukacije
                       .Update(dbModel);

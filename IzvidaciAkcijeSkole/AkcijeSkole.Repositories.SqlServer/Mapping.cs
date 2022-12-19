@@ -202,7 +202,7 @@ public static class Mapping
     }
 
     public static Skola ToDomainSkola(this DbModels.Skole skola)
-        => new Skola(skola.IdSkole, skola.NazivSkole, skola.MjestoPbr, skola.Organizator, skola.KontaktOsoba);
+        => new Skola(skola.IdSkole, skola.NazivSkole, skola.MjestoPbr, skola.Organizator, skola.KontaktOsoba, skola.Edukacije.Select(ToDomainEdukacija));
 
     public static DbModels.Skole ToDbModel(this Skola skola)
     {
@@ -213,6 +213,7 @@ public static class Mapping
             MjestoPbr = skola.MjestoPbr,
             Organizator = skola.Organizator,
             KontaktOsoba = skola.KontaktOsoba,
+            Edukacije = skola.EdukacijeUSkoli.Select(obj => obj.ToDbModel()).ToList(),
 
         };
     }
@@ -227,8 +228,32 @@ public static class Mapping
             ClanId = predavacNaEdukaciji.idClan,
             EdukacijaId = edukacijaId
         };
+
+    public static PolaznikNaEdukaciji ToDomain(this DbModels.PolazniciSkole polaznik)
+        => new PolaznikNaEdukaciji(polaznik.Polaznik);
+
+    public static DbModels.PolazniciSkole ToDbModel(this PolaznikNaEdukaciji polaznik, int skolaId, int edukacijaId)
+        => new DbModels.PolazniciSkole()
+        {
+            Polaznik = polaznik.idPolaznik,
+            EdukacijaId = edukacijaId,
+            SkolaId = skolaId
+        };
+
+    public static PrijavljeniClanNaEdukaciji ToDomain(this DbModels.PrijavljeniPolazniciSkole prijavljeni)
+        => new PrijavljeniClanNaEdukaciji(prijavljeni.PrijavljenClan, prijavljeni.DatumPrijave);
+
+    public static DbModels.PrijavljeniPolazniciSkole ToDbModel(this PrijavljeniClanNaEdukaciji prijavljeni, int skolaId, int edukacijaId)
+        => new DbModels.PrijavljeniPolazniciSkole()
+        {
+            PrijavljenClan = prijavljeni.idPolaznik,
+            DatumPrijave = prijavljeni.datumPrijave,
+            EdukacijaId = edukacijaId,
+            SkolaId = skolaId
+        };
+
     public static Edukacija ToDomainEdukacija(this DbModels.Edukacije edukacija)
-        => new Edukacija(edukacija.IdEdukacija, edukacija.NazivEdukacija, edukacija.MjestoPbr, edukacija.OpisEdukacije, edukacija.SkolaId, edukacija.Predavaci.Select(ToDomain));
+        => new Edukacija(edukacija.IdEdukacija, edukacija.NazivEdukacija, edukacija.MjestoPbr, edukacija.OpisEdukacije, edukacija.SkolaId, edukacija.Predavaci.Select(ToDomain), edukacija.PolazniciSkole.Select(ToDomain), edukacija.PrijavljeniPolazniciSkole.Select(ToDomain));
 
     public static DbModels.Edukacije ToDbModel(this Edukacija edukacija)
     {
@@ -239,7 +264,9 @@ public static class Mapping
             MjestoPbr = edukacija.MjestoPbr,
             OpisEdukacije = edukacija.OpisEdukacije,
             SkolaId = edukacija.SkolaId,
-            Predavaci = edukacija.PredavaciNaEdukaciji.Select(obj => obj.ToDbModel(edukacija.Id)).ToList()
+            Predavaci = edukacija.PredavaciNaEdukaciji.Select(obj => obj.ToDbModel(edukacija.Id)).ToList(),
+            PrijavljeniPolazniciSkole = edukacija.PrijavljeniNaEdukaciji.Select(obj => obj.ToDbModel(edukacija.SkolaId,edukacija.Id)).ToList(),
+            PolazniciSkole = edukacija.PolazniciEdukacije.Select(obj => obj.ToDbModel(edukacija.SkolaId, edukacija.Id)).ToList()
         };
     }
 

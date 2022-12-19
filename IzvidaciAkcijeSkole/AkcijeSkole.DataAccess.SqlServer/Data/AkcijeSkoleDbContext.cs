@@ -111,7 +111,6 @@ namespace AkcijeSkole.DataAccess.SqlServer.Data
                 entity.HasOne(d => d.Skola)
                     .WithMany(p => p.Edukacije)
                     .HasForeignKey(d => d.SkolaId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Edukacije_Skole");
             });
 
@@ -197,7 +196,6 @@ namespace AkcijeSkole.DataAccess.SqlServer.Data
                 entity.HasOne(d => d.Edukacija)
                     .WithMany(p => p.PolazniciSkole)
                     .HasForeignKey(d => d.EdukacijaId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_PolazniciSkole_Edukacije");
 
                 entity.HasOne(d => d.Skola)
@@ -217,7 +215,6 @@ namespace AkcijeSkole.DataAccess.SqlServer.Data
                 entity.HasOne(d => d.Edukacija)
                     .WithMany(p => p.Predavaci)
                     .HasForeignKey(d => d.EdukacijaId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Predavaci_Edukacije");
             });
 
@@ -228,7 +225,6 @@ namespace AkcijeSkole.DataAccess.SqlServer.Data
                 entity.HasOne(d => d.Akcija)
                     .WithMany(p => p.PrijavljeniPolazniciAkcije)
                     .HasForeignKey(d => d.AkcijaId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_PrijavljeniPolazniciAkcije_Akcije");
 
                 entity.HasOne(d => d.Aktivnost)
@@ -275,7 +271,6 @@ namespace AkcijeSkole.DataAccess.SqlServer.Data
                 entity.HasOne(d => d.MjestoPbrNavigation)
                     .WithMany(p => p.Skole)
                     .HasForeignKey(d => d.MjestoPbr)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Skole_Mjesta");
             });
 
