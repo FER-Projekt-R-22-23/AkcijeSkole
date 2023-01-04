@@ -3,14 +3,13 @@
 using System;
 using System.Collections.Generic;
 
-namespace AkcijeSkole.DataAccess.SqlServer.Data.DbModels
+namespace AkcijeSkoleWebApi.Models
 {
-    public partial class PrijavljeniPolazniciAkcije
+    public partial class PolazniciAkcije
     {
+        public int Polaznik { get; set; }
         public int AkcijaId { get; set; }
-        public int PrijavljenClan { get; set; }
         public int AktivnostId { get; set; }
-        public DateTime DatumPrijave { get; set; }
 
         public virtual Akcije Akcija { get; set; }
         public virtual Aktivnosti Aktivnost { get; set; }

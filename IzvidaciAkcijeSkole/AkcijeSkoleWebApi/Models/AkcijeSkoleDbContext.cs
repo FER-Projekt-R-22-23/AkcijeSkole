@@ -2,11 +2,10 @@
 #nullable disable
 using System;
 using System.Collections.Generic;
-using AkcijeSkole.DataAccess.SqlServer.Data.DbModels;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 
-namespace AkcijeSkole.DataAccess.SqlServer.Data
+namespace AkcijeSkoleWebApi.Models
 {
     public partial class AkcijeSkoleDbContext : DbContext
     {

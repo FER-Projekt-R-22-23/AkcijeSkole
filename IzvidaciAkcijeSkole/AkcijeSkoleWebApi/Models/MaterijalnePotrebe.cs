@@ -3,7 +3,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace AkcijeSkole.DataAccess.SqlServer.Data.DbModels
+namespace AkcijeSkoleWebApi.Models
 {
     public partial class MaterijalnePotrebe
     {

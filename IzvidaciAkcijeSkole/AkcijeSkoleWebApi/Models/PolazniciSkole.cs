@@ -3,14 +3,15 @@
 using System;
 using System.Collections.Generic;
 
-namespace AkcijeSkole.DataAccess.SqlServer.Data.DbModels
+namespace AkcijeSkoleWebApi.Models
 {
-    public partial class Predavaci
+    public partial class PolazniciSkole
     {
-        public int IdPredavac { get; set; }
-        public int ClanId { get; set; }
+        public int Polaznik { get; set; }
+        public int SkolaId { get; set; }
         public int EdukacijaId { get; set; }
 
         public virtual Edukacije Edukacija { get; set; }
+        public virtual Skole Skola { get; set; }
     }
 }
