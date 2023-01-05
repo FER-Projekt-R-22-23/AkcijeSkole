@@ -22,6 +22,7 @@ namespace AkcijeSkole.DataAccess.SqlServer.Data.DbModels
         public int Organizator { get; set; }
         public int KontaktOsoba { get; set; }
         public string Vrsta { get; set; }
+        public string Koordinate { get; set; }
 
         public virtual Mjesta MjestoPbrNavigation { get; set; }
         public virtual ICollection<Aktivnosti> Aktivnosti { get; set; }

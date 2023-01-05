@@ -9,7 +9,7 @@ namespace AkcijeSkoleWebApi.DTOs
         public string NazivMaterijalnaPotreba { get; set; } = String.Empty;
         public double Kolicina { get; set; }
         public string MjernaJedinica { get; set; } = String.Empty;
-        public int MjestoPbr { get; set; }
+        public string Kooridinate { get; set; }
         public int Organizator { get; set; }
     }
 
@@ -24,13 +24,13 @@ namespace AkcijeSkoleWebApi.DTOs
                 NazivMaterijalnaPotreba = zahtjev.NazivMatPotreba,
                 Kolicina = zahtjev.Kolicina,
                 MjernaJedinica = zahtjev.MjernaJedinica,
-                MjestoPbr = zahtjev.MjestoPbr,
+                Kooridinate = zahtjev.Koordinate,
                 Organizator = zahtjev.Organizator
             };
         }
         public static DomainModels.ZahtjevDetails ToDomain(this ZahtjevDetails zahtjev)
         {
-            return new DomainModels.ZahtjevDetails(zahtjev.IdZahtjev, zahtjev.IdMaterijalnaPotreba, zahtjev.NazivMaterijalnaPotreba, zahtjev.Kolicina, zahtjev.MjernaJedinica, zahtjev.MjestoPbr, zahtjev.Organizator);
+            return new DomainModels.ZahtjevDetails(zahtjev.IdZahtjev, zahtjev.IdMaterijalnaPotreba, zahtjev.NazivMaterijalnaPotreba, zahtjev.Kolicina, zahtjev.MjernaJedinica, zahtjev.Kooridinate, zahtjev.Organizator);
         }
 
     }

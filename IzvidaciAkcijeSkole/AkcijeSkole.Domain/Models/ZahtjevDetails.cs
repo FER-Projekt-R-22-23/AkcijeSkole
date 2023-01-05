@@ -14,17 +14,17 @@ namespace AkcijeSkole.Domain.Models
         private string _NazivMaterijalnaPotreba;
         private double _Kolicina;
         private string _MjernaJedinica;
-        private int _MjestoPbr;
+        private string _Koordinate;
         private int _Organizator;
 
-        public ZahtjevDetails(int idZahtjev, int idMaterijalnaPotreba, string nazivMaterijalnaPotreba, double kolicina, string mjernaJedinica, int mjestoPbr, int organizator)
+        public ZahtjevDetails(int idZahtjev, int idMaterijalnaPotreba, string nazivMaterijalnaPotreba, double kolicina, string mjernaJedinica, string koordinate, int organizator)
         {
             _IdZahtjev = idZahtjev;
             _IdMaterijalnaPotreba = idMaterijalnaPotreba;
             _NazivMaterijalnaPotreba = nazivMaterijalnaPotreba;
             _Kolicina = kolicina;
             _MjernaJedinica = mjernaJedinica;
-            _MjestoPbr = mjestoPbr;
+            _Koordinate = koordinate;
             _Organizator = organizator;
         }
 
@@ -33,7 +33,7 @@ namespace AkcijeSkole.Domain.Models
         public string NazivMatPotreba { get => _NazivMaterijalnaPotreba; set => _NazivMaterijalnaPotreba = value; }
         public double Kolicina { get => _Kolicina; set => _Kolicina = value; }
         public string MjernaJedinica { get => _MjernaJedinica; set => MjernaJedinica = value; }
-        public int MjestoPbr { get => _MjestoPbr; set => _MjestoPbr = value; }
+        public string Koordinate { get => _Koordinate; set => _Koordinate = value; }
         public int Organizator { get => _Organizator; set => Organizator = value; }
     }
 }

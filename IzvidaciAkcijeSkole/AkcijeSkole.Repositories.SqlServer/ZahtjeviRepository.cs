@@ -212,7 +212,7 @@ public class ZahtjeviRepository : IZahtjeviRepository
             var nazivMatPotreba = matPotreba.Naziv;
             var kolicina = matPotreba.Kolicina.GetValueOrDefault(0);
             var mjernaJedinica = matPotreba.MjernaJedinica;
-            var mjestoPbr = pbrMatPotrebe(idMatPotrebe);
+            var mjestoPbr = koordinateMatPotrebe(idMatPotrebe);
             var organizator = matPotreba.Organizator;
 
             var returnModel = new ZahtjevDetails(
@@ -232,7 +232,7 @@ public class ZahtjeviRepository : IZahtjeviRepository
         }
     }
 
-    public int pbrMatPotrebe(int idMatPotrebe) {
+    public string koordinateMatPotrebe(int idMatPotrebe) {
         var matPotreba = _dbContext.MaterijalnePotrebe
                                 .Include(potreba => potreba.Akcije)
                                 .Include(potreba => potreba.Skole)
@@ -240,17 +240,17 @@ public class ZahtjeviRepository : IZahtjeviRepository
                                 .AsNoTracking()
                                 .FirstOrDefault(m => m.IdMaterijalnePotrebe.Equals(idMatPotrebe));
         if (matPotreba.Akcije.Count != 0) {
-            return matPotreba.Akcije.FirstOrDefault()!.MjestoPbr;
+            return matPotreba.Akcije.FirstOrDefault()!.Koordinate;
         }
         if (matPotreba.Skole.Count != 0)
         {
-            return matPotreba.Skole.FirstOrDefault()!.MjestoPbr;
+            return matPotreba.Skole.FirstOrDefault()!.Koordinate;
         }
         if (matPotreba.TerenskeLokacije.Count != 0)
         {
-            return matPotreba.TerenskeLokacije.FirstOrDefault()!.MjestoPbr;
+            return matPotreba.TerenskeLokacije.FirstOrDefault()!.Koordinate;
         }
-        return 0;
+        return "";
     }
 
 

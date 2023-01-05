@@ -43,6 +43,10 @@ namespace AkcijeSkole.DataAccess.SqlServer.Data
             {
                 entity.HasKey(e => e.IdAkcija);
 
+                entity.Property(e => e.Koordinate)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
                 entity.Property(e => e.Naziv)
                     .IsRequired()
                     .HasMaxLength(50)
@@ -322,6 +326,10 @@ namespace AkcijeSkole.DataAccess.SqlServer.Data
             {
                 entity.HasKey(e => e.IdSkole);
 
+                entity.Property(e => e.Koordinate)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
                 entity.Property(e => e.NazivSkole)
                     .IsRequired()
                     .HasMaxLength(50)
@@ -338,6 +346,10 @@ namespace AkcijeSkole.DataAccess.SqlServer.Data
             {
                 entity.HasKey(e => e.IdTerenskeLokacije)
                     .HasName("PK_terenskeLokacije");
+
+                entity.Property(e => e.Koordinate)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
 
                 entity.Property(e => e.NazivTerenskeLokacije)
                     .IsRequired()

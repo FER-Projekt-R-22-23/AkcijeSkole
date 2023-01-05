@@ -20,6 +20,7 @@ namespace AkcijeSkole.DataAccess.SqlServer.Data.DbModels
         public bool ImaSanitarniCvor { get; set; }
         public int MjestoPbr { get; set; }
         public string Opis { get; set; }
+        public string Koordinate { get; set; }
 
         public virtual Mjesta MjestoPbrNavigation { get; set; }
         public virtual CvrstiNamjenskiObjekti CvrstiNamjenskiObjekti { get; set; }
