@@ -46,5 +46,24 @@ namespace AkcijeSkoleWebApi.Controllers
                 { IsException: true } or _ => Problem(zahtjevResult.Message, statusCode: 500)
             };
         }
+
+        // POST: api/OdgovorNaZahtjev
+        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [HttpPost]
+        public ActionResult<DTOs.ZahtjevOdgovor> OdgvorNaZahtjev(DTOs.ZahtjevOdgovor odgvor)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var domainOdgvor = odgvor.ToDomain();
+
+            var result = _context.OdgvorNaZahtjev(domainOdgvor);
+
+            return result
+                ? Ok()
+                : Problem(result.Message, statusCode: 500);
+        }
     }
 }

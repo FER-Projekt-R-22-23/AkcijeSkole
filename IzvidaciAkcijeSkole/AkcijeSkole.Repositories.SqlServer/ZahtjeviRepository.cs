@@ -160,6 +160,38 @@ public class ZahtjeviRepository : IZahtjeviRepository
         }
     }
 
+    public Result OdgvorNaZahtjev(ZahtjevOdgovor odgovor)
+    {
+        var zahtjev = _dbContext.Zahtjevi.Where(z => z.IdZahtjev.Equals(odgovor.IdZahtjev)).FirstOrDefault();
+
+        if (zahtjev == null)
+        {
+            return Results.OnFailure($"No zahtjev with id {odgovor.IdZahtjev} found");
+        }
+
+        zahtjev.Status = odgovor.Status;
+        _dbContext.Update(zahtjev);
+        _dbContext.SaveChanges();
+
+        if (odgovor.Status.Equals("Odbijen")) {
+            return Results.OnSuccess();
+        }
+        if (odgovor.Status.Equals("Ispunjen")) { 
+            var matPotreba = _dbContext.MaterijalnePotrebe.Where(m => m.IdMaterijalnePotrebe.Equals(zahtjev.IdMatPotreba)).FirstOrDefault();
+
+            if (matPotreba == null)
+            {
+                return Results.OnFailure($"No materijalna potreba with id {zahtjev.IdMatPotreba} found");
+            }
+
+            matPotreba.Davatelj = odgovor.Davatelj;
+            matPotreba.Zadovoljeno = true;
+            _dbContext.Update(zahtjev);
+            _dbContext.SaveChanges();
+        }
+        return Results.OnSuccess("Isti status zahtjeva");
+    }
+
     public Result<ZahtjevDetails> GetZahtjevDetails(int id)
     {
         try
@@ -208,15 +240,15 @@ public class ZahtjeviRepository : IZahtjeviRepository
                                 .AsNoTracking()
                                 .FirstOrDefault(m => m.IdMaterijalnePotrebe.Equals(idMatPotrebe));
         if (matPotreba.Akcije.Count != 0) {
-            return matPotreba.Akcije.FirstOrDefault().MjestoPbr;
+            return matPotreba.Akcije.FirstOrDefault()!.MjestoPbr;
         }
         if (matPotreba.Skole.Count != 0)
         {
-            return matPotreba.Skole.FirstOrDefault().MjestoPbr;
+            return matPotreba.Skole.FirstOrDefault()!.MjestoPbr;
         }
         if (matPotreba.TerenskeLokacije.Count != 0)
         {
-            return matPotreba.TerenskeLokacije.FirstOrDefault().MjestoPbr;
+            return matPotreba.TerenskeLokacije.FirstOrDefault()!.MjestoPbr;
         }
         return 0;
     }

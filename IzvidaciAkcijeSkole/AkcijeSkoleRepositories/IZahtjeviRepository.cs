@@ -12,5 +12,6 @@ namespace AkcijeSkole.Repositories
     : IRepository<int, Zahtjev>
     {
         public Result<ZahtjevDetails> GetZahtjevDetails(int id);
+        public Result OdgvorNaZahtjev(ZahtjevOdgovor odgovor);
     }
 }
