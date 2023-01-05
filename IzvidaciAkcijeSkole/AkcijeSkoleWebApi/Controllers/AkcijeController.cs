@@ -48,6 +48,20 @@ namespace AkcijeSkoleWebApi.Controllers
             };
         }
 
+        // GET: api/Akcije/5
+        [HttpGet("/polaznici/{polaznik}")]
+        public ActionResult<IEnumerable<DTOs.AkcijaPolaznik>> GetAkcijaPolaznik(int polaznik)
+        {
+            var akcijaResult = _context.GetPolaznik(polaznik).Map(akcija => akcija.Select(DtoMapping.ToDtoPolaznik));
+
+            return akcijaResult switch
+            {
+                { IsSuccess: true } => Ok(akcijaResult.Data),
+                { IsFailure: true } => NotFound(),
+                { IsException: true } or _ => Problem(akcijaResult.Message, statusCode: 500)
+            };
+        }
+
         // PUT: api/Akcije/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]

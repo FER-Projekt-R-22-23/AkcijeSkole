@@ -11,6 +11,7 @@ using AkcijeSkole.Repositories;
 using System.Data;
 using AkcijeSkole.Repositories.SqlServer;
 using BaseLibrary;
+using AkcijeSkole.DataAccess.SqlServer.Data.DbModels;
 
 namespace AkcijeSkole.Repositories.SqlServer;
 
@@ -71,6 +72,25 @@ namespace AkcijeSkole.Repositories.SqlServer;
                 return Results.OnException<Akcija>(e);
             }
         }
+
+    public Result<IEnumerable<Akcija>> GetPolaznik(int polaznikId)
+    {
+        try
+        {
+            var polaznik = _dbContext.PolazniciAkcije.FirstOrDefault(p => p.Polaznik == polaznikId);
+            if(polaznik == null) return Results.OnFailure<IEnumerable<Akcija>>($"Polaznik s id-jem {polaznikId} ne postoji.");
+            var ak = from a in _dbContext.Akcije
+                     where a.PolazniciAkcije.Contains(polaznik)
+                     select a;
+
+            var akcije = ak.Select(Mapping.ToDomainAkcija);
+            return Results.OnSuccess(akcije);
+        }
+        catch (Exception e)
+        {
+            return Results.OnException<IEnumerable<Akcija>>(e);
+        }
+    }
 
     public Result<IEnumerable<Akcija>> GetAll()
     {
