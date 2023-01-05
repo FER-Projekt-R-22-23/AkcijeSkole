@@ -17,6 +17,15 @@ namespace AkcijeSkoleWebApi.DTOs
         public int KontaktOsoba { get; set; }
     }
 
+    public class SkolaPolaznik
+    {
+        public int IdSkole { get; set; }
+
+        [Required(ErrorMessage = "Naziv skole can't be null")]
+        [StringLength(50, ErrorMessage = "Naziv skole cant't be longer than 50 characters")]
+        public string NazivSkole { get; set; } = String.Empty;
+    }
+
     public static partial class DtoMapping
     {
         public static Skola ToDto(this DomainModels.Skola skola)
@@ -28,6 +37,15 @@ namespace AkcijeSkoleWebApi.DTOs
                 MjestoPbr = skola.MjestoPbr,
                 Organizator = skola.Organizator,
                 KontaktOsoba = skola.KontaktOsoba,
+            };
+        }
+
+        public static SkolaPolaznik ToDtoPolaznik(this DomainModels.Skola skola)
+        {
+            return new SkolaPolaznik()
+            {
+                IdSkole = skola.Id,
+                NazivSkole = skola.NazivSkole
             };
         }
         public static DomainModels.Skola toDomain(this Skola skola)

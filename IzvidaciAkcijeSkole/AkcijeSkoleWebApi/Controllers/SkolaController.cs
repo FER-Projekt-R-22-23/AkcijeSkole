@@ -46,6 +46,20 @@ namespace AkcijeSkoleWebApi.Controllers
             };
         }
 
+        // GET: api/skole/5
+        [HttpGet("/polaznik/{polaznik}")]
+        public ActionResult<IEnumerable<SkolaPolaznik>> GetSkole(int polaznik)
+        {
+            var skolaResult = _skolaRepository.GetSkole(polaznik).Map(skole => skole.Select(DtoMapping.ToDtoPolaznik));
+
+            return skolaResult switch
+            {
+                { IsSuccess: true } => Ok(skolaResult.Data),
+                { IsFailure: true } => NotFound(),
+                { IsException: true } or _ => Problem(skolaResult.Message, statusCode: 500)
+            };
+        }
+
         [HttpGet("/SkoleAggregate/{id}")]
         public ActionResult<SkolaAggregate> GetSkoleAggregate(int id)
         {
