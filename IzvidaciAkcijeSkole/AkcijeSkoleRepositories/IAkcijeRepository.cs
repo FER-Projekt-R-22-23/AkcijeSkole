@@ -1,4 +1,5 @@
 ﻿using AkcijeSkole.Domain.Models;
+using BaseLibrary;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,5 +11,6 @@ namespace AkcijeSkole.Repositories
     public interface IAkcijeRepository : IRepository<int, Akcija>,
                                          IAggregateRepository<int, Akcija>
     {
+        Result<IEnumerable<Akcija>> GetPolaznik(int polaznikId);
     }
 }
