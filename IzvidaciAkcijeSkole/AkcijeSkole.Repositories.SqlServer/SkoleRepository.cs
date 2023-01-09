@@ -73,7 +73,7 @@ public class SkolaRepository : ISkoleRepository
         try
         {
             var polaznik = _dbContext.PolazniciSkole.AsNoTracking().FirstOrDefault(p => p.Polaznik == polaznikId);
-            if(polaznik == null) return Results.OnSuccess<IEnumerable<Skola>>(new List<Skola>);
+            if(polaznik == null) return Results.OnSuccess<IEnumerable<Skola>>(new List<Skola>());
             var sk = from s in _dbContext.Skole
                        where s.PolazniciSkole.Contains(polaznik)
                        select s;

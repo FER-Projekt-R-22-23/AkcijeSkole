@@ -78,7 +78,7 @@ namespace AkcijeSkole.Repositories.SqlServer;
         try
         {
             var polaznik = _dbContext.PolazniciAkcije.FirstOrDefault(p => p.Polaznik == polaznikId);
-            if(polaznik == null) return Results.OnSuccess<IEnumerable<Akcija>>(new List<Akcija>);
+            if(polaznik == null) return Results.OnSuccess<IEnumerable<Akcija>>(new List<Akcija>());
             var ak = from a in _dbContext.Akcije
                      where a.PolazniciAkcije.Contains(polaznik)
                      select a;
