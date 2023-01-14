@@ -60,8 +60,8 @@ namespace AkcijeSkoleWebApi.Controllers
             };
         }
 
-        [HttpGet("/SkoleAggregate/{id}")]
-        public ActionResult<SkolaAggregate> GetSkoleAggregate(int id)
+        [HttpGet("SkoleAggregate/{id}")]
+        public ActionResult<SkolaAggregate> SkoleAggregate(int id)
         {
             var skolaResult = _skolaRepository.GetAggregate(id).Map(DtoMapping.ToAggregateDto);
 
