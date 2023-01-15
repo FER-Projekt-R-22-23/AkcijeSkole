@@ -48,8 +48,8 @@ namespace AkcijeSkoleWebApi.Controllers
             };
         }
 
-        [HttpGet("/EdukacijaAggregate/{id}")]
-        public ActionResult<EdukacijaAggregate> GetEdukacijaAggregate(int id)
+        [HttpGet("EdukacijaAggregate/{id}")]
+        public ActionResult<EdukacijaAggregate> EdukacijaAggregate(int id)
         {
             var edukacijaResult = _edukacijaRepository.GetAggregate(id).Map(DtoMapping.ToAggregateDto);
 
