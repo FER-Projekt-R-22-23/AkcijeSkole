@@ -130,6 +130,7 @@ namespace AkcijeSkoleWebApi.Controllers
         [HttpDelete("{id}")]
         public IActionResult DeleteSkola(int id)
         {
+            
             if (!_skolaRepository.Exists(id))
                 return NotFound();
 

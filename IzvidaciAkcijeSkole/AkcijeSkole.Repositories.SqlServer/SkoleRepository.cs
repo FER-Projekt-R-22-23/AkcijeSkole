@@ -173,8 +173,11 @@ public class SkolaRepository : ISkoleRepository
         {
             var model = _dbContext.Skole
                           .Include(_skole => _skole.Edukacije)
+                          .ThenInclude(e => e.Predavaci)
                           .Include(_skole => _skole.PolazniciSkole)
                           .Include(_skole => _skole.PrijavljeniPolazniciSkole)
+                          .Include(_skole => _skole.MaterijalnePotreb)
+                          .Include(_skole => _skole.TerenskaLokacija)
                           .AsNoTracking()
                           .FirstOrDefault(skola => skola.IdSkole.Equals(id));
             if (model is not null)
