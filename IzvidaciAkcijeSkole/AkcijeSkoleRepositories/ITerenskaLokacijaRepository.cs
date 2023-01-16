@@ -6,6 +6,11 @@ namespace AkcijeSkole.Repositories;
 public interface ITerenskaLokacijaRepository 
     : IRepository<int, TerenskaLokacija>
 {
+
+    public Result<CvrstiObjektZaObitavanje> GetCvrsti(int id);
+
+    public Result RemoveCvrsti(int id);
+
     public Result<IEnumerable<CvrstiNamjenskiObjekt>> GetAllCvrstiNamjenski();
 
     public Result<IEnumerable<CvrstiObjektZaObitavanje>> GetAllCvrstiObitavanje();

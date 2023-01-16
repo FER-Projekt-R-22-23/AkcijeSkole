@@ -86,6 +86,19 @@ public class TerenskaLokacijaController : ControllerBase
         };
     }
 
+    [HttpGet("CvrstiObjektiZaObitavanje/{id}")]
+    public ActionResult<CvrstiObjektZaObitavanje> GetCvrstiObjektZaObitavanje(int id)
+    {
+        var result = _terenskaLokacijaRepository.GetCvrsti(id).Map(DtoMapping.ToDto);
+
+        return result switch
+        {
+            { IsSuccess: true } => Ok(result.Data),
+            { IsFailure: true } => NotFound(),
+            { IsException: true } or _ => Problem(result.Message, statusCode: 500)
+        };
+    }
+
     [HttpPost]
     public ActionResult<TerenskaLokacija> CreateTerenskaLokacija(TerenskaLokacija terenskaLokacija)
     {
@@ -354,6 +367,22 @@ public class TerenskaLokacijaController : ControllerBase
         }    
 
         var deleteResult = _terenskaLokacijaRepository.Remove(id);
+        return deleteResult
+            ? NoContent()
+            : Problem(deleteResult.Message, statusCode: 500);
+    }
+
+    [HttpDelete("CvrstiObjektiZaObitavanje/{id}")]
+    public IActionResult DeleteCvrstiObjektZaObitavanje(int id)
+    {
+        if (!_terenskaLokacijaRepository.ExistsCvrstiObitavanje(id))
+        {
+            return NotFound();
+        }
+
+        var deleteResult = _terenskaLokacijaRepository.RemoveCvrsti(id);
+        _terenskaLokacijaRepository.Remove(id);
+
         return deleteResult
             ? NoContent()
             : Problem(deleteResult.Message, statusCode: 500);
