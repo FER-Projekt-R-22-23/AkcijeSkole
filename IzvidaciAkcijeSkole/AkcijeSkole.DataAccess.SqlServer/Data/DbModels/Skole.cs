@@ -2,9 +2,6 @@
 #nullable disable
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using Microsoft.EntityFrameworkCore;
 
 namespace AkcijeSkole.DataAccess.SqlServer.Data.DbModels
 {
@@ -19,31 +16,19 @@ namespace AkcijeSkole.DataAccess.SqlServer.Data.DbModels
             TerenskaLokacija = new HashSet<TerenskeLokacije>();
         }
 
-        [Key]
         public int IdSkole { get; set; }
-        [Required]
-        [StringLength(50)]
-        [Unicode(false)]
         public string NazivSkole { get; set; }
         public int MjestoPbr { get; set; }
         public int Organizator { get; set; }
         public int KontaktOsoba { get; set; }
+        public string Koordinate { get; set; }
 
-        [ForeignKey("MjestoPbr")]
-        [InverseProperty("Skole")]
         public virtual Mjesta MjestoPbrNavigation { get; set; }
-        [InverseProperty("Skola")]
         public virtual ICollection<Edukacije> Edukacije { get; set; }
-        [InverseProperty("Skola")]
         public virtual ICollection<PolazniciSkole> PolazniciSkole { get; set; }
-        [InverseProperty("Skola")]
         public virtual ICollection<PrijavljeniPolazniciSkole> PrijavljeniPolazniciSkole { get; set; }
 
-        [ForeignKey("SkoleId")]
-        [InverseProperty("Skole")]
         public virtual ICollection<MaterijalnePotrebe> MaterijalnePotreb { get; set; }
-        [ForeignKey("SkolaId")]
-        [InverseProperty("Skola")]
         public virtual ICollection<TerenskeLokacije> TerenskaLokacija { get; set; }
     }
 }

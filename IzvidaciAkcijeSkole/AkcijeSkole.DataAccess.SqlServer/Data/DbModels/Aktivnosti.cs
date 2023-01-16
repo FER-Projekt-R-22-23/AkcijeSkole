@@ -2,9 +2,6 @@
 #nullable disable
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using Microsoft.EntityFrameworkCore;
 
 namespace AkcijeSkole.DataAccess.SqlServer.Data.DbModels
 {
@@ -16,24 +13,15 @@ namespace AkcijeSkole.DataAccess.SqlServer.Data.DbModels
             PrijavljeniPolazniciAkcije = new HashSet<PrijavljeniPolazniciAkcije>();
         }
 
-        [Key]
         public int IdAktivnost { get; set; }
         public int MjestoPbr { get; set; }
         public int KontaktOsoba { get; set; }
-        [Required]
-        [Unicode(false)]
         public string Opis { get; set; }
         public int AkcijaId { get; set; }
 
-        [ForeignKey("AkcijaId")]
-        [InverseProperty("Aktivnosti")]
         public virtual Akcije Akcija { get; set; }
-        [ForeignKey("MjestoPbr")]
-        [InverseProperty("Aktivnosti")]
         public virtual Mjesta MjestoPbrNavigation { get; set; }
-        [InverseProperty("Aktivnost")]
         public virtual ICollection<PolazniciAkcije> PolazniciAkcije { get; set; }
-        [InverseProperty("Aktivnost")]
         public virtual ICollection<PrijavljeniPolazniciAkcije> PrijavljeniPolazniciAkcije { get; set; }
     }
 }

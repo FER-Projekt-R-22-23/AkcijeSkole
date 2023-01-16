@@ -8,9 +8,10 @@ using System.Threading.Tasks;
 
 namespace AkcijeSkole.Repositories
 {
-    public interface IAkcijeRepository : IRepository<int, Akcija>,
-                                         IAggregateRepository<int, Akcija>
+    public interface IZahtjeviRepository
+    : IRepository<int, Zahtjev>
     {
-        Result<IEnumerable<Akcija>> GetPolaznik(int polaznikId);
+        public Result<ZahtjevDetails> GetZahtjevDetails(int id);
+        public Result OdgvorNaZahtjev(ZahtjevOdgovor odgovor);
     }
 }

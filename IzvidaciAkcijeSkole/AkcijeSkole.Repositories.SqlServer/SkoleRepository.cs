@@ -6,6 +6,7 @@ using AkcijeSkole.Repositories;
 using System.Data;
 using AkcijeSkole.Repositories.SqlServer;
 using BaseLibrary;
+using AkcijeSkole.DataAccess.SqlServer.Data.DbModels;
 
 namespace AkcijeSkole.Repositories.SqlServer;
 public class SkolaRepository : ISkoleRepository
@@ -63,6 +64,26 @@ public class SkolaRepository : ISkoleRepository
         catch (Exception e)
         {
             return Results.OnException<Skola>(e);
+        }
+
+    }
+
+    public Result<IEnumerable<Skola>> GetSkole(int polaznikId)
+    {
+        try
+        {
+            var polaznik = _dbContext.PolazniciSkole.AsNoTracking().FirstOrDefault(p => p.Polaznik == polaznikId);
+            if(polaznik == null) return Results.OnSuccess<IEnumerable<Skola>>(new List<Skola>());
+            var sk = from s in _dbContext.Skole
+                       where s.PolazniciSkole.Contains(polaznik)
+                       select s;
+
+            var skole = sk.Select(Mapping.ToDomainSkola);
+            return Results.OnSuccess(skole);
+        }
+        catch (Exception e)
+        {
+            return Results.OnException<IEnumerable<Skola>>(e);
         }
 
     }
@@ -152,8 +173,11 @@ public class SkolaRepository : ISkoleRepository
         {
             var model = _dbContext.Skole
                           .Include(_skole => _skole.Edukacije)
+                          .ThenInclude(e => e.Predavaci)
                           .Include(_skole => _skole.PolazniciSkole)
                           .Include(_skole => _skole.PrijavljeniPolazniciSkole)
+                          .Include(_skole => _skole.MaterijalnePotreb)
+                          .Include(_skole => _skole.TerenskaLokacija)
                           .AsNoTracking()
                           .FirstOrDefault(skola => skola.IdSkole.Equals(id));
             if (model is not null)

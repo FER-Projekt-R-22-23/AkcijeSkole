@@ -2,24 +2,15 @@
 #nullable disable
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using Microsoft.EntityFrameworkCore;
 
 namespace AkcijeSkole.DataAccess.SqlServer.Data.DbModels
 {
     public partial class Logorista
     {
-        [Key]
         public int IdLogoriste { get; set; }
-        [Required]
-        [StringLength(50)]
-        [Unicode(false)]
         public string KoodinateMreze { get; set; }
         public int PredvideniBrojClanova { get; set; }
 
-        [ForeignKey("IdLogoriste")]
-        [InverseProperty("Logorista")]
         public virtual TerenskeLokacije IdLogoristeNavigation { get; set; }
     }
 }

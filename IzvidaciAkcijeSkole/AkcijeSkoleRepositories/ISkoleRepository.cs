@@ -1,5 +1,5 @@
 ﻿using AkcijeSkole.Domain.Models;
-
+using BaseLibrary;
 
 namespace AkcijeSkole.Repositories;
 /// <summary>
@@ -11,4 +11,5 @@ public interface ISkoleRepository
     : IRepository<int, Skola>,
       IAggregateRepository<int, Skola>
 {
+    Result<IEnumerable<Skola>> GetSkole(int polaznikId);
 }

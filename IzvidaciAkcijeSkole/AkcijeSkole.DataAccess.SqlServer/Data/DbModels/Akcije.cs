@@ -2,9 +2,6 @@
 #nullable disable
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using Microsoft.EntityFrameworkCore;
 
 namespace AkcijeSkole.DataAccess.SqlServer.Data.DbModels
 {
@@ -19,35 +16,20 @@ namespace AkcijeSkole.DataAccess.SqlServer.Data.DbModels
             TerenskeLokacije = new HashSet<TerenskeLokacije>();
         }
 
-        [Key]
         public int IdAkcija { get; set; }
-        [Required]
-        [StringLength(50)]
-        [Unicode(false)]
         public string Naziv { get; set; }
         public int MjestoPbr { get; set; }
         public int Organizator { get; set; }
         public int KontaktOsoba { get; set; }
-        [Required]
-        [StringLength(50)]
-        [Unicode(false)]
         public string Vrsta { get; set; }
+        public string Koordinate { get; set; }
 
-        [ForeignKey("MjestoPbr")]
-        [InverseProperty("Akcije")]
         public virtual Mjesta MjestoPbrNavigation { get; set; }
-        [InverseProperty("Akcija")]
         public virtual ICollection<Aktivnosti> Aktivnosti { get; set; }
-        [InverseProperty("Akcija")]
         public virtual ICollection<PolazniciAkcije> PolazniciAkcije { get; set; }
-        [InverseProperty("Akcija")]
         public virtual ICollection<PrijavljeniPolazniciAkcije> PrijavljeniPolazniciAkcije { get; set; }
 
-        [ForeignKey("AkcijeId")]
-        [InverseProperty("Akcije")]
         public virtual ICollection<MaterijalnePotrebe> MaterijalnePotrebe { get; set; }
-        [ForeignKey("AkcijeId")]
-        [InverseProperty("Akcije")]
         public virtual ICollection<TerenskeLokacije> TerenskeLokacije { get; set; }
     }
 }

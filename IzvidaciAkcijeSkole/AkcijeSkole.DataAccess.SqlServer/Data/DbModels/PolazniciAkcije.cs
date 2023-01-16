@@ -2,26 +2,16 @@
 #nullable disable
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using Microsoft.EntityFrameworkCore;
 
 namespace AkcijeSkole.DataAccess.SqlServer.Data.DbModels
 {
     public partial class PolazniciAkcije
     {
-        [Key]
         public int Polaznik { get; set; }
-        [Key]
         public int AkcijaId { get; set; }
-        [Key]
         public int AktivnostId { get; set; }
 
-        [ForeignKey("AkcijaId")]
-        [InverseProperty("PolazniciAkcije")]
         public virtual Akcije Akcija { get; set; }
-        [ForeignKey("AktivnostId")]
-        [InverseProperty("PolazniciAkcije")]
         public virtual Aktivnosti Aktivnost { get; set; }
     }
 }

@@ -303,6 +303,19 @@ public static class Mapping
         };
     }
 
+    public static Zahtjev ToDomainZahtjev(this DbModels.Zahtjevi zahtjev)
+        => new Zahtjev(zahtjev.IdZahtjev, zahtjev.IdMatPotreba, zahtjev.Status);
+
+    public static DbModels.Zahtjevi ToDbModel(this Zahtjev zahtjev)
+    {
+        return new DbModels.Zahtjevi()
+        {
+            IdZahtjev = zahtjev.Id,
+            IdMatPotreba = zahtjev.IdMatPotreba,
+            Status = zahtjev.Status
+        };
+    }
+
     internal static Expression<Func<CvrstiNamjenskiObjekti, int, object>> ToDomainCvrstiNamjenski()
     {
         throw new NotImplementedException();

@@ -2,22 +2,14 @@
 #nullable disable
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using Microsoft.EntityFrameworkCore;
 
 namespace AkcijeSkole.DataAccess.SqlServer.Data.DbModels
 {
     public partial class CvrstiNamjenskiObjekti
     {
-        [Key]
         public int IdNamjenskiObjekt { get; set; }
-        [Required]
-        [Unicode(false)]
         public string Opis { get; set; }
 
-        [ForeignKey("IdNamjenskiObjekt")]
-        [InverseProperty("CvrstiNamjenskiObjekti")]
         public virtual TerenskeLokacije IdNamjenskiObjektNavigation { get; set; }
     }
 }

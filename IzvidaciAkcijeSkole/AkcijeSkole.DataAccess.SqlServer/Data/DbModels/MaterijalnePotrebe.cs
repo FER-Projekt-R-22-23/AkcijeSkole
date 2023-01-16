@@ -2,9 +2,6 @@
 #nullable disable
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using Microsoft.EntityFrameworkCore;
 
 namespace AkcijeSkole.DataAccess.SqlServer.Data.DbModels
 {
@@ -12,29 +9,24 @@ namespace AkcijeSkole.DataAccess.SqlServer.Data.DbModels
     {
         public MaterijalnePotrebe()
         {
+            Zahtjevi = new HashSet<Zahtjevi>();
             Akcije = new HashSet<Akcije>();
             Skole = new HashSet<Skole>();
             TerenskeLokacije = new HashSet<TerenskeLokacije>();
         }
 
-        [Key]
         public int IdMaterijalnePotrebe { get; set; }
-        [Required]
-        [StringLength(50)]
-        [Unicode(false)]
         public string Naziv { get; set; }
         public int Organizator { get; set; }
         public int Davatelj { get; set; }
         public bool Zadovoljeno { get; set; }
+        public double? Kolicina { get; set; }
+        public string MjernaJedinica { get; set; }
 
-        [ForeignKey("MaterijalnePotrebeId")]
-        [InverseProperty("MaterijalnePotrebe")]
+        public virtual ICollection<Zahtjevi> Zahtjevi { get; set; }
+
         public virtual ICollection<Akcije> Akcije { get; set; }
-        [ForeignKey("MaterijalnePotrebId")]
-        [InverseProperty("MaterijalnePotreb")]
         public virtual ICollection<Skole> Skole { get; set; }
-        [ForeignKey("MaterijalnePotrebeId")]
-        [InverseProperty("MaterijalnePotrebe")]
         public virtual ICollection<TerenskeLokacije> TerenskeLokacije { get; set; }
     }
 }

@@ -22,6 +22,7 @@ builder.Services.AddTransient<IAktivnostiRepository, AktivnostiRepository>();
 builder.Services.AddTransient<ITerenskaLokacijaRepository, TerenskaLokacijaRepository>();
 builder.Services.AddTransient<IMjestoRepository, MjestoRepository>();
 builder.Services.AddTransient<IMaterijalnaPotrebaRepository, MaterijalnaPotrebaRepository>();
+builder.Services.AddTransient<IZahtjeviRepository, ZahtjeviRepository>();
 // Add services to the container.
 
 builder.Services.AddControllers();

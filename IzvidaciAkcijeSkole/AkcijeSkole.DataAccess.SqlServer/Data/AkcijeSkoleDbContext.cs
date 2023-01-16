@@ -2,9 +2,9 @@
 #nullable disable
 using System;
 using System.Collections.Generic;
+using AkcijeSkole.DataAccess.SqlServer.Data.DbModels;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
-using AkcijeSkole.DataAccess.SqlServer.Data.DbModels;
 
 namespace AkcijeSkole.DataAccess.SqlServer.Data
 {
@@ -35,15 +35,30 @@ namespace AkcijeSkole.DataAccess.SqlServer.Data
         public virtual DbSet<PrivremeniObjekti> PrivremeniObjekti { get; set; }
         public virtual DbSet<Skole> Skole { get; set; }
         public virtual DbSet<TerenskeLokacije> TerenskeLokacije { get; set; }
+        public virtual DbSet<Zahtjevi> Zahtjevi { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Akcije>(entity =>
             {
+                entity.HasKey(e => e.IdAkcija);
+
+                entity.Property(e => e.Koordinate)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Naziv)
+                    .IsRequired()
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Vrsta)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
                 entity.HasOne(d => d.MjestoPbrNavigation)
                     .WithMany(p => p.Akcije)
                     .HasForeignKey(d => d.MjestoPbr)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Akcije_Mjesta");
             });
 
@@ -52,20 +67,18 @@ namespace AkcijeSkole.DataAccess.SqlServer.Data
                 entity.HasKey(e => e.IdAktivnost)
                     .HasName("PK_aktivnost");
 
-                entity.Property(e => e.IdAktivnost).ValueGeneratedNever();
-
-                entity.Property(e => e.KontaktOsoba).ValueGeneratedOnAdd();
+                entity.Property(e => e.Opis)
+                    .IsRequired()
+                    .IsUnicode(false);
 
                 entity.HasOne(d => d.Akcija)
                     .WithMany(p => p.Aktivnosti)
                     .HasForeignKey(d => d.AkcijaId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Aktivnosti_Akcije");
 
                 entity.HasOne(d => d.MjestoPbrNavigation)
                     .WithMany(p => p.Aktivnosti)
                     .HasForeignKey(d => d.MjestoPbr)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Aktivnosti_Mjesta");
             });
 
@@ -76,10 +89,13 @@ namespace AkcijeSkole.DataAccess.SqlServer.Data
 
                 entity.Property(e => e.IdNamjenskiObjekt).ValueGeneratedNever();
 
+                entity.Property(e => e.Opis)
+                    .IsRequired()
+                    .IsUnicode(false);
+
                 entity.HasOne(d => d.IdNamjenskiObjektNavigation)
                     .WithOne(p => p.CvrstiNamjenskiObjekti)
                     .HasForeignKey<CvrstiNamjenskiObjekti>(d => d.IdNamjenskiObjekt)
-                    .OnDelete(DeleteBehavior.Cascade)
                     .HasConstraintName("FK_CvrstiNamjenskiObjekt_TerenskeLokacije");
             });
 
@@ -93,7 +109,6 @@ namespace AkcijeSkole.DataAccess.SqlServer.Data
                 entity.HasOne(d => d.IdObjektaZaObitavanjeNavigation)
                     .WithOne(p => p.CvrstiObjektiZaObitavanje)
                     .HasForeignKey<CvrstiObjektiZaObitavanje>(d => d.IdObjektaZaObitavanje)
-                    .OnDelete(DeleteBehavior.Cascade)
                     .HasConstraintName("FK_CvrstiObjektiZaObitavanje_TerenskeLokacije");
             });
 
@@ -102,10 +117,16 @@ namespace AkcijeSkole.DataAccess.SqlServer.Data
                 entity.HasKey(e => e.IdEdukacija)
                     .HasName("PK_Edukacija");
 
+                entity.Property(e => e.NazivEdukacija)
+                    .IsRequired()
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.OpisEdukacije).IsRequired();
+
                 entity.HasOne(d => d.MjestoPbrNavigation)
                     .WithMany(p => p.Edukacije)
                     .HasForeignKey(d => d.MjestoPbr)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Edukacije_Mjesta");
 
                 entity.HasOne(d => d.Skola)
@@ -121,10 +142,14 @@ namespace AkcijeSkole.DataAccess.SqlServer.Data
 
                 entity.Property(e => e.IdLogoriste).ValueGeneratedNever();
 
+                entity.Property(e => e.KoodinateMreze)
+                    .IsRequired()
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
                 entity.HasOne(d => d.IdLogoristeNavigation)
                     .WithOne(p => p.Logorista)
                     .HasForeignKey<Logorista>(d => d.IdLogoriste)
-                    .OnDelete(DeleteBehavior.Cascade)
                     .HasConstraintName("FK_Logorista_TerenskeLokacije");
             });
 
@@ -133,12 +158,21 @@ namespace AkcijeSkole.DataAccess.SqlServer.Data
                 entity.HasKey(e => e.IdMaterijalnePotrebe)
                     .HasName("PK_materijalnePotrebe");
 
+                entity.Property(e => e.MjernaJedinica)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Naziv)
+                    .IsRequired()
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
                 entity.HasMany(d => d.Akcije)
                     .WithMany(p => p.MaterijalnePotrebe)
                     .UsingEntity<Dictionary<string, object>>(
                         "MaterijalnePotrebeAkcije",
-                        l => l.HasOne<Akcije>().WithMany().HasForeignKey("AkcijeId").OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_MaterijalnePotrebeAkcije_Akcije"),
-                        r => r.HasOne<MaterijalnePotrebe>().WithMany().HasForeignKey("MaterijalnePotrebeId").OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_MaterijalnePotrebeAkcije_MaterijalnePotrebe"),
+                        l => l.HasOne<Akcije>().WithMany().HasForeignKey("AkcijeId").HasConstraintName("FK_MaterijalnePotrebeAkcije_Akcije"),
+                        r => r.HasOne<MaterijalnePotrebe>().WithMany().HasForeignKey("MaterijalnePotrebeId").HasConstraintName("FK_MaterijalnePotrebeAkcije_MaterijalnePotrebe"),
                         j =>
                         {
                             j.HasKey("MaterijalnePotrebeId", "AkcijeId");
@@ -150,8 +184,8 @@ namespace AkcijeSkole.DataAccess.SqlServer.Data
                     .WithMany(p => p.MaterijalnePotreb)
                     .UsingEntity<Dictionary<string, object>>(
                         "MaterijalnePotrebeSkole",
-                        l => l.HasOne<Skole>().WithMany().HasForeignKey("SkoleId").OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_MaterijalnePotrebeSkole_Skole"),
-                        r => r.HasOne<MaterijalnePotrebe>().WithMany().HasForeignKey("MaterijalnePotrebId").OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_MaterijalnePotrebeSkole_MaterijalnePotrebe"),
+                        l => l.HasOne<Skole>().WithMany().HasForeignKey("SkoleId").HasConstraintName("FK_MaterijalnePotrebeSkole_Skole"),
+                        r => r.HasOne<MaterijalnePotrebe>().WithMany().HasForeignKey("MaterijalnePotrebId").HasConstraintName("FK_MaterijalnePotrebeSkole_MaterijalnePotrebe"),
                         j =>
                         {
                             j.HasKey("MaterijalnePotrebId", "SkoleId");
@@ -166,6 +200,11 @@ namespace AkcijeSkole.DataAccess.SqlServer.Data
                     .HasName("PK_mjesto");
 
                 entity.Property(e => e.PbrMjesta).ValueGeneratedNever();
+
+                entity.Property(e => e.NazivMjesta)
+                    .IsRequired()
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
             });
 
             modelBuilder.Entity<PolazniciAkcije>(entity =>
@@ -177,21 +216,17 @@ namespace AkcijeSkole.DataAccess.SqlServer.Data
                 entity.HasOne(d => d.Akcija)
                     .WithMany(p => p.PolazniciAkcije)
                     .HasForeignKey(d => d.AkcijaId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_PolazniciAkcije_Akcije");
 
                 entity.HasOne(d => d.Aktivnost)
                     .WithMany(p => p.PolazniciAkcije)
                     .HasForeignKey(d => d.AktivnostId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_PolazniciAkcije_Skole");
             });
 
             modelBuilder.Entity<PolazniciSkole>(entity =>
             {
                 entity.HasKey(e => new { e.Polaznik, e.SkolaId, e.EdukacijaId });
-
-                entity.Property(e => e.Polaznik).ValueGeneratedOnAdd();
 
                 entity.HasOne(d => d.Edukacija)
                     .WithMany(p => p.PolazniciSkole)
@@ -201,7 +236,6 @@ namespace AkcijeSkole.DataAccess.SqlServer.Data
                 entity.HasOne(d => d.Skola)
                     .WithMany(p => p.PolazniciSkole)
                     .HasForeignKey(d => d.SkolaId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_PolazniciSkole_Skole");
             });
 
@@ -222,6 +256,8 @@ namespace AkcijeSkole.DataAccess.SqlServer.Data
             {
                 entity.HasKey(e => new { e.AkcijaId, e.PrijavljenClan, e.AktivnostId });
 
+                entity.Property(e => e.DatumPrijave).HasColumnType("date");
+
                 entity.HasOne(d => d.Akcija)
                     .WithMany(p => p.PrijavljeniPolazniciAkcije)
                     .HasForeignKey(d => d.AkcijaId)
@@ -230,7 +266,6 @@ namespace AkcijeSkole.DataAccess.SqlServer.Data
                 entity.HasOne(d => d.Aktivnost)
                     .WithMany(p => p.PrijavljeniPolazniciAkcije)
                     .HasForeignKey(d => d.AktivnostId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_PrijavljeniPolazniciAkcije_Aktivnosti");
             });
 
@@ -239,16 +274,16 @@ namespace AkcijeSkole.DataAccess.SqlServer.Data
                 entity.HasKey(e => new { e.SkolaId, e.EdukacijaId, e.PrijavljenClan })
                     .HasName("PK_najavljeniPolazniciSkole");
 
+                entity.Property(e => e.DatumPrijave).HasColumnType("date");
+
                 entity.HasOne(d => d.Edukacija)
                     .WithMany(p => p.PrijavljeniPolazniciSkole)
                     .HasForeignKey(d => d.EdukacijaId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_PrijavljeniPolazniciSkole_Edukacije");
 
                 entity.HasOne(d => d.Skola)
                     .WithMany(p => p.PrijavljeniPolazniciSkole)
                     .HasForeignKey(d => d.SkolaId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_PrijavljeniPolazniciSkole_Skole");
             });
 
@@ -259,15 +294,29 @@ namespace AkcijeSkole.DataAccess.SqlServer.Data
 
                 entity.Property(e => e.IdPrivremeniObjekt).ValueGeneratedNever();
 
+                entity.Property(e => e.Opis)
+                    .IsRequired()
+                    .IsUnicode(false);
+
                 entity.HasOne(d => d.IdPrivremeniObjektNavigation)
                     .WithOne(p => p.PrivremeniObjekti)
                     .HasForeignKey<PrivremeniObjekti>(d => d.IdPrivremeniObjekt)
-                    .OnDelete(DeleteBehavior.Cascade)
                     .HasConstraintName("FK_PrivremeniObjekti_TerenskeLokacije");
             });
 
             modelBuilder.Entity<Skole>(entity =>
             {
+                entity.HasKey(e => e.IdSkole);
+
+                entity.Property(e => e.Koordinate)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.NazivSkole)
+                    .IsRequired()
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
                 entity.HasOne(d => d.MjestoPbrNavigation)
                     .WithMany(p => p.Skole)
                     .HasForeignKey(d => d.MjestoPbr)
@@ -279,18 +328,30 @@ namespace AkcijeSkole.DataAccess.SqlServer.Data
                 entity.HasKey(e => e.IdTerenskeLokacije)
                     .HasName("PK_terenskeLokacije");
 
+                entity.Property(e => e.Koordinate)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.NazivTerenskeLokacije)
+                    .IsRequired()
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Opis)
+                    .IsRequired()
+                    .IsUnicode(false);
+
                 entity.HasOne(d => d.MjestoPbrNavigation)
                     .WithMany(p => p.TerenskeLokacije)
                     .HasForeignKey(d => d.MjestoPbr)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_TerenskeLokacije_Mjesta");
 
                 entity.HasMany(d => d.Akcije)
                     .WithMany(p => p.TerenskeLokacije)
                     .UsingEntity<Dictionary<string, object>>(
                         "TerenskeLokacijeAkcije",
-                        l => l.HasOne<Akcije>().WithMany().HasForeignKey("AkcijeId").OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_TerenskeLokacijeAkcije_Akcije"),
-                        r => r.HasOne<TerenskeLokacije>().WithMany().HasForeignKey("TerenskeLokacijeId").OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_TerenskeLokacijeAkcije_TerenskeLokacije"),
+                        l => l.HasOne<Akcije>().WithMany().HasForeignKey("AkcijeId").HasConstraintName("FK_TerenskeLokacijeAkcije_Akcije"),
+                        r => r.HasOne<TerenskeLokacije>().WithMany().HasForeignKey("TerenskeLokacijeId").HasConstraintName("FK_TerenskeLokacijeAkcije_TerenskeLokacije"),
                         j =>
                         {
                             j.HasKey("TerenskeLokacijeId", "AkcijeId");
@@ -302,8 +363,8 @@ namespace AkcijeSkole.DataAccess.SqlServer.Data
                     .WithMany(p => p.TerenskeLokacije)
                     .UsingEntity<Dictionary<string, object>>(
                         "MaterijalnePotrebeTerenskeLokacije",
-                        l => l.HasOne<MaterijalnePotrebe>().WithMany().HasForeignKey("MaterijalnePotrebeId").OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_MaterijalnePotrebeTerenskeLokacije_MaterijalnePotrebe"),
-                        r => r.HasOne<TerenskeLokacije>().WithMany().HasForeignKey("TerenskeLokacijeId").OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_MaterijalnePotrebeTerenskeLokacije_TerenskeLokacije"),
+                        l => l.HasOne<MaterijalnePotrebe>().WithMany().HasForeignKey("MaterijalnePotrebeId").HasConstraintName("FK_MaterijalnePotrebeTerenskeLokacije_MaterijalnePotrebe"),
+                        r => r.HasOne<TerenskeLokacije>().WithMany().HasForeignKey("TerenskeLokacijeId").HasConstraintName("FK_MaterijalnePotrebeTerenskeLokacije_TerenskeLokacije"),
                         j =>
                         {
                             j.HasKey("TerenskeLokacijeId", "MaterijalnePotrebeId");
@@ -315,14 +376,29 @@ namespace AkcijeSkole.DataAccess.SqlServer.Data
                     .WithMany(p => p.TerenskaLokacija)
                     .UsingEntity<Dictionary<string, object>>(
                         "TerenskeLokacijeSkole",
-                        l => l.HasOne<Skole>().WithMany().HasForeignKey("SkolaId").OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_TerenskeLokacijeSkole_Skole"),
-                        r => r.HasOne<TerenskeLokacije>().WithMany().HasForeignKey("TerenskaLokacijaId").OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK_TerenskeLokacijeSkole_TerenskeLokacije"),
+                        l => l.HasOne<Skole>().WithMany().HasForeignKey("SkolaId").HasConstraintName("FK_TerenskeLokacijeSkole_Skole"),
+                        r => r.HasOne<TerenskeLokacije>().WithMany().HasForeignKey("TerenskaLokacijaId").HasConstraintName("FK_TerenskeLokacijeSkole_TerenskeLokacije"),
                         j =>
                         {
                             j.HasKey("TerenskaLokacijaId", "SkolaId");
 
                             j.ToTable("TerenskeLokacijeSkole");
                         });
+            });
+
+            modelBuilder.Entity<Zahtjevi>(entity =>
+            {
+                entity.HasKey(e => e.IdZahtjev);
+
+                entity.Property(e => e.Status)
+                    .IsRequired()
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.HasOne(d => d.IdMatPotrebaNavigation)
+                    .WithMany(p => p.Zahtjevi)
+                    .HasForeignKey(d => d.IdMatPotreba)
+                    .HasConstraintName("FK_Zahtjevi_MaterijalnePotrebe");
             });
 
             OnModelCreatingPartial(modelBuilder);
