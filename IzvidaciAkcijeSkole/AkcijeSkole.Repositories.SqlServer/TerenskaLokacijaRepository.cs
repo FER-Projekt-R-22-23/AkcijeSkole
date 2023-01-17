@@ -184,6 +184,26 @@ public class TerenskaLokacijaRepository : ITerenskaLokacijaRepository
         }
     }
 
+    public Result<CvrstiObjektZaObitavanje> GetCvrsti(int id)
+    {
+        try
+        {
+            var model = _dbContext.CvrstiObjektiZaObitavanje
+                                  .AsNoTracking()
+                                  .Include(tl => tl.IdObjektaZaObitavanjeNavigation)
+                                  .FirstOrDefault(objekt => objekt.IdObjektaZaObitavanje.Equals(id))?
+                                  .ToDomainCvrstiObitavanje();
+
+            return model is not null
+                ? Results.OnSuccess(model)
+                : Results.OnFailure<CvrstiObjektZaObitavanje>($"No cvrsti objekt za obitavanje with {id} found");
+        }
+        catch(Exception e)
+        {
+            return Results.OnException<CvrstiObjektZaObitavanje>(e);
+        }
+    }
+
     public Result<IEnumerable<TerenskaLokacija>> GetAll()
     {
         try
@@ -529,6 +549,31 @@ public class TerenskaLokacijaRepository : ITerenskaLokacijaRepository
                     ? Results.OnSuccess()
                     : Results.OnFailure();
             }
+            return Results.OnFailure();
+        }
+        catch(Exception e)
+        {
+            return Results.OnException(e);
+        }
+    }
+
+    public Result RemoveCvrsti(int id)
+    {
+        try
+        {
+            var model = _dbContext.CvrstiObjektiZaObitavanje
+                                  .AsNoTracking()
+                                  .FirstOrDefault(objekt => objekt.IdObjektaZaObitavanje.Equals(id));
+
+            if(model is not null)
+            {
+                _dbContext.CvrstiObjektiZaObitavanje.Remove(model);
+
+                return _dbContext.SaveChanges() > 0
+                    ? Results.OnSuccess()
+                    : Results.OnFailure();
+            }
+
             return Results.OnFailure();
         }
         catch(Exception e)
