@@ -154,6 +154,9 @@ public class EdukacijeRepository : IEdukacijeRepository
         try
         {
             var model = _dbContext.Edukacije
+                          .Include(edukacija => edukacija.PolazniciSkole)
+                          .Include(edukacija => edukacija.Predavaci)
+                          .Include(edukacija => edukacija.PrijavljeniPolazniciSkole)
                           .AsNoTracking()
                           .FirstOrDefault(edukacija => edukacija.IdEdukacija.Equals(id));
 
